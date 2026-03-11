@@ -1,0 +1,31 @@
+@Api_HostAddress = http://localhost:5149
+
+### Create Reservation
+POST {{Api_HostAddress}}/Api/v1/Reservations/
+Content-Type: application/json
+
+{
+  "clientId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "startDate": "2026-03-07T13:46:30.484Z",
+  "endDate": "2026-03-08T13:46:30.484Z",
+  "items": [
+    {
+      "equipmentId": "29123f2c-d436-4406-83cd-e3225c6f1202",
+      "quantity": 2   
+    },
+    {
+      "equipmentId": "e21ba5a1-db90-4069-9d25-de7df1f443a5",
+      "quantity": 1      
+    }
+  ]
+}
+
+
+### Get Reservation
+GET {{Api_HostAddress}}/Api/v1/Reservations/821423d3-a472-491d-9886-42c20134285a
+Content-Type: application/json
+
+### Get All Reservation
+GET {{Api_HostAddress}}/Api/v1/Reservations/
+Content-Type: application/json
+

@@ -1,0 +1,73 @@
+@Api_HostAddress = http://localhost:5000
+
+### Create Pack
+POST {{Api_HostAddress}}/Api/v1/Packs/
+Content-Type: application/json
+
+{
+  "reference": "DO",
+  "name": "Pack DO",
+  "description": "Pack de deux enceintes en facade et quatre retours",
+  "dailyPrice": 500,
+  "items": [
+    {
+      "equipmentId": "06090152-518d-4b93-8c80-9df8d5e9eb0b",
+      "quantity": 2   
+    },
+    {
+      "equipmentId": "79a9457b-0cb7-42e3-944a-66c11902f643",
+      "quantity": 4      
+    }
+  ]
+}
+
+### Create Pack
+POST {{Api_HostAddress}}/Api/v1/Packs/
+Content-Type: application/json
+
+{
+  "reference": "SOL",
+  "name": "Pack SOL",
+  "description": "Pack de deux enceintes en facade et trois retours",
+  "dailyPrice": 400,
+  "items": [
+    {
+      "equipmentId": "06090152-518d-4b93-8c80-9df8d5e9eb0b",
+      "quantity": 2   
+    },
+    {
+      "equipmentId": "79a9457b-0cb7-42e3-944a-66c11902f643",
+      "quantity": 3      
+    }
+  ]
+}
+
+### Create Pack
+POST {{Api_HostAddress}}/Api/v1/Packs/
+Content-Type: application/json
+
+{
+  "reference": "RE",
+  "name": "Pack RE",
+  "description": "Pack de deux enceintes en facade et deux retours",
+  "dailyPrice": 300,
+  "items": [
+    {
+      "equipmentId": "06090152-518d-4b93-8c80-9df8d5e9eb0b",
+      "quantity": 2   
+    },
+    {
+      "equipmentId": "79a9457b-0cb7-42e3-944a-66c11902f643",
+      "quantity": 2      
+    }
+  ]
+}
+
+### Get Pack
+GET {{Api_HostAddress}}/Api/v1/Packs/821423d3-a472-491d-9886-42c20134285a
+Content-Type: application/json
+
+### Get All Pack
+GET {{Api_HostAddress}}/Api/v1/Packs/
+Content-Type: application/json
+
