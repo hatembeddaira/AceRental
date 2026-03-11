@@ -1,0 +1,23 @@
+services:
+  azure-sql-edge:
+    image: mcr.microsoft.com/azure-sql-edge
+    container_name: azure-sql-edge
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=AceRental@2026!
+    ports:
+      - "1433:1433"
+    networks:
+      - gatewayAceRental
+  api:
+    build:
+      context: ./src
+      dockerfile: AceRental.Api/Dockerfile
+    container_name: ace-rental-Api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    networks:
+      - gatewayAceRental
+networks:
+    gatewayAceRental: {}
