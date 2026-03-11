@@ -1,0 +1,71 @@
+@Api_HostAddress = http://localhost:5000
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "ART315",
+  "name": "RCF ART 315",
+  "description": "Enceinte rcf art315",
+  "dailyPrice": 50,
+  "purchasePrice": 500,
+  "newPurchasePrice": 1000,
+  "totalStock": 2,
+  "category": 0
+}
+
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "W400a",
+  "name": "Montarbo W400a",
+  "description": "Enceinte Montarbo W400a",
+  "dailyPrice": 50,
+  "purchasePrice": 500,
+  "newPurchasePrice": 1000,
+  "totalStock": 2,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "DSR115",
+  "name": "Yamaha DSR115",
+  "description": "Enceinte yamaha dsr115",
+  "dailyPrice": 75,
+  "purchasePrice": 750,
+  "newPurchasePrice": 1600,
+  "totalStock": 2,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "DSR112",
+  "name": "Yamaha DSR112",
+  "description": "Enceinte yamaha dsr112",
+  "dailyPrice": 50,
+  "purchasePrice": 500,
+  "newPurchasePrice": 1000,
+  "totalStock": 4,
+  "category": 0
+}
+
+### Get Equipment
+GET {{Api_HostAddress}}/Api/v1/Equipments/821423d3-a472-491d-9886-42c20134285a
+Content-Type: application/json
+
+### Get All Equipment
+GET {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+

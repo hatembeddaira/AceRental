@@ -1,0 +1,11 @@
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/bin/Debug/net10.0/AceRental.Domain.deps.json
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/bin/Debug/net10.0/AceRental.Domain.dll
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/bin/Debug/net10.0/AceRental.Domain.pdb
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/obj/Debug/net10.0/AceRental.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/obj/Debug/net10.0/AceRental.Domain.AssemblyInfoInputs.cache
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/obj/Debug/net10.0/AceRental.Domain.AssemblyInfo.cs
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/obj/Debug/net10.0/AceRental.Domain.csproj.CoreCompileInputs.cache
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/obj/Debug/net10.0/AceRental.Domain.dll
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/obj/Debug/net10.0/refint/AceRental.Domain.dll
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/obj/Debug/net10.0/AceRental.Domain.pdb
+/Users/hbeddaira/Documents/backend 2/src/AceRental.Domain/obj/Debug/net10.0/ref/AceRental.Domain.dll
