@@ -1,4 +1,4 @@
-@Api_HostAddress = http://localhost:5000
+@Api_HostAddress = https://localhost:8081
 
 ### Create Equipment
 POST {{Api_HostAddress}}/Api/v1/Equipments/

@@ -11,29 +11,57 @@ namespace AceRental.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<PackDetailsDto>>> GetAll()
         {
-            var result = await Mediator.Send(new GetAllPacksQuery());
-            return Ok(result);
+            try
+            {
+                var result = await Mediator.Send(new GetAllPacksQuery());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<PackDetailsDto>> Get(Guid id)
         {
-            var result = await Mediator.Send(new GetPackQuery(id));
-            return Ok(result);
+            try
+            {
+                var result = await Mediator.Send(new GetPackQuery(id));
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetAvailability/{id:guid}/{startDate:datetime}/{endDate:datetime}")]
         public async Task<ActionResult<int>> GetAvailability(Guid id, DateTime startDate, DateTime endDate)
         {
-            var result = await Mediator.Send(new GetPackAvailabilityQuery(id, startDate, endDate));
-            return Ok(result);
+            try
+            {
+                var result = await Mediator.Send(new GetPackAvailabilityQuery(id, startDate, endDate));
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult<Guid>> Create(CreatePackCommand command)
         {
-            var result = await Mediator.Send(command);
-            return Ok(result);
+            try
+            {
+                var result = await Mediator.Send(command);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
     }
