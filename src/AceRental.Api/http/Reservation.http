@@ -6,16 +6,16 @@ Content-Type: application/json
 
 {
   "clientId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "startDate": "2026-03-07T13:46:30.484Z",
-  "endDate": "2026-03-08T13:46:30.484Z",
-  "workflow": 0,
+  "startDate": "2026-03-08T13:46:30.484Z",
+  "endDate": "2026-03-09T13:46:30.484Z",
+  "workflow": 1,
   "items": [
     {
-      "packId": "a766f425-7963-4d82-8c48-9a9d819b4c0e",
+      "packId": "5d949049-12bf-40fe-843c-9eba8d15c1ad",
       "quantity": 1   
     },
     {
-      "equipmentId": "cf7b4f49-3a49-4c89-9624-2dca5f87def7",
+      "equipmentId": "34e40776-958f-46e9-9691-68cf200d3684",
       "quantity": 2      
     }
   ]
@@ -65,7 +65,7 @@ Content-Type: application/json
 
 
 ### Get Reservation
-GET {{Api_HostAddress}}/Api/v1/Reservations/8e8a5dae-efde-47f1-be21-44517591b554
+GET {{Api_HostAddress}}/Api/v1/Reservations/4d083a54-3397-46cb-87cf-d3e4b8245282
 Content-Type: application/json
 
 ### Get All Reservation

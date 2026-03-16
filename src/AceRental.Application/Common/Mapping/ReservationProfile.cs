@@ -19,7 +19,8 @@ namespace AceRental.Application.Common.Mapping
                 .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(source => source.TotalAmount))
                 .ForMember(dest => dest.ClientId, opt => opt.MapFrom(source => source.ClientId))
                 .ForMember(dest => dest.Client, opt => opt.MapFrom(source => source.Client))
-                .ForMember(dest => dest.Items, opt => opt.MapFrom(source => source.Items))                
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(source => source.Items))
+                .ForMember(dest => dest.Payments, opt => opt.MapFrom(source => source.Payments))
                 .ReverseMap();
     }
 }

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Paprec.SIRH.RevueRem.DataLayer.Configurations
+namespace AceRental.Infrastructure.Configurations
 {
     public class ReservationItemConfiguration : IEntityTypeConfiguration<ReservationItem>
     {

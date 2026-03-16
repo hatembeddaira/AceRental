@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Paprec.SIRH.RevueRem.DataLayer.Configurations
+namespace AceRental.Infrastructure.Configurations
 {
     public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
     {
@@ -19,6 +19,16 @@ namespace Paprec.SIRH.RevueRem.DataLayer.Configurations
             .HasPrecision(18, 2);
             builder.HasIndex(i => i.ReservationNumber)
             .IsUnique();
+
+            builder.Property(p => p.FinancialStatus)
+                .HasConversion<string>()
+                .HasMaxLength(20);
+            builder.Property(p => p.LogisticStatus)
+                .HasConversion<string>()
+                .HasMaxLength(20);
+            builder.Property(p => p.Workflow)
+                .HasConversion<string>()
+                .HasMaxLength(20);
             
             // Relation 1 → N avec ReservationItem
             builder.HasMany(r => r.Items)

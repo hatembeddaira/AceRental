@@ -11,11 +11,11 @@ Content-Type: application/json
   "dailyPrice": 500,
   "items": [
     {
-      "equipmentId": "06090152-518d-4b93-8c80-9df8d5e9eb0b",
+      "equipmentId": "b79d3481-df2c-4287-a340-01d4c7a86edd",
       "quantity": 2   
     },
     {
-      "equipmentId": "79a9457b-0cb7-42e3-944a-66c11902f643",
+      "equipmentId": "9e337776-4f9f-4393-9d91-9989a6f30f99",
       "quantity": 4      
     }
   ]

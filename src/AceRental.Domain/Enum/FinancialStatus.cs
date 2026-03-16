@@ -5,9 +5,10 @@ namespace AceRental.Domain.Enum
     public enum FinancialStatus
     {
         Unpaid = 0, 
-        Paid = 1, 
-        Invoiced =  2, 
-        Refunded = 3
+        PartiallyPaid = 1,
+        Paid = 2, 
+        Invoiced =  3, 
+        Refunded = 4
         
     }
 }

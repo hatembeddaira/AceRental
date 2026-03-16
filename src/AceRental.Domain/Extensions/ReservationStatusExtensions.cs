@@ -44,6 +44,7 @@ namespace AceRental.Domain.Extensions
             return current switch
             {
                 FinancialStatus.Unpaid => CanTransitionFromUnpaid(next, reservation),
+                FinancialStatus.PartiallyPaid => CanTransitionFromPartiallyPaid(next, reservation),
                 FinancialStatus.Paid => CanTransitionFromPaid(next, reservation),
                 FinancialStatus.Invoiced => CanTransitionFromInvoiced(next, reservation),
                 _ => false
@@ -77,7 +78,7 @@ namespace AceRental.Domain.Extensions
                     (reservation.FinancialStatus == FinancialStatus.Unpaid && next == LogisticStatus.Cancelled) ||                     
                     (reservation.FinancialStatus == FinancialStatus.Invoiced && next == LogisticStatus.PickedUp),
                 Workflow.B2B =>
-                    reservation.FinancialStatus == FinancialStatus.Unpaid && 
+                    (reservation.FinancialStatus == FinancialStatus.Unpaid || reservation.FinancialStatus == FinancialStatus.PartiallyPaid) && 
                     (next == LogisticStatus.PickedUp || next == LogisticStatus.Cancelled),
                 _ => false
             };
@@ -139,9 +140,21 @@ namespace AceRental.Domain.Extensions
             reservation.Workflow switch
             {
                 Workflow.B2C => next == FinancialStatus.Paid && reservation.LogisticStatus == LogisticStatus.Confirmed,
-                Workflow.B2B => next == FinancialStatus.Invoiced && reservation.LogisticStatus == LogisticStatus.Checked,
+                Workflow.B2B => CanTransitionFromUnpaidB2B(next, reservation),
                 _ => false
             };
+            private static bool CanTransitionFromUnpaidB2B(FinancialStatus next, Reservation reservation) =>
+            next switch
+            {
+                FinancialStatus.Invoiced => reservation.LogisticStatus == LogisticStatus.Checked,
+                FinancialStatus.PartiallyPaid => reservation.LogisticStatus == LogisticStatus.Confirmed,
+                _ => false
+            };
+
+        private static bool CanTransitionFromPartiallyPaid(FinancialStatus next, Reservation reservation) =>
+            next == FinancialStatus.Paid && 
+            reservation.LogisticStatus == LogisticStatus.Checked && 
+            reservation.Workflow == Workflow.B2B;
 
         private static bool CanTransitionFromPaid(FinancialStatus next, Reservation reservation) =>
             reservation.Workflow switch

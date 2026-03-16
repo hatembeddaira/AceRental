@@ -6,7 +6,7 @@ namespace AceRental.Api.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("Api/v{version:ApiVersion}/[controller]")]
+    [Route("api/v{version:ApiVersion}/[controller]")]
     public class ApiControllerBase : ControllerBase
     {
         private ISender? _mediator;

@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using AceRental.Domain.Common;
 using AceRental.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Paprec.SIRH.RevueRem.DataLayer.Configurations;
+using AceRental.Infrastructure.Configurations;
 
 namespace AceRental.Infrastructure.Persistence;
 
@@ -31,6 +31,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ReservationItem> ReservationItems => Set<ReservationItem>();
     public DbSet<Quote> Quotes => Set<Quote>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
+    public DbSet<Payment> Payments => Set<Payment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,11 +39,14 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         if (modelBuilder != null)
         {
+            modelBuilder.ApplyConfiguration(new EquipmentConfiguration());
+            modelBuilder.ApplyConfiguration(new PackConfiguration());
             modelBuilder.ApplyConfiguration(new PackItemConfiguration());
             modelBuilder.ApplyConfiguration(new ReservationItemConfiguration());
             modelBuilder.ApplyConfiguration(new ReservationConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new QuoteConfiguration());
+            modelBuilder.ApplyConfiguration(new PaymentConfiguration());
             
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {

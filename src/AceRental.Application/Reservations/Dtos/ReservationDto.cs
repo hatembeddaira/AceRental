@@ -1,5 +1,5 @@
 using AceRental.Application.Clients.Dtos;
-using AceRental.Domain.Entities;
+using AceRental.Application.Payments.Dtos;
 using AceRental.Domain.Enum;
 
 namespace AceRental.Application.Reservations.Dtos
@@ -19,5 +19,6 @@ namespace AceRental.Application.Reservations.Dtos
         public ClientReservationDto Client { get; set; } = null!;
         public int CurrentVersion { get; set; } = 1;
         public ICollection<ReservationItemDto> Items { get; set; } = [];
+        public ICollection<PaymentDto> Payments { get; set; } = [];
     }
 }

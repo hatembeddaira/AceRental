@@ -105,6 +105,7 @@ namespace AceRental.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
         [HttpPatch("financial-status")]
         public async Task<ActionResult<Guid>> FinancialStatus(ChangeFinancialStatusCommand command)
         {

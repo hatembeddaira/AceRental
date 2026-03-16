@@ -32,13 +32,6 @@ namespace AceRental.Application.Reservations.Command
             if (!reservation.FinancialStatus.CanTransitionTo(request.Status, reservation))
                 throw new Exception($"Transition impossible de {reservation?.FinancialStatus} vers {request.Status} dans le workflow {reservation!.Workflow} avec un statut logistique = {reservation!.LogisticStatus}");
 
-            //  // 2. Appliquer les règles croisées avec le Workflow
-            // if (request.Status == FinancialStatus.Paid && !reservation.CanMarkAsPaid())
-            //     throw new InvalidOperationException("Paiement impossible dans l'état actuel (vérifiez le workflow).");
-
-            // if (request.Status == FinancialStatus.Invoiced && !reservation.CanIssueInvoice())
-            //     throw new InvalidOperationException("Facturation impossible (Le matériel doit être Checked en B2B).");
-                
             // 2. Snapshot minimal pour l'historique
             var historyEntry = new ReservationHistoryDto {
                 ReservationId = reservation.Id,
@@ -51,7 +44,18 @@ namespace AceRental.Application.Reservations.Command
             // 3. Application
             reservation.FinancialStatus = request.Status;
             reservation.CurrentVersion++;
-
+            
+            if(reservation.Workflow == Workflow.B2C && reservation.FinancialStatus == FinancialStatus.Paid)
+            {
+                // Si c'est une réservation B2C et que le statut financier devient "Paid", on passe le statut financier à "Invoiced"
+                // var result = await Mediator.Send(new ChangeFinancialStatusHandler(request.ReservationId, FinancialStatus.Invoiced), cancellationToken);
+            }
+            
+            if(reservation.Workflow == Workflow.B2C && reservation.FinancialStatus == FinancialStatus.Invoiced)
+            {
+                // Si c'est une réservation B2C et que le statut financier devient "Invoiced", on génére la facture
+                // var result = await Mediator.Send(new GenerateInvoiceHandler(request.ReservationId), cancellationToken);
+            }
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
         

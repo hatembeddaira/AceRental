@@ -3,3 +3,10 @@ dotnet ef migrations add MigrationV2 --project src/AceRental.Infrastructure --st
 dotnet ef database update --project src/AceRental.Infrastructure --startup-project src/AceRental.Api
 
 dotnet ef migrations remove --project src/AceRental.Infrastructure --startup-project src/AceRental.Api
+
+
+dotnet build AceRental.sln
+
+docker compose up --build
+
+dotnet test tests/AceRental.Tests

@@ -21,8 +21,11 @@ namespace AceRental.Infrastructure.Configurations
             .HasPrecision(18, 2);
             builder.Property(ri => ri.NewPurchasePrice)
             .HasPrecision(18, 2);
-            builder.HasIndex(i => i. Reference)
+            builder.HasIndex(i => i.Reference)
             .IsUnique();
+            builder.Property(p => p.Category)
+                .HasConversion<string>()
+                .HasMaxLength(20);
 
         }
     }

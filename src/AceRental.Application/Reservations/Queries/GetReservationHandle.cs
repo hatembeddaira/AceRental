@@ -23,7 +23,9 @@ namespace AceRental.Application.Reservations.Queries
             // 1. Récupérer le stock total de l'équipement
             var Reservation = await _context.Reservations
                 .Include(r => r.Client)
-                .Include(r => r.Items).ThenInclude(i => i.Equipment)              
+                .Include(r => r.Payments)
+                .Include(r => r.Items).ThenInclude(i => i.Equipment)
+                .Include(r => r.Items).ThenInclude(i => i.Pack)            
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == request.ReservationId, cancellationToken);
             return _mapper.Map<ReservationDto>(Reservation);
