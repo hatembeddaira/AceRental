@@ -209,7 +209,7 @@ namespace AceRental.Domain.Extensions
             return next switch
             {
                 LogisticStatus.Damaged => AllowedFinancialStatusFromConfirmedB2B.Contains(reservation.FinancialStatus),
-                LogisticStatus.Finished => reservation.FinancialStatus == FinancialStatus.RentalInvoiced,
+                LogisticStatus.Finished => reservation.FinancialStatus == FinancialStatus.Paid,
                 _ => false
             };
         }
