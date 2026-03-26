@@ -13,7 +13,7 @@ namespace AceRental.Domain.Entities
         public required FinancialStatus FinancialStatus { get; set; }
         public required LogisticStatus LogisticStatus { get; set; }
         public required Workflow Workflow { get; set; }
-        public bool IsContentLocked => FinancialStatus == FinancialStatus.Invoiced || FinancialStatus == FinancialStatus.Paid;
+        // public bool IsContentLocked => FinancialStatus == FinancialStatus.Invoiced || FinancialStatus == FinancialStatus.Paid;
         public decimal TotalAmount { get; set; }
         public Guid ClientId { get; set; }
         public required Client Client { get; set; }

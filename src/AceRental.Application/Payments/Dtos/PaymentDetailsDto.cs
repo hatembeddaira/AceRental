@@ -3,7 +3,7 @@ using AceRental.Application.Reservations.Dtos;
 
 namespace AceRental.Application.Payments.Dtos
 {
-    public class PaymentDto
+    public class PaymentDetailsDto
     {
         public Guid Id { get; set; }
         public Guid ReservationId { get; set; }
@@ -11,6 +11,8 @@ namespace AceRental.Application.Payments.Dtos
         public DateTime Date { get; set; }
         public PaymentMethod Method { get; set; }
         public PaymentType  Type { get; set; }
-        public string? TransactionId { get; set; }    
+        public string? TransactionId { get; set; }
+
+        public virtual ReservationDto Reservation { get; set; }       
     }
 }

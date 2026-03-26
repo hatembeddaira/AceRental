@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AceRental.Application.Payments.Queries
 {
-    public class GetAllPaymentsHandle : IRequestHandler<GetAllPaymentsQuery, List<PaymentDto>>
+    public class GetAllPaymentsHandle : IRequestHandler<GetAllPaymentsQuery, List<PaymentDetailsDto>>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ namespace AceRental.Application.Payments.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<PaymentDto>> Handle(GetAllPaymentsQuery request, CancellationToken cancellationToken)
+        public async Task<List<PaymentDetailsDto>> Handle(GetAllPaymentsQuery request, CancellationToken cancellationToken)
         {
             
             var payments = await _context.Payments
@@ -25,7 +25,7 @@ namespace AceRental.Application.Payments.Queries
                 .AsNoTracking()
                 .Where(e => e.ReservationId == request.ReservationId)
                 .ToListAsync(cancellationToken);
-            return _mapper.Map<List<PaymentDto>>(payments);
+            return _mapper.Map<List<PaymentDetailsDto>>(payments);
         }
     }
 }

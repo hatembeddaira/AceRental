@@ -43,8 +43,14 @@ namespace AceRental.Application.Reservations.Command
                 ChangeReason = $"Changement de statut",
                 DataSnapshotJson = JsonSerializer.Serialize(new { Old = reservation.LogisticStatus.ToString(), New = request.Status.ToString() })
             };
+            if(request.Status == LogisticStatus.Deleted)
+            {
+                // Si le statut devient "Deleted", on ajoute une raison de suppression
+                historyEntry.ChangeReason = $"Suppression de la réservation";
+                _context.Reservations.Remove(reservation);
+            }
+
             _context.ReservationHistorys.Add(_mapper.Map<ReservationHistory>(historyEntry));
-            // 3. Application
             reservation.LogisticStatus = request.Status;
             reservation.CurrentVersion++;
 

@@ -4,12 +4,12 @@ using AutoMapper;
 
 namespace AceRental.Application.Common.Mapping
 {
-    public class ReservationProfile : Profile
+    public class ReservationDetailsProfile : Profile
     {
         /// <inheritdoc/>
-        public ReservationProfile()
+        public ReservationDetailsProfile()
         {
-            CreateMap<Reservation, ReservationDto>()
+            CreateMap<Reservation, ReservationDetailsDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(source => source.Id))
                 .ForMember(dest => dest.ReservationNumber, opt => opt.MapFrom(source => source.ReservationNumber))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.StartDate))
@@ -20,7 +20,8 @@ namespace AceRental.Application.Common.Mapping
                 .ForMember(dest => dest.ClientId, opt => opt.MapFrom(source => source.ClientId))
                 .ForMember(dest => dest.Client, opt => opt.MapFrom(source => source.Client))
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(source => source.Items))
+                .ForMember(dest => dest.Payments, opt => opt.MapFrom(source => source.Payments))
                 .ReverseMap();
+        }
     }
-}
 }

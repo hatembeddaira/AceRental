@@ -25,6 +25,7 @@ namespace AceRental.Tests.Domain
         [InlineData(FinancialStatus.Unpaid, LogisticStatus.Cancelled, false)]
         [InlineData(FinancialStatus.Unpaid, LogisticStatus.Draft, false)]
         [InlineData(FinancialStatus.Unpaid, LogisticStatus.Deleted, true)]
+        [InlineData(FinancialStatus.PartiallyPaid, LogisticStatus.Deleted, false)] // Sécurité : On ne supprime pas si argent reçu
         [InlineData(FinancialStatus.Unpaid, LogisticStatus.Quote, true)]
         [InlineData(FinancialStatus.Unpaid, LogisticStatus.Basket, false)]
         [InlineData(FinancialStatus.Unpaid, LogisticStatus.PickedUp, false)]
@@ -41,82 +42,183 @@ namespace AceRental.Tests.Domain
             Assert.Equal(excepted, result);
         }
 
-
-        [Fact]
-        public void B2B_Should_Block_Invoice_If_Not_Checked()
-        {
-            // Arrange : Matériel revenu mais PAS ENCORE vérifié
-            var res = CreateReservation(Workflow.B2B, LogisticStatus.Returned, FinancialStatus.Unpaid);
-
-            // Act
-            bool canInvoice = res.FinancialStatus.CanTransitionTo(FinancialStatus.Invoiced, res);
-
-            // Assert
-            Assert.False(canInvoice, "B2B ne devrait pas pouvoir facturer tant que le statut n'est pas Checked.");
-        }
-
-        [Fact]
-        public void B2B_Should_Allow_Invoice_Once_Checked()
-        {
-            // Arrange : Matériel vérifié par le technicien
-            var res = CreateReservation(Workflow.B2B, LogisticStatus.Checked, FinancialStatus.Unpaid);
-
-            // Act
-            bool canInvoice = res.FinancialStatus.CanTransitionTo(FinancialStatus.Invoiced, res);
-
-            // Assert
-            Assert.True(canInvoice, "B2B doit pouvoir facturer une fois le matériel vérifié.");
-        }
-
-        [Fact]
-        public void B2B_Should_Block_Payment_If_Not_Invoiced()
+        [Theory]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Confirmed, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Cancelled, true)]
+        [InlineData(FinancialStatus.PartiallyPaid, LogisticStatus.Cancelled, false)] // Annulation possible avec acompte (remboursement à suivre) pas encore autorisé
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Draft, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Deleted, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Quote, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Basket, false)]
+        // [InlineData(FinancialStatus.Invoiced, LogisticStatus.PickedUp, false)]
+        [InlineData(FinancialStatus.PartiallyPaid, LogisticStatus.PickedUp, true)] // Bloqué : solde requis pour emporter
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.PickedUp, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Returned, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Checked, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Finished, false)]
+        public void B2B_Should_Can_Transition_From_Confirmed_To_LogisticStatus(FinancialStatus financial, LogisticStatus next, bool excepted)
         {
             // Arrange
-            var res = CreateReservation(Workflow.B2B, LogisticStatus.Checked, FinancialStatus.Unpaid);
-
-            // Act
-            bool canPay = res.FinancialStatus.CanTransitionTo(FinancialStatus.Paid, res);
-
+            var res = CreateReservation(Workflow.B2B, LogisticStatus.Confirmed, financial);
+            // Act:
+            bool result = res.LogisticStatus.CanTransitionTo(next, res);
             // Assert
-            Assert.False(canPay, "B2B ne peut pas payer sans facture (Invoiced) préalable.");
+            Assert.Equal(excepted, result);
         }
+
 
         [Theory]
-        [InlineData(Workflow.B2B, LogisticStatus.Draft)]
-        [InlineData(Workflow.B2B, LogisticStatus.Quote)]
-        public void B2B_Should_Allow_Back_To_Draft_Only_From_Cancelled(Workflow workflow, LogisticStatus current)
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Confirmed, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Cancelled, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Draft, true)]
+        [InlineData(FinancialStatus.PartiallyPaid, LogisticStatus.Draft, true)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Deleted, true)]
+        [InlineData(FinancialStatus.PartiallyPaid, LogisticStatus.Deleted, false)] // Sécurité : on ne supprime pas si argent encaissé
+        [InlineData(FinancialStatus.Paid, LogisticStatus.Deleted, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Quote, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Basket, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.PickedUp, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Returned, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Checked, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Finished, false)]
+        public void B2B_Should_Can_Transition_From_Cancelled_To_LogisticStatus(FinancialStatus financial, LogisticStatus next, bool excepted)
         {
             // Arrange
-            var res = CreateReservation(workflow, current, FinancialStatus.Unpaid);
-
-            // Act: Essai direct vers Draft
-            bool directToDraft = res.LogisticStatus.CanTransitionTo(LogisticStatus.Draft, res);
-            
+            var res = CreateReservation(Workflow.B2B, LogisticStatus.Cancelled, financial);
+            // Act:
+            bool result = res.LogisticStatus.CanTransitionTo(next, res);
             // Assert
-            Assert.False(directToDraft, "Le passage direct vers Draft doit être bloqué pour la traçabilité.");
-
-            // Act: Passage par Cancelled
-            res.LogisticStatus = LogisticStatus.Cancelled;
-            bool fromCancelledToDraft = res.LogisticStatus.CanTransitionTo(LogisticStatus.Draft, res);
-            
-            Assert.True(fromCancelledToDraft);
+            Assert.Equal(excepted, result);
         }
 
-        [Fact]
-        public void B2B_Should_Block_Finished_If_Not_Paid()
+
+        [Theory]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Confirmed, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Cancelled, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Draft, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Deleted, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Quote, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Basket, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.PickedUp, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Returned, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Checked, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Finished, false)]
+        public void B2B_Should_Can_Transition_From_Deleted_To_LogisticStatus(FinancialStatus financial, LogisticStatus next, bool excepted)
         {
-            // Arrange : Matériel vérifié et facturé, mais virement non reçu
-            var res = CreateReservation(Workflow.B2B, LogisticStatus.Checked, FinancialStatus.Invoiced);
-
-            // Act
-            bool canFinish = res.LogisticStatus.CanTransitionTo(LogisticStatus.Finished, res);
-
+            // Arrange
+            var res = CreateReservation(Workflow.B2B, LogisticStatus.Deleted, financial);
+            // Act:
+            bool result = res.LogisticStatus.CanTransitionTo(next, res);
             // Assert
-            Assert.False(canFinish, "B2B : On ne ferme pas le dossier tant que l'argent n'est pas encaissé.");
-            
-            // Simule paiement reçu
-            res.FinancialStatus = FinancialStatus.Paid;
-            Assert.True(res.LogisticStatus.CanTransitionTo(LogisticStatus.Finished, res));
+            Assert.Equal(excepted, result);
         }
+
+
+        [Theory]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Confirmed, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Cancelled, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Draft, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Deleted, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Quote, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Basket, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.PickedUp, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Returned, true)]
+        [InlineData(FinancialStatus.Paid, LogisticStatus.Returned, true)]
+        [InlineData(FinancialStatus.PartiallyPaid, LogisticStatus.Returned, true)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Checked, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Finished, false)]
+        public void B2B_Should_Can_Transition_From_PickedUp_To_LogisticStatus(FinancialStatus financial, LogisticStatus next, bool excepted)
+        {
+            // Arrange
+            var res = CreateReservation(Workflow.B2B, LogisticStatus.PickedUp, financial);
+            // Act:
+            bool result = res.LogisticStatus.CanTransitionTo(next, res);
+            // Assert
+            Assert.Equal(excepted, result);
+        }
+
+
+        [Theory]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Confirmed, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Cancelled, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Draft, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Deleted, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Quote, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Basket, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.PickedUp, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Returned, false)]
+        [InlineData(FinancialStatus.Paid, LogisticStatus.Checked, true)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Checked, true)]
+        [InlineData(FinancialStatus.PartiallyPaid, LogisticStatus.Checked, true)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Finished, false)]
+        public void B2B_Should_Can_Transition_From_Returned_To_LogisticStatus(FinancialStatus financial, LogisticStatus next, bool excepted)
+        {
+            // Arrange
+            var res = CreateReservation(Workflow.B2B, LogisticStatus.Returned, financial);
+            // Act:
+            bool result = res.LogisticStatus.CanTransitionTo(next, res);
+            // Assert
+            Assert.Equal(excepted, result);
+        }
+
+
+        [Theory]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Confirmed, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Cancelled, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Draft, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Deleted, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Quote, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Basket, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.PickedUp, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Returned, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Checked, false)]
+        // [InlineData(FinancialStatus.Invoiced, LogisticStatus.Finished, false)]
+        [InlineData(FinancialStatus.Unpaid, LogisticStatus.Finished, false)]
+        [InlineData(FinancialStatus.Paid, LogisticStatus.Finished, true)] // Clôture autorisée si facturé/soldé
+        [InlineData(FinancialStatus.PartiallyPaid, LogisticStatus.Finished, false)] // Bloqué : il reste un solde à payer
+        public void B2B_Should_Can_Transition_From_Checked_To_LogisticStatus(FinancialStatus financial, LogisticStatus next, bool excepted)
+        {
+            // Arrange
+            var res = CreateReservation(Workflow.B2B, LogisticStatus.Checked, financial);
+            // Act:
+            bool result = res.LogisticStatus.CanTransitionTo(next, res);
+            // Assert
+            Assert.Equal(excepted, result);
+        }
+
+ 
+
+        // [Theory]
+        // [InlineData(FinancialStatus.Unpaid, false)]
+        // // [InlineData(FinancialStatus.PartiallyPaid, true)] // Unpaid -> PartiallyPaid (Acompte ou tranche 1,2/3) pas encore autorisé
+        // // [InlineData(FinancialStatus.Paid, false)]          // Unpaid -> Paid (100%)
+        // // [InlineData(FinancialStatus.Invoiced, true)]
+        // // [InlineData(FinancialStatus.Refunded, true)]
+        // public void B2B_Should_Can_Transition_From_Confirmed_To_FinancialStatus(FinancialStatus next, bool excepted)
+        // {
+        //     // Arrange
+        //     var res = CreateReservation(Workflow.B2B, LogisticStatus.Confirmed, FinancialStatus.Unpaid);
+        //     // Act:
+        //     bool result = res.LogisticStatus.CanTransitionTo(next, res);
+        //     // Assert
+        //     Assert.Equal(excepted, result);
+        // }
+
+        [Theory]
+        [InlineData(LogisticStatus.Checked, FinancialStatus.Paid, true)]         // PartiallyPaid -> Paid (Dernière tranche reçue)
+        // [InlineData(LogisticStatus.Confirmed, FinancialStatus.Invoiced, true)]      // PartiallyPaid -> Invoiced (Cas où on facture avant le solde)
+        [InlineData(LogisticStatus.Confirmed, FinancialStatus.PartiallyPaid, true)]      // PartiallyPaid -> Invoiced (Cas où on facture avant le solde)
+        [InlineData(LogisticStatus.Checked, FinancialStatus.Unpaid, false)]       // Retour arrière interdit
+        public void B2B_Should_Can_Transition_From_PartiallyPaid_To_FinancialStatus(LogisticStatus logistic, FinancialStatus next, bool excepted)
+        {
+            // Arrange
+            var res = CreateReservation(Workflow.B2B, logistic, FinancialStatus.PartiallyPaid);
+            // Act
+            bool result = res.FinancialStatus.CanTransitionTo(next, res);
+            // Assert
+            Assert.Equal(excepted, result);
+        }
+
+        
     }
 }

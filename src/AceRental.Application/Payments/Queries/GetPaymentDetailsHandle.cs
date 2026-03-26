@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AceRental.Application.Payments.Queries
 {
-    public class GetPaymentDetailsHandle : IRequestHandler<GetPaymentDetailsQuery, PaymentDto>
+    public class GetPaymentDetailsHandle : IRequestHandler<GetPaymentDetailsQuery, PaymentDetailsDto>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -18,13 +18,13 @@ namespace AceRental.Application.Payments.Queries
             _mapper = mapper;
         }
 
-        public async Task<PaymentDto> Handle(GetPaymentDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<PaymentDetailsDto> Handle(GetPaymentDetailsQuery request, CancellationToken cancellationToken)
         {
             var payment = await _context.Payments
                 .Include(r => r.Reservation)           
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == request.PaymentId, cancellationToken);
-            return _mapper.Map<PaymentDto>(payment);
+            return _mapper.Map<PaymentDetailsDto>(payment);
         }
     }
 }

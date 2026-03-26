@@ -22,7 +22,9 @@ namespace AceRental.Domain.Enum
         Returned = 7,
         [Description("Matériel vérifier")]
         Checked = 8,
+        [Description("Matériel endommagé")]
+        Damaged = 9,
         [Description("Terminé")]
-        Finished = 9,
+        Finished = 10,
     }
 }

@@ -48,7 +48,7 @@ public class CreatePaymentHandler : IRequestHandler<CreatePaymentCommand, Guid>
             financialStatus = FinancialStatus.PartiallyPaid;
         }
 
-        var newPayment = new PaymentDto
+        var newPayment = new PaymentDetailsDto
         {
             Id = Guid.NewGuid(),
             ReservationId = request.ReservationId,

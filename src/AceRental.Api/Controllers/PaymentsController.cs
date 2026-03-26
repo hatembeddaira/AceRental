@@ -8,7 +8,7 @@ namespace AceRental.Api.Controllers
     public class PaymentsController : ApiControllerBase
     {
         [HttpGet("reservation/{reservationId:guid}")]
-        public async Task<ActionResult<List<PaymentDto>>> GetAll(Guid reservationId)
+        public async Task<ActionResult<List<PaymentDetailsDto>>> GetAll(Guid reservationId)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace AceRental.Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<PaymentDto>> Get(Guid id)
+        public async Task<ActionResult<PaymentDetailsDto>> Get(Guid id)
         {
             try
             {

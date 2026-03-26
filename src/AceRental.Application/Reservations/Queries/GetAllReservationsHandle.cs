@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AceRental.Application.Reservations.Queries
 {
-    public class GetAllReservationsHandle : IRequestHandler<GetAllReservationsQuery, List<ReservationDto>>
+    public class GetAllReservationsHandle : IRequestHandler<GetAllReservationsQuery, List<ReservationDetailsDto>>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ namespace AceRental.Application.Reservations.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<ReservationDto>> Handle(GetAllReservationsQuery request, CancellationToken cancellationToken)
+        public async Task<List<ReservationDetailsDto>> Handle(GetAllReservationsQuery request, CancellationToken cancellationToken)
         {
             // 1. Récupérer le stock total de l'équipement
             var Reservations = await _context.Reservations
@@ -27,7 +27,7 @@ namespace AceRental.Application.Reservations.Queries
                 .Include(r => r.Items).ThenInclude(i => i.Pack)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
-            return _mapper.Map<List<ReservationDto>>(Reservations);
+            return _mapper.Map<List<ReservationDetailsDto>>(Reservations);
         }
     }
 }

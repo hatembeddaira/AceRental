@@ -51,6 +51,7 @@ public class GenerateQuoteHandler : IRequestHandler<GenerateQuoteCommand, Guid>
     {
         // Logique : Somme des quantités louées dans les réservations qui chevauchent ces dates
         var lastReservationNumber = await _context.Quotes
+            .IgnoreQueryFilters()
             .Where(ri => ri.CreatedAt.Year == DateTime.Now.Year)
             .OrderByDescending(ri => ri.QuoteNumber)
             .Select(x=> x.QuoteNumber).FirstOrDefaultAsync();

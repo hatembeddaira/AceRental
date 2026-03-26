@@ -27,7 +27,7 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
         var isAvailable = await CheckAvailabilityItems(request.StartDate, request.EndDate, request.Items);
         if (!isAvailable) throw new Exception($"Matériel  indisponible.");
 
-        var reservation = new ReservationDto
+        var reservation = new ReservationDetailsDto
         {
             Id = Guid.NewGuid(),
             ReservationNumber = await GenerateReservationNumber(),
@@ -122,6 +122,7 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
     {
         // Logique : Somme des quantités louées dans les réservations qui chevauchent ces dates
         var lastReservationNumber = await _context.Reservations
+            .IgnoreQueryFilters()
             .Where(ri => ri.CreatedAt.Year == DateTime.Now.Year)
             .OrderByDescending(ri => ri.ReservationNumber)
             .Select(x => x.ReservationNumber).FirstOrDefaultAsync();

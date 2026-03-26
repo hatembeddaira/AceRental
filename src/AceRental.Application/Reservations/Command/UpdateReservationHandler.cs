@@ -32,11 +32,11 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
                 .FirstOrDefaultAsync(e => e.Id == request.ReservationId, cancellationToken);
         if (reservation == null) throw new Exception($"Réservation ID {request.ReservationId} indisponible.");
 
-        if (reservation.IsContentLocked)
-        {
-            throw new InvalidOperationException("Cette réservation est verrouillée (Payée ou Facturée). " +
-                "Veuillez créer un avenant pour toute modification de matériel.");
-        }
+        // if (reservation.IsContentLocked)
+        // {
+        //     throw new InvalidOperationException("Cette réservation est verrouillée (Payée ou Facturée). " +
+        //         "Veuillez créer un avenant pour toute modification de matériel.");
+        // }
         // var immutableStatuses = new[]
         // {
         //     ReservationStatus.Invoiced,
@@ -58,7 +58,7 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
             HistoryType = HistoryType.Content,
             VersionNumber = reservation.CurrentVersion,
             ChangeReason = "Modification des données",
-            DataSnapshotJson = JsonSerializer.Serialize(_mapper.Map<ReservationDto>(reservation))
+            DataSnapshotJson = JsonSerializer.Serialize(_mapper.Map<ReservationDetailsDto>(reservation))
         };
         _context.ReservationHistorys.Add(_mapper.Map<ReservationHistory>(historyEntry));
 

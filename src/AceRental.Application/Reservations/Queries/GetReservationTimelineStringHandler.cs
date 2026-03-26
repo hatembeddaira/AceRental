@@ -1,5 +1,6 @@
 using System.Data.Common;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using AceRental.Application.Reservations.Dtos;
 using AceRental.Infrastructure.Persistence;
 using MediatR;
@@ -19,13 +20,32 @@ namespace AceRental.Application.Reservations.Queries
         public async Task<string> Handle(GetReservationTimelineStringQuery request, CancellationToken ct)
         {
             var history = await _context.ReservationHistorys
-                .Where(h => h.ReservationId == request.ReservationId && h.ChangeReason == "Changement de statut")
-                .OrderBy(h => h.CreatedAt) // On veut le plus récent en haut
+                .Where(x => x.ReservationId == request.ReservationId)
+                .Select(h => new
+                {
+                    Date = h.CreatedAt,
+                    Status = h.DataSnapshotJson,
+                    Type = h.HistoryType.ToString()
+                })
+                // .Union(
+                //     _context.Payments
+                //     .Where(x => x.ReservationId == request.ReservationId)
+                //     .Select(p => new
+                //         {
+                //             Date = p.CreatedAt,
+                //             Status = p.Type.ToString(),
+                //             Type = "Financial"
+                //         })
+                // )
+                .OrderBy(x => x.Date)
                 .ToListAsync(ct);
 
-            var str = history.Select(h => (JsonSerializer.Deserialize<JsonElement>(h.DataSnapshotJson)).GetProperty("New").GetString() + " (" + h.HistoryType.ToString() + ")")
-            .ToList();
-            return string.Join(" => ", str);
+            // var str = history.Select(h => (JsonSerializer.Deserialize<JsonElement>(h.DataSnapshotJson)).GetProperty("New").GetString() + " (" + h.HistoryType.ToString() + ")")
+            // .ToList();
+
+            return string.Join(" => ", history.Select(x => $"{(JsonSerializer.Deserialize<JsonElement>(x.Status)).GetProperty("New").GetString()} ({x.Type})"));
+            
+            // return string.Join(" => ", str);
         }
     }
 }

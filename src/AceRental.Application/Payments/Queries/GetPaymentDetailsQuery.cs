@@ -5,5 +5,5 @@ namespace AceRental.Application.Payments.Queries
 {
     public record GetPaymentDetailsQuery(
         Guid PaymentId
-    ) : IRequest<PaymentDto>; 
+    ) : IRequest<PaymentDetailsDto>; 
 }

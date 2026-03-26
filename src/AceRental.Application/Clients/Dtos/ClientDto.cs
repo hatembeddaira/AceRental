@@ -12,6 +12,6 @@ namespace AceRental.Application.Clients.Dtos
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
         
-        public ICollection<ReservationDto> Reservations { get; set; } = new List<ReservationDto>();
+        public ICollection<ReservationDetailsDto> Reservations { get; set; } = new List<ReservationDetailsDto>();
     }
 }

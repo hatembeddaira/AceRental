@@ -7,8 +7,9 @@ namespace AceRental.Domain.Enum
         Unpaid = 0, 
         PartiallyPaid = 1,
         Paid = 2, 
-        Invoiced =  3, 
-        Refunded = 4
-        
+        PartiallyInvoiced =  3,
+        RepairRentalInvoiced =  4,
+        RentalInvoiced =  5, 
+        Refunded = 6
     }
 }
