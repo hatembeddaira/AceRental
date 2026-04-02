@@ -5,6 +5,7 @@ using AceRental.Infrastructure.Persistence;
 using AceRental.Application.Reservations.Dtos;
 using AutoMapper;
 using AceRental.Domain.Enum;
+using AceRental.Application.Exceptions;
 
 namespace AceRental.Application.Reservations.Command;
 
@@ -25,7 +26,8 @@ public class GenerateQuoteHandler : IRequestHandler<GenerateQuoteCommand, Guid>
         var reservation = await _context.Reservations
             .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);
 
-        if (reservation == null) throw new Exception("Réservation introuvable");
+        if (reservation == null) 
+            throw new NotFoundException(nameof(Reservation), request.ReservationId);
 
         // 2. Créer l'objet Devis
         var quote = new QuoteDto

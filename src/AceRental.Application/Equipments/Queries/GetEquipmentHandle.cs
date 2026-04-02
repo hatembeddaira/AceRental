@@ -1,4 +1,6 @@
 using AceRental.Application.Equipments.Dtos;
+using AceRental.Application.Exceptions;
+using AceRental.Domain.Entities;
 using AceRental.Infrastructure.Persistence;
 using AutoMapper;
 using MediatR;
@@ -24,6 +26,10 @@ namespace AceRental.Application.Equipments.Queries
                 .AsNoTracking()
                 .Include(e => e.PackItems).ThenInclude(pi => pi.Pack)
                 .FirstOrDefaultAsync(e => e.Id == request.EquipmentId, cancellationToken);
+
+            if (equipment == null) 
+                throw new NotFoundException(nameof(Equipment), request.EquipmentId);
+                
             return _mapper.Map<EquipmentDetailsDto>(equipment);
         }
     }

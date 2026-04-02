@@ -2,6 +2,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using AceRental.Infrastructure.Persistence;
 using AceRental.Domain.Enum;
+using AceRental.Application.Exceptions;
+using AceRental.Domain.Entities;
 
 namespace AceRental.Application.Equipments.Queries
 {
@@ -21,7 +23,8 @@ namespace AceRental.Application.Equipments.Queries
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == request.EquipmentId, cancellationToken);
 
-            if (equipment == null) return 0;
+            if (equipment == null) 
+                throw new NotFoundException(nameof(Equipment), request.EquipmentId);
 
             // 2. Calculer la somme des quantités déjà réservées sur cette période
             // Une réservation chevauche si (Start1 < End2) AND (End1 > Start2)

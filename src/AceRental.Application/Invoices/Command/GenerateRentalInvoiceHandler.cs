@@ -1,4 +1,5 @@
 
+using AceRental.Application.Exceptions;
 using AceRental.Application.Invoices.Dtos;
 using AceRental.Domain.Entities;
 using AceRental.Domain.Enum;
@@ -27,7 +28,8 @@ namespace AceRental.Application.Invoices.Command
             var reservation = await _context.Reservations
                 .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);
 
-            if (reservation == null) throw new Exception("Réservation introuvable");
+            if (reservation == null) 
+                throw new NotFoundException(nameof(Reservation), request.ReservationId);
 
             var rentalInvoice = new InvoiceDto
             {

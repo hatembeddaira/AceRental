@@ -5,6 +5,7 @@ using AceRental.Infrastructure.Persistence;
 using AceRental.Application.Reservations.Dtos;
 using AutoMapper;
 using AceRental.Domain.Enum;
+using AceRental.Application.Exceptions;
 
 namespace AceRental.Application.Reservations.Command;
 
@@ -22,10 +23,11 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
     public async Task<Guid> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
     {
 
-        if (request.Items.Count == 0) throw new Exception($"Pas d'équipements dans la réservation.");
+        if (request.Items.Count == 0) throw new NotFoundException($"Pas d'équipements dans la réservation.");
 
         var isAvailable = await CheckAvailabilityItems(request.StartDate, request.EndDate, request.Items);
-        if (!isAvailable) throw new Exception($"Matériel  indisponible.");
+        if (!isAvailable) 
+            throw new UnavailableQuantityException();
 
         var reservation = new ReservationDetailsDto
         {
@@ -100,7 +102,7 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
         {
             if (!await CheckAvailability(eqId, start, end, qty))
             {
-                throw new Exception($"Le matériel (ID: {eqId}) n'est plus disponible en quantité suffisante pour ces dates.");
+                throw new UnavailableQuantityException(eqId);
             }
         }
         return true;

@@ -7,6 +7,7 @@ using AutoMapper;
 using AceRental.Domain.Enum;
 using System.Text.Json;
 using AceRental.Domain.Extensions;
+using AceRental.Application.Exceptions;
 
 namespace AceRental.Application.Reservations.Command
 {
@@ -26,11 +27,13 @@ namespace AceRental.Application.Reservations.Command
         {
             var reservation = await _context.Reservations
                 .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);
-            if (reservation == null) throw new Exception($"Réservation ID {request.ReservationId} indisponible.");
+            if (reservation == null) 
+                throw new NotFoundException(nameof(Reservation), request.ReservationId);
 
             // 1. Validation de la transition
             if (!reservation.FinancialStatus.CanTransitionTo(request.Status, reservation))
-                throw new Exception($"Transition impossible de {reservation?.FinancialStatus} vers {request.Status} dans le workflow {reservation!.Workflow} avec un statut logistique = {reservation!.LogisticStatus}");
+                throw new BusinessRuleException($"Transition impossible de {reservation?.FinancialStatus} vers {request.Status} " +
+                $"dans le workflow {reservation!.Workflow} avec un statut logistique = {reservation!.LogisticStatus}");
 
             // 2. Snapshot minimal pour l'historique
             var historyEntry = new ReservationHistoryDto
@@ -49,7 +52,7 @@ namespace AceRental.Application.Reservations.Command
             await AutoDeclancheAsync(request.Status, reservation, cancellationToken);
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
-        private async Task  AutoDeclancheAsync(FinancialStatus status, Reservation reservation, CancellationToken cancellationToken)
+        private async Task AutoDeclancheAsync(FinancialStatus status, Reservation reservation, CancellationToken cancellationToken)
         {
             switch (status)
             {
@@ -61,18 +64,18 @@ namespace AceRental.Application.Reservations.Command
                     ;
                     break;
                 case FinancialStatus.PartiallyInvoiced:
-                    {   
+                    {
                         // Génération de la facture partielle
                         // await _mediator.Send(new GeneratePartiallyInvoiceCommand(reservation.Id), cancellationToken);
                     }
                     ;
                     break;
                 case FinancialStatus.RentalInvoiced:
-                    {   
+                    {
                         // Génération de la facture de location
                         // await _mediator.Send(new GenerateRentalInvoiceCommand(reservation.Id), cancellationToken);
 
-                        if(reservation.Workflow == Workflow.B2C && reservation.LogisticStatus == LogisticStatus.Checked)
+                        if (reservation.Workflow == Workflow.B2C && reservation.LogisticStatus == LogisticStatus.Checked)
                         {
                             await _mediator.Send(new ChangeLogisticStatusCommand(reservation.Id, LogisticStatus.Finished), cancellationToken);
                         }
@@ -81,23 +84,23 @@ namespace AceRental.Application.Reservations.Command
                     break;
                 case FinancialStatus.Paid:
                     {
-                        if(reservation.Workflow == Workflow.B2B && reservation.LogisticStatus == LogisticStatus.Checked)
+                        if (reservation.Workflow == Workflow.B2B && reservation.LogisticStatus == LogisticStatus.Checked)
                         {
                             await _mediator.Send(new ChangeLogisticStatusCommand(reservation.Id, LogisticStatus.Finished), cancellationToken);
                         }
-                        else if(reservation.LogisticStatus == LogisticStatus.Damaged)
+                        else if (reservation.LogisticStatus == LogisticStatus.Damaged)
                         {
                             await _mediator.Send(new ChangeLogisticStatusCommand(reservation.Id, LogisticStatus.Finished), cancellationToken);
                         }
                         else
                         {
-                            throw new Exception($"Comportement non géré pour le statut financier {reservation.FinancialStatus}.");
+                            throw new BusinessRuleException($"Comportement non géré pour le statut financier {reservation.FinancialStatus}.");
                         }
                     }
                     ;
                     break;
                 case FinancialStatus.Refunded:
-                    {   
+                    {
                         // Déclenchement automatique du Refunded
                         // await _mediator.Send(new GenerateRefundCommand(reservation.Id), cancellationToken);
                     }
@@ -107,6 +110,6 @@ namespace AceRental.Application.Reservations.Command
                     break;
             }
         }
-        
+
     }
 }

@@ -1,3 +1,4 @@
+using AceRental.Application.Exceptions;
 using AceRental.Application.Packs.Dtos;
 using AceRental.Domain.Entities;
 using AceRental.Infrastructure.Persistence;
@@ -20,12 +21,14 @@ public class CreatePackHandler : IRequestHandler<CreatePackCommand, Guid>
 
     public async Task<Guid> Handle(CreatePackCommand request, CancellationToken cancellationToken)
     {
-        if (request.Items.Count == 0) throw new Exception($"Pas d'équipements dans le pack.");
+        if (request.Items.Count == 0) 
+            throw new NotFoundException($"Pas d'équipements dans le pack.");
         // 1. Vérifier la disponibilité
         foreach (var item in request.Items)
         {
             var isAvailable = await CheckAvailability(item.EquipmentId, item.Quantity);
-            if (!isAvailable) throw new Exception($"Matériel ID {item.EquipmentId} quantité indisponible.");
+            if (!isAvailable) 
+                throw new UnavailableQuantityException(item.EquipmentId);
         }
 
         var pack = new PackDetailsDto

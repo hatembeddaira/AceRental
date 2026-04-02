@@ -8,6 +8,7 @@ using AceRental.Domain.Enum;
 using System.Text.Json;
 using AceRental.Domain.Extensions;
 using AceRental.Application.Payments.Queries;
+using AceRental.Application.Exceptions;
 
 namespace AceRental.Application.Reservations.Command
 {
@@ -28,13 +29,12 @@ namespace AceRental.Application.Reservations.Command
         {
             var reservation = await _context.Reservations
                 .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);            
-            if (reservation == null) throw new Exception($"Réservation ID {request.ReservationId} indisponible.");
+            if (reservation == null) 
+                throw new NotFoundException(nameof(Reservation), request.ReservationId);
             
-            
-
             // 1. Validation de la transition
             if (!reservation.LogisticStatus.CanTransitionTo(request.Status, reservation))
-                throw new Exception($"Transition impossible de {reservation?.LogisticStatus} vers {request.Status} dans le workflow {reservation!.Workflow} avec un statut financière = {reservation!.FinancialStatus}");
+                throw new BusinessRuleException($"Transition impossible de {reservation?.LogisticStatus} vers {request.Status} dans le workflow {reservation!.Workflow} avec un statut financière = {reservation!.FinancialStatus}");
 
             // 2. Snapshot minimal pour l'historique
             var historyEntry = new ReservationHistoryDto {

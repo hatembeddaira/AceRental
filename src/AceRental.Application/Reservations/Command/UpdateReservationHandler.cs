@@ -7,6 +7,7 @@ using AutoMapper;
 using AceRental.Domain.Enum;
 using System.Text.Json;
 using AceRental.Domain.Extensions;
+using AceRental.Application.Exceptions;
 
 namespace AceRental.Application.Reservations.Command;
 
@@ -25,12 +26,14 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
     public async Task<bool> Handle(UpdateReservationCommand request, CancellationToken cancellationToken)
     {
 
-        if (request.Items.Count == 0) throw new Exception($"Pas d'équipements dans la réservation.");
+        if (request.Items.Count == 0) 
+            throw new NotFoundException($"Pas d'équipements dans la réservation.");
 
         var reservation = await _context.Reservations
                 .Include(r => r.Items)
                 .FirstOrDefaultAsync(e => e.Id == request.ReservationId, cancellationToken);
-        if (reservation == null) throw new Exception($"Réservation ID {request.ReservationId} indisponible.");
+        if (reservation == null) 
+            throw new NotFoundException(nameof(Reservation), request.ReservationId);
 
         // if (reservation.IsContentLocked)
         // {
@@ -50,7 +53,8 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
         // }
 
         var isAvailable = await CheckAvailabilityItems(request.ReservationId, request.StartDate, request.EndDate, request.Items);
-        if (!isAvailable) throw new Exception($"Matériel  indisponible.");
+        if (!isAvailable) 
+            throw new UnavailableQuantityException();
 
         var historyEntry = new ReservationHistoryDto()
         {
@@ -128,7 +132,7 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
         {
             if (!await CheckAvailability(reservationId, eqId, start, end, qty))
             {
-                throw new Exception($"Le matériel (ID: {eqId}) n'est plus disponible en quantité suffisante pour ces dates.");
+                throw new UnavailableQuantityException(eqId);
             }
         }
         return true;
