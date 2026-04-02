@@ -1,5 +1,6 @@
 using AceRental.Application.Equipments.Command;
 using AceRental.Application.Reservations.Command;
+using AceRental.Application.Reservations.Dtos;
 using AceRental.Application.Reservations.Queries;
 using AceRental.Domain.Enum;
 using Microsoft.AspNetCore.Mvc;
@@ -38,20 +39,16 @@ namespace AceRental.Api.Controllers
         }
 
         [HttpGet("GetReservationTimeline/{id:guid}")]
+        [ProducesResponseType(typeof(List<ReservationTimelineDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetReservationTimeline(Guid id)
         {
-            try
-            {
                 var result = await Mediator.Send(new GetReservationTimelineQuery(id));            
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
         }
 
         [HttpGet("GetReservationTimelineString/{id:guid}")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<ActionResult> GetReservationTimelineString(Guid id)
         {
             try
@@ -66,6 +63,9 @@ namespace AceRental.Api.Controllers
         }
         
         [HttpPost]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]  //  201 Created
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    //  validation
+        [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
         public async Task<ActionResult<Guid>> Create(CreateReservationCommand command)
         {
             try
