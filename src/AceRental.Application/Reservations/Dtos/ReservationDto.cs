@@ -13,8 +13,9 @@ namespace AceRental.Application.Reservations.Dtos
         public required FinancialStatus FinancialStatus { get; set; }
         public required LogisticStatus LogisticStatus { get; set; }
         public required Workflow Workflow { get; set; }
-        // public bool IsContentLocked => FinancialStatus == FinancialStatus.Invoiced || FinancialStatus == FinancialStatus.Paid;
-        public decimal TotalAmount { get; set; }        
+        public decimal TotalHT { get; set; }
+        public decimal TVA { get; set; } = 0.20m;
+        public decimal TotalTTC => TotalHT * (1 + TVA);
         public Guid ClientId { get; set; }
         public ClientReservationDto Client { get; set; } = null!;
         public int CurrentVersion { get; set; } = 1;

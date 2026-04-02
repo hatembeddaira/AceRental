@@ -18,7 +18,9 @@ namespace AceRental.Infrastructure.Configurations
             builder.HasIndex(i => i.Reference)
             .IsUnique();            
             builder.HasKey(pi => new { pi.Id });
-
+            builder.Property(p => p.DailyPriceHT)
+                .HasPrecision(18, 2)
+                .IsRequired();
 
             // Relation 1 → N avec PackItem
             builder.HasMany(r => r.Items)

@@ -17,6 +17,13 @@ namespace AceRental.Infrastructure.Configurations
             builder.HasQueryFilter(e => !e.IsDeleted);
             builder.HasIndex(i => i.QuoteNumber)
             .IsUnique();
+
+            builder.Property(ri => ri.TotalHT)
+            .HasPrecision(18, 2);
+            builder.Property(ri => ri.TVA)
+            .HasPrecision(2, 2);
+            builder.Property(ri => ri.TotalTTC)
+            .HasPrecision(18, 2);
         }
     }
 }

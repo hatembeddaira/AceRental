@@ -15,7 +15,11 @@ namespace AceRental.Infrastructure.Configurations
 
             builder.ToTable("Reservations");
             builder.HasQueryFilter(e => !e.IsDeleted);
-            builder.Property(ri => ri.TotalAmount)
+            builder.Property(ri => ri.TotalHT)
+            .HasPrecision(18, 2);
+            builder.Property(ri => ri.TVA)
+            .HasPrecision(2, 2);
+            builder.Property(ri => ri.TotalTTC)
             .HasPrecision(18, 2);
             builder.HasIndex(i => i.ReservationNumber)
             .IsUnique();

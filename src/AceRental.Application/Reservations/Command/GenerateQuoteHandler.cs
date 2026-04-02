@@ -21,9 +21,8 @@ public class GenerateQuoteHandler : IRequestHandler<GenerateQuoteCommand, Guid>
 
     public async Task<Guid> Handle(GenerateQuoteCommand request, CancellationToken cancellationToken)
     {
-        // 1. Récupérer la réservation avec ses items
+        // 1. Récupérer la réservation 
         var reservation = await _context.Reservations
-            .Include(r => r.Items)
             .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);
 
         if (reservation == null) throw new Exception("Réservation introuvable");
@@ -36,7 +35,7 @@ public class GenerateQuoteHandler : IRequestHandler<GenerateQuoteCommand, Guid>
             QuoteNumber = await GenerateQuoteNumber(), // Logique de numérotation à améliorer
             CreatedAt = DateTime.UtcNow,
             ExpiryDate = DateTime.UtcNow.AddDays(15),
-            TotalHT = reservation.TotalAmount
+            TotalHT = reservation.TotalHT
         };
 
         // 3. Mettre à jour le statut de la réservation si nécessaire
@@ -44,12 +43,11 @@ public class GenerateQuoteHandler : IRequestHandler<GenerateQuoteCommand, Guid>
 
         _context.Quotes.Add(_mapper.Map<Quote>(quote));
         await _context.SaveChangesAsync(cancellationToken);
-
+        // Send Mail or Notification 
         return quote.Id;
     }
     private async Task<int> GenerateQuoteNumber()
     {
-        // Logique : Somme des quantités louées dans les réservations qui chevauchent ces dates
         var lastReservationNumber = await _context.Quotes
             .IgnoreQueryFilters()
             .Where(ri => ri.CreatedAt.Year == DateTime.Now.Year)

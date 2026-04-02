@@ -8,7 +8,6 @@ namespace AceRental.Tests
 {
     public class B2C_LogisticStatusTests
     {
-
         // Tests de validation des transitions de statut logistique en workflow B2C
         // PartiallyPaid pas encore autorisé pour les transitions logistiques (ex: emporter) : 
         // on exige un paiement complet pour éviter les risques de non-paiement

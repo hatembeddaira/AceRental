@@ -15,11 +15,11 @@ namespace AceRental.Infrastructure.Configurations
 
             builder.ToTable("Equipments");
             builder.HasQueryFilter(e => !e.IsDeleted);
-            builder.Property(ri => ri.DailyPrice)
+            builder.Property(ri => ri.DailyPriceHT)
             .HasPrecision(18, 2);
-            builder.Property(ri => ri.PurchasePrice)
+            builder.Property(ri => ri.PurchasePriceTTC)
             .HasPrecision(18, 2);
-            builder.Property(ri => ri.NewPurchasePrice)
+            builder.Property(ri => ri.NewPurchasePriceTTC)
             .HasPrecision(18, 2);
             builder.HasIndex(i => i.Reference)
             .IsUnique();

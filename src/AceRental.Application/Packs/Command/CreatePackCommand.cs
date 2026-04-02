@@ -7,6 +7,6 @@ public record CreatePackCommand(
     string Reference,
     string Name,
     string Description,
-    decimal DailyPrice,
+    decimal DailyPriceHT,
     List<PackItemDto> Items
     ) : IRequest<Guid>;

@@ -13,9 +13,9 @@ namespace AceRental.Application.Common.Mapping
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Reference))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(source => source.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(source => source.Description))
-                .ForMember(dest => dest.DailyPrice, opt => opt.MapFrom(source => source.DailyPrice))
-                .ForMember(dest => dest.PurchasePrice, opt => opt.MapFrom(source => source.PurchasePrice))
-                .ForMember(dest => dest.NewPurchasePrice , opt => opt.MapFrom(source => source.NewPurchasePrice))
+                .ForMember(dest => dest.DailyPriceHT, opt => opt.MapFrom(source => source.DailyPriceHT))
+                .ForMember(dest => dest.PurchasePriceTTC, opt => opt.MapFrom(source => source.PurchasePriceTTC))
+                .ForMember(dest => dest.NewPurchasePriceTTC , opt => opt.MapFrom(source => source.NewPurchasePriceTTC))
                 .ForMember(dest => dest.TotalStock, opt => opt.MapFrom(source => source.TotalStock))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(source => source.Category))
                 .ReverseMap();

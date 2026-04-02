@@ -28,8 +28,6 @@ namespace AceRental.Application.Reservations.Command
                 .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);
             if (reservation == null) throw new Exception($"Réservation ID {request.ReservationId} indisponible.");
 
-
-
             // 1. Validation de la transition
             if (!reservation.FinancialStatus.CanTransitionTo(request.Status, reservation))
                 throw new Exception($"Transition impossible de {reservation?.FinancialStatus} vers {request.Status} dans le workflow {reservation!.Workflow} avec un statut logistique = {reservation!.LogisticStatus}");
@@ -48,58 +46,60 @@ namespace AceRental.Application.Reservations.Command
             reservation.FinancialStatus = request.Status;
             reservation.CurrentVersion++;
 
-            switch (reservation.Workflow)
-            {
-                case Workflow.B2C:
-                    await AutoDeclancheB2CAsync(request.Status, reservation, cancellationToken);
-                    break;
-                case Workflow.B2B:
-                    AutoDeclancheB2B(request.Status, reservation, cancellationToken);
-                    break;
-                default:
-                    break;
-            }
-
-            // if(reservation.Workflow == Workflow.B2C && reservation.FinancialStatus == FinancialStatus.Paid)
-            // {
-            //     // Si c'est une réservation B2C et que le statut financier devient "Paid", on passe le statut financier à "Invoiced"
-            //     var result = await _mediator.Send(new ChangeFinancialStatusCommand(request.ReservationId, FinancialStatus.Invoiced), cancellationToken);
-            // }
-
-            // if(reservation.Workflow == Workflow.B2C && reservation.FinancialStatus == FinancialStatus.Invoiced)
-            // {
-            //     // Si c'est une réservation B2C et que le statut financier devient "Invoiced", on génére la facture
-            //     // var result = await Mediator.Send(new GenerateInvoiceHandler(request.ReservationId), cancellationToken);
-            // }
+            await AutoDeclancheAsync(request.Status, reservation, cancellationToken);
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
-        private async Task  AutoDeclancheB2CAsync(FinancialStatus status, Reservation reservation, CancellationToken cancellationToken)
+        private async Task  AutoDeclancheAsync(FinancialStatus status, Reservation reservation, CancellationToken cancellationToken)
         {
             switch (status)
             {
-                // case FinancialStatus.Cancelled:
-                //     {
-                //         // Déclenchement automatique du Refunded si le statut devient Cancelled
-                //         var result = await _mediator.Send(new ChangeFinancialStatusCommand(reservation.Id, FinancialStatus.Refunded), cancellationToken);
-                //     }
-                //     ;
-                //     break;
                 case FinancialStatus.PartiallyPaid:
                     {
                         // Déclenchement automatique du PartiallyInvoiced si le statut devient PartiallyPaid
-                        var result = await _mediator.Send(new ChangeFinancialStatusCommand(reservation.Id, FinancialStatus.PartiallyInvoiced), cancellationToken);
+                        await _mediator.Send(new ChangeFinancialStatusCommand(reservation.Id, FinancialStatus.PartiallyInvoiced), cancellationToken);
                     }
                     ;
                     break;
                 case FinancialStatus.PartiallyInvoiced:
                     {   
                         // Génération de la facture partielle
+                        // await _mediator.Send(new GeneratePartiallyInvoiceCommand(reservation.Id), cancellationToken);
+                    }
+                    ;
+                    break;
+                case FinancialStatus.RentalInvoiced:
+                    {   
+                        // Génération de la facture de location
+                        // await _mediator.Send(new GenerateRentalInvoiceCommand(reservation.Id), cancellationToken);
+
+                        if(reservation.Workflow == Workflow.B2C && reservation.LogisticStatus == LogisticStatus.Checked)
+                        {
+                            await _mediator.Send(new ChangeLogisticStatusCommand(reservation.Id, LogisticStatus.Finished), cancellationToken);
+                        }
+                    }
+                    ;
+                    break;
+                case FinancialStatus.Paid:
+                    {
+                        if(reservation.Workflow == Workflow.B2B && reservation.LogisticStatus == LogisticStatus.Checked)
+                        {
+                            await _mediator.Send(new ChangeLogisticStatusCommand(reservation.Id, LogisticStatus.Finished), cancellationToken);
+                        }
+                        else if(reservation.LogisticStatus == LogisticStatus.Damaged)
+                        {
+                            await _mediator.Send(new ChangeLogisticStatusCommand(reservation.Id, LogisticStatus.Finished), cancellationToken);
+                        }
+                        else
+                        {
+                            throw new Exception($"Comportement non géré pour le statut financier {reservation.FinancialStatus}.");
+                        }
                     }
                     ;
                     break;
                 case FinancialStatus.Refunded:
                     {   
                         // Déclenchement automatique du Refunded
+                        // await _mediator.Send(new GenerateRefundCommand(reservation.Id), cancellationToken);
                     }
                     ;
                     break;
@@ -107,9 +107,6 @@ namespace AceRental.Application.Reservations.Command
                     break;
             }
         }
-        private void AutoDeclancheB2B(FinancialStatus status, Reservation reservation, CancellationToken cancellationToken)
-        {
-
-        }
+        
     }
 }

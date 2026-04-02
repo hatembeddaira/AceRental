@@ -22,7 +22,7 @@ namespace AceRental.Application.Reservations.Queries
             // 1. Récupérer le stock total de l'équipement
             var Reservations = await _context.Reservations
                 .Include(r => r.Client)
-                .Include(r => r.Payments)
+                .Include(r => r.Invoices)
                 .Include(r => r.Items).ThenInclude(i => i.Equipment)
                 .Include(r => r.Items).ThenInclude(i => i.Pack)
                 .AsNoTracking()

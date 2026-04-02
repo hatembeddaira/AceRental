@@ -7,9 +7,9 @@ public record CreateEquipmentCommand(
     string Reference,
     string Name,
     string Description,
-    decimal DailyPrice,
-    decimal PurchasePrice,
-    decimal NewPurchasePrice,
+    decimal DailyPriceHT,
+    decimal PurchasePriceTTC,
+    decimal NewPurchasePriceTTC,
     int TotalStock,
     EquipmentCategory Category
     ) : IRequest<Guid>;

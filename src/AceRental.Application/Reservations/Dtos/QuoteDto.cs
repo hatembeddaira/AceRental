@@ -4,7 +4,7 @@ namespace AceRental.Application.Reservations.Dtos
     {
         public Guid Id { get; set; }
         public required int QuoteNumber { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
         public DateTime ExpiryDate { get; set; }
         public decimal TotalHT { get; set; }
         public decimal TVA { get; set; } = 0.20m;

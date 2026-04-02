@@ -6,8 +6,10 @@ namespace AceRental.Domain.Enum
     {
         [Description("Acompte")]
         Deposit = 0,
+        
         [Description("Tranche")]
         Installment = 1,
+
         [Description("Solde")]
         Balance = 2
     }

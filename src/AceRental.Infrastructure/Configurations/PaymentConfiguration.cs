@@ -32,11 +32,6 @@ namespace AceRental.Infrastructure.Configurations
                 .HasConversion<string>()
                 .HasMaxLength(20);
 
-            // Relation 1-N : Une réservation peut avoir plusieurs paiements
-            builder.HasOne(p => p.Reservation)
-                .WithMany(r => r.Payments)
-                .HasForeignKey(p => p.ReservationId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace AceRental.Domain.Entities
 {
     public class Invoice : BaseEntity
     {
-        public string InvoiceNumber { get; set; } = null!; // Ex: INV-2026-001
+        public int InvoiceNumber { get; set; } 
         public decimal AmountHT { get; set; }
         public decimal TaxRate { get; set; } = 20.0m;
         public bool IsPaid { get; set; }

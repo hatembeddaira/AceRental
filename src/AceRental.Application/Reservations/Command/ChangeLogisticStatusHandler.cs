@@ -7,6 +7,7 @@ using AutoMapper;
 using AceRental.Domain.Enum;
 using System.Text.Json;
 using AceRental.Domain.Extensions;
+using AceRental.Application.Payments.Queries;
 
 namespace AceRental.Application.Reservations.Command
 {
@@ -14,12 +15,14 @@ namespace AceRental.Application.Reservations.Command
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         // private readonly IUnitOfWork _unitOfWork;
 
-        public ChangeLogisticStatusHandler(ApplicationDbContext context, IMapper mapper)
+        public ChangeLogisticStatusHandler(ApplicationDbContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
             _mapper = mapper;
+            _mediator = mediator;
         }
         public async Task<bool> Handle(ChangeLogisticStatusCommand request, CancellationToken cancellationToken)
         {
@@ -32,8 +35,6 @@ namespace AceRental.Application.Reservations.Command
             // 1. Validation de la transition
             if (!reservation.LogisticStatus.CanTransitionTo(request.Status, reservation))
                 throw new Exception($"Transition impossible de {reservation?.LogisticStatus} vers {request.Status} dans le workflow {reservation!.Workflow} avec un statut financière = {reservation!.FinancialStatus}");
-            // if (request.Status == LogisticStatus.Finished && !reservation.CanMarkAsFinished())
-            //     throw new Exception($"Ferméture impossible dans l'état actuel (vérifiez le workflow).");
 
             // 2. Snapshot minimal pour l'historique
             var historyEntry = new ReservationHistoryDto {
@@ -54,8 +55,53 @@ namespace AceRental.Application.Reservations.Command
             reservation.LogisticStatus = request.Status;
             reservation.CurrentVersion++;
 
+            await AutoDeclancheAsync(request.Status, reservation, cancellationToken);
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
-        
+        private async Task  AutoDeclancheAsync(LogisticStatus status, Reservation reservation, CancellationToken cancellationToken)
+        {
+            switch (status)
+            {
+                case LogisticStatus.Cancelled:
+                    {
+                        // Déclenchement automatique du Refunded s'il avait des paiements
+                        var resultPayments = await _mediator.Send(new GetAllPaymentsQuery(reservation.Id), cancellationToken);
+                        if(resultPayments.Any() && resultPayments.Sum(p => p.Amount) > 0)
+                        {
+                            await _mediator.Send(new ChangeFinancialStatusCommand(reservation.Id, FinancialStatus.Refunded), cancellationToken);
+                        }
+                    }
+                    ;
+                    break;
+                case LogisticStatus.PickedUp:
+                    {   
+                        // envoi de notification ou email au client pour lui tienr informé que sa commande est expédiée
+                    }
+                    ;
+                    break;
+                case LogisticStatus.Returned:
+                    {   
+                        // envoi de notification ou email au SAV pour qu'il puisse faire le suivi de l'état du matériel retourné 
+                        // et déclencher les actions nécessaires (Checked, Damaged.)
+                    }
+                    ;
+                    break;
+                case LogisticStatus.Checked:
+                    {   
+                        // Génération de la facture de location
+                        await _mediator.Send(new ChangeFinancialStatusCommand(reservation.Id, FinancialStatus.RentalInvoiced), cancellationToken);
+                    }
+                    ;
+                    break;
+                case LogisticStatus.Damaged:
+                    {
+                        // envoi de notification ou email au commercial pour qu'il puisse faire la facture de réparation pour le matériel endommagé
+                    }
+                    ;
+                    break;
+                default:
+                    break;
+            }
+        }       
     }
 }

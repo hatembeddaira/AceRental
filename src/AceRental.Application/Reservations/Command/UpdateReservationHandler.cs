@@ -76,16 +76,16 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
                 if (item.EquipmentId.HasValue)
                 {
                     var eq = await _context.Equipments.FindAsync(item.EquipmentId);
-                    price = eq!.DailyPrice;
+                    price = eq!.DailyPriceHT;
                 }
                 else if (item.PackId.HasValue)
                 {
                     var pk = await _context.Packs.FindAsync(item.PackId);
-                    price = pk!.DailyPrice;
+                    price = pk!.DailyPriceHT;
                 }
                 totalAmount += (price * item.Quantity * (reservation.EndDate - reservation.StartDate).Days);
             }
-            reservation.TotalAmount = totalAmount;
+            reservation.TotalHT = totalAmount;
         }
 
         // Si c'était un Devis (Quote), on peut le repasser en brouillon ou le marquer "Revised"

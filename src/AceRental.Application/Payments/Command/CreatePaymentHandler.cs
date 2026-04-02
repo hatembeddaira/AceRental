@@ -30,7 +30,7 @@ public class CreatePaymentHandler : IRequestHandler<CreatePaymentCommand, Guid>
         var resultResevation = await _mediator.Send(new GetReservationQuery(request.ReservationId), cancellationToken);
         if (resultResevation == null) 
             throw new KeyNotFoundException("Réservation introuvable.");
-        if (request.Type == PaymentType.Installment && resultResevation.TotalAmount < 1500)
+        if (request.Type == PaymentType.Installment && resultResevation.TotalTTC < 1500)
             throw new InvalidOperationException("Le paiement échelonné est réservé aux montants supérieurs à 1500€.");
 
         FinancialStatus financialStatus;
@@ -38,7 +38,7 @@ public class CreatePaymentHandler : IRequestHandler<CreatePaymentCommand, Guid>
         {   
 
             var resultPayments = await _mediator.Send(new GetAllPaymentsQuery(request.ReservationId), cancellationToken);
-            if(resultResevation.TotalAmount != resultPayments.Sum(p => p.Amount) + request.Amount)
+            if(resultResevation.TotalTTC != resultPayments.Sum(p => p.Amount) + request.Amount)
                 throw new InvalidOperationException("Le type de paiement Balance doit correspondre au solde restant de la réservation.");
             
             financialStatus = FinancialStatus.Paid;   
@@ -63,9 +63,9 @@ public class CreatePaymentHandler : IRequestHandler<CreatePaymentCommand, Guid>
         _context.Payments.Add(_mapper.Map<Payment>(newPayment));
 
         // Mettre à jour le statut financier global de la réservation
-        var result = await _mediator.Send(new ChangeFinancialStatusCommand(request.ReservationId, financialStatus), cancellationToken);
-        
+        var result = await _mediator.Send(new ChangeFinancialStatusCommand(request.ReservationId, financialStatus), cancellationToken);  
         await _context.SaveChangesAsync(cancellationToken);
+
         return newPayment.Id;
     }
 }

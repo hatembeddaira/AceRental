@@ -37,7 +37,7 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
             LogisticStatus = request.Workflow == Workflow.B2C ? LogisticStatus.Confirmed : LogisticStatus.Draft,
             FinancialStatus = FinancialStatus.Unpaid,
             Workflow = request.Workflow,
-            TotalAmount = 0 
+            TotalHT = 0 
         };
 
         foreach (var item in request.Items)
@@ -46,12 +46,12 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
             if (item.EquipmentId.HasValue)
             {
                 var eq = await _context.Equipments.FindAsync(item.EquipmentId);
-                price = eq!.DailyPrice;
+                price = eq!.DailyPriceHT;
             }
             else if (item.PackId.HasValue)
             {
                 var pk = await _context.Packs.FindAsync(item.PackId);
-                price = pk!.DailyPrice;
+                price = pk!.DailyPriceHT;
             }
 
             reservation.Items.Add(new ReservationItemDto
@@ -63,7 +63,7 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
                 UnitPriceAtTimeOfBooking = price
             });
 
-            reservation.TotalAmount += (price * item.Quantity * (reservation.EndDate - reservation.StartDate).Days);
+            reservation.TotalHT += (price * item.Quantity * (reservation.EndDate - reservation.StartDate).Days);
         }
 
         _context.Reservations.Add(_mapper.Map<Reservation>(reservation));

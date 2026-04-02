@@ -25,9 +25,9 @@ public class CreateEquipmentHandler : IRequestHandler<CreateEquipmentCommand, Gu
             Reference = request.Reference,
             Name = request.Name,
             Description = request.Description,
-            DailyPrice = request.DailyPrice,
-            PurchasePrice = request.PurchasePrice,
-            NewPurchasePrice = request.NewPurchasePrice,
+            DailyPriceHT = request.DailyPriceHT,
+            PurchasePriceTTC = request.PurchasePriceTTC,
+            NewPurchasePriceTTC = request.NewPurchasePriceTTC,
             TotalStock = request.TotalStock,
             Category = request.Category
         };

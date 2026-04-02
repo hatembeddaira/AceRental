@@ -6,6 +6,6 @@ namespace AceRental.Application.Packs.Dtos
         public required string Reference { get; set; }
         public required string Name { get; set; }
         public string? Description { get; set; }
-        public decimal DailyPrice { get; set; }
+        public decimal DailyPriceHT { get; set; }
     }
 }
