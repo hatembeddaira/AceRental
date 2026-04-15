@@ -1,12 +1,14 @@
 using AceRental.Application.Equipments.Dtos;
+using AceRental.Domain.Entities;
 using AceRental.Infrastructure.Persistence;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace AceRental.Application.Equipments.Queries
 {
-    public class GetAllEquipmentsHandle : IRequestHandler<GetAllEquipmentsQuery, List<EquipmentDetailsDto>>
+    public class GetAllEquipmentsHandle : IRequestHandler<GetAllEquipmentsQuery, IQueryable<EquipmentDetailsDto>>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -17,14 +19,11 @@ namespace AceRental.Application.Equipments.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<EquipmentDetailsDto>> Handle(GetAllEquipmentsQuery request, CancellationToken cancellationToken)
+        public async Task<IQueryable<EquipmentDetailsDto>> Handle(GetAllEquipmentsQuery request, CancellationToken cancellationToken)
         {
-            // 1. Récupérer le stock total de l'équipement
-            var equipments = await _context.Equipments
+            return _context.Equipments
                 .AsNoTracking()
-                .Include(e => e.PackItems).ThenInclude(pi => pi.Pack)
-                .ToListAsync(cancellationToken);
-            return _mapper.Map<List<EquipmentDetailsDto>>(equipments);
+                .ProjectTo<EquipmentDetailsDto>(_mapper.ConfigurationProvider);
         }
     }
 }

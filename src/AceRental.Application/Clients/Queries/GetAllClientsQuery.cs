@@ -4,5 +4,5 @@ using MediatR;
 
 namespace AceRental.Application.Clients.Queries
 {
-    public record GetAllClientsQuery() : IRequest<List<ClientDto>>; 
+    public record GetAllClientsQuery() : IRequest<IQueryable<ClientDto>>; 
 }

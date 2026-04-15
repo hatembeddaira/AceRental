@@ -17,7 +17,6 @@ namespace AceRental.Application.Reservations.Dtos
         public decimal TVA { get; set; } = 0.20m;
         public decimal TotalTTC => TotalHT * (1 + TVA);
         public Guid ClientId { get; set; }
-        public ClientReservationDto Client { get; set; } = null!;
         public int CurrentVersion { get; set; } = 1;
         public ICollection<ReservationItemDto> Items { get; set; } = [];
     }

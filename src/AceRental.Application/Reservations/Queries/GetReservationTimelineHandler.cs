@@ -1,6 +1,8 @@
 using System.Data.Common;
 using System.Text.Json;
+using AceRental.Application.Exceptions;
 using AceRental.Application.Reservations.Dtos;
+using AceRental.Domain.Entities;
 using AceRental.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +18,17 @@ namespace AceRental.Application.Reservations.Queries
             _context = context;
         }
 
-        public async Task<List<ReservationTimelineDto>> Handle(GetReservationTimelineQuery request, CancellationToken ct)
+        public async Task<List<ReservationTimelineDto>> Handle(GetReservationTimelineQuery request, CancellationToken cancellationToken)
         {
+            var reservation = await _context.Reservations
+                    .FirstOrDefaultAsync(e => e.Id == request.ReservationId, cancellationToken);
+            if (reservation == null) 
+                throw new NotFoundException(nameof(Reservation), request.ReservationId);
+                
             var history = await _context.ReservationHistorys
                 .Where(h => h.ReservationId == request.ReservationId)
                 .OrderByDescending(h => h.CreatedAt) // On veut le plus récent en haut
-                .ToListAsync(ct);
+                .ToListAsync(cancellationToken);
 
             return history.Select(h => new ReservationTimelineDto()
             {

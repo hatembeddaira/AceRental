@@ -6,26 +6,17 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 
 namespace AceRental.Api.Configuration.Swagger
 {
-    /// <summary>
-    /// Configuration Swagger
-    /// </summary>
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
         private readonly IApiVersionDescriptionProvider provider;
 
-        /// <summary>
-        /// Option de documentation
-        /// </summary>
-        /// <param name="provider"></param>
-        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => this.provider = provider;
+        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
+            => this.provider = provider;
 
-        /// <summary>
-        /// Configuration de la documentation
-        /// </summary>
-        /// <param name="options"></param>
         public void Configure(SwaggerGenOptions options)
         {
             foreach (var description in provider.ApiVersionDescriptions)
@@ -41,19 +32,20 @@ namespace AceRental.Api.Configuration.Swagger
             var text = new StringBuilder("Documentation");
             var info = new OpenApiInfo
             {
-                Title = "Api",
+                Title = "AceRental API",
                 Version = description.ApiVersion.ToString(),
-                Contact = new OpenApiContact { Name = "Ace Sound", Email = "support@ace-sound.com" },
+                Contact = new OpenApiContact
+                {
+                    Name = "Ace Sound",
+                    Email = "support@ace-sound.com"
+                },
             };
 
             if (description.IsDeprecated)
-            {
-                text.Append(" This version is outdated.");
-            }
+                text.Append(" Cette version est obsolète.");
 
             text = HandleSunsetPolicy(description, text);
-
-            text.Append("<h4>Additional informations</h4>");
+            text.Append("<h4>Informations complémentaires</h4>");
             info.Description = text.ToString();
 
             return info;
@@ -63,62 +55,39 @@ namespace AceRental.Api.Configuration.Swagger
         {
             if (description.SunsetPolicy is { } policy)
             {
-                text = HandleDateSunsetPolicy(text, policy);
-
-                text = HandleLinkSunsetPolicy(text, policy);
-            }
-
-            return text;
-        }
-
-        private static StringBuilder HandleDateSunsetPolicy(StringBuilder text, SunsetPolicy policy)
-        {
-            if (policy.Date is { } when)
-            {
-                text.Append(" Available the ")
-                    .Append(when.Date.ToShortDateString())
-                    .Append('.');
-            }
-
-            return text;
-        }
-
-        private static StringBuilder HandleLinkSunsetPolicy(StringBuilder text, SunsetPolicy policy)
-        {
-            if (policy.HasLinks)
-            {
-                text.AppendLine();
-
-                var rendered = false;
-
-                for (var i = 0; i < policy.Links.Count; i++)
+                if (policy.Date is { } when)
                 {
-                    var link = policy.Links[i];
-
-                    if (link.Type != "text/html")
-                    {
-                        continue;
-                    }
-
-                    if (!rendered)
-                    {
-                        text.Append("<h4>Links</h4><ul>");
-                        rendered = true;
-                    }
-
-                    text.Append("<li><a href=\"");
-                    text.Append(link.LinkTarget.OriginalString);
-                    text.Append("\">");
-                    text.Append(
-                        StringSegment.IsNullOrEmpty(link.Title)
-                        ? link.LinkTarget.OriginalString
-                        : link.Title.ToString());
-                    text.Append("</a></li>");
+                    text.Append(" Disponible jusqu'au ")
+                        .Append(when.Date.ToShortDateString())
+                        .Append('.');
                 }
 
-                if (rendered)
+                if (policy.HasLinks)
                 {
-                    text.Append("</ul>");
+                    text.AppendLine();
+                    var rendered = false;
+
+                    foreach (var link in policy.Links)
+                    {
+                        if (link.Type != "text/html") continue;
+
+                        if (!rendered)
+                        {
+                            text.Append("<h4>Liens</h4><ul>");
+                            rendered = true;
+                        }
+
+                        text.Append("<li><a href=\"")
+                            .Append(link.LinkTarget.OriginalString)
+                            .Append("\">")
+                            .Append(StringSegment.IsNullOrEmpty(link.Title)
+                                ? link.LinkTarget.OriginalString
+                                : link.Title.ToString())
+                            .Append("</a></li>");
+                    }
+
+                    if (rendered)
+                        text.Append("</ul>");
                 }
             }
 

@@ -11,128 +11,61 @@ namespace AceRental.Api.Controllers
     {
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<ReservationDetailsDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult> GetAll()
-        {
-            try
-            {
-                var result = await Mediator.Send(new GetAllReservationsQuery());            
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+            => Ok(await Mediator.Send(new GetAllReservationsQuery()));
 
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(List<ReservationDetailsDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Get(Guid id)
-        {
-            try
-            {
-                var result = await Mediator.Send(new GetReservationQuery(id));            
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+            => Ok(await Mediator.Send(new GetReservationQuery(id)));
 
         [HttpGet("GetReservationTimeline/{id:guid}")]
         [ProducesResponseType(typeof(List<ReservationTimelineDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetReservationTimeline(Guid id)
-        {
-                var result = await Mediator.Send(new GetReservationTimelineQuery(id));            
-                return Ok(result);
-        }
+            => Ok(await Mediator.Send(new GetReservationTimelineQuery(id)));
 
         [HttpGet("GetReservationTimelineString/{id:guid}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<ActionResult> GetReservationTimelineString(Guid id)
-        {
-            try
-            {
-                var result = await Mediator.Send(new GetReservationTimelineStringQuery(id));            
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        
+            => Ok(await Mediator.Send(new GetReservationTimelineStringQuery(id)));
+
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]  //  201 Created
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    //  validation
         [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
         public async Task<ActionResult<Guid>> Create(CreateReservationCommand command)
-        {
-            try
-            {                
-                var result = await Mediator.Send(command);            
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        
+            => Ok(await Mediator.Send(command));
+
         [HttpPut]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]  //  200 OK
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    //  validation
+        [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
         public async Task<ActionResult<Guid>> Update(UpdateReservationCommand command)
-        {
-            try
-            {                
-                var result = await Mediator.Send(command);            
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+            => Ok(await Mediator.Send(command));
+
         [HttpPatch("logistic-status")]
-        public async Task<ActionResult<Guid>> LogisticStatus(ChangeLogisticStatusCommand command)
-        {
-            try
-            {                
-                var result = await Mediator.Send(command);            
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]  //  200 OK
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    //  validation
+        [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
+        public async Task<ActionResult<bool>> LogisticStatus(ChangeLogisticStatusCommand command)
+            => Ok(await Mediator.Send(command));
+
         [HttpPatch("financial-status")]
-        public async Task<ActionResult<Guid>> FinancialStatus(ChangeFinancialStatusCommand command)
-        {
-            try
-            {                
-                var result = await Mediator.Send(command);            
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]  //  200 OK
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    //  validation
+        [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
+        public async Task<ActionResult<bool>> FinancialStatus(ChangeFinancialStatusCommand command)
+            => Ok(await Mediator.Send(command));
 
 
-        [HttpPost("GenerateDevis")]
+        [HttpPost("quote")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status201Created)]  //  201 Created
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    //  validation
+        [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
         public async Task<ActionResult<Guid>> GenerateDevis(GenerateQuoteCommand command)
-        {
-            try
-            {                
-                var result = await Mediator.Send(command);            
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+            => Ok(await Mediator.Send(command));
     }
 }

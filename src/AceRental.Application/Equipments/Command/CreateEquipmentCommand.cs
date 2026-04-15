@@ -1,15 +1,17 @@
-﻿using AceRental.Domain.Enum;
+﻿using System.ComponentModel.DataAnnotations;
+using AceRental.Application.Equipments.Dtos;
+using AceRental.Domain.Enum;
 using MediatR;
 
 namespace AceRental.Application.Equipments.Command;
 
 public record CreateEquipmentCommand(
-    string Reference,
-    string Name,
+    [Required] string Reference,
+    [Required] string Name,
     string Description,
-    decimal DailyPriceHT,
+    [Required] decimal DailyPriceHT,
     decimal PurchasePriceTTC,
-    decimal NewPurchasePriceTTC,
-    int TotalStock,
-    EquipmentCategory Category
-    ) : IRequest<Guid>;
+    [Required] decimal NewPurchasePriceTTC,
+    [Required] int TotalStock,
+    EquipmentCategory Category 
+    ) : IRequest<EquipmentDto>;

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace AceRental.Application.Equipments.Command;
 
-public class CreateEquipmentHandler : IRequestHandler<CreateEquipmentCommand, Guid>
+public class CreateEquipmentHandler : IRequestHandler<CreateEquipmentCommand, EquipmentDto>
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ public class CreateEquipmentHandler : IRequestHandler<CreateEquipmentCommand, Gu
         _mapper = mapper;
     }
 
-    public async Task<Guid> Handle(CreateEquipmentCommand request, CancellationToken cancellationToken)
+    public async Task<EquipmentDto> Handle(CreateEquipmentCommand request, CancellationToken cancellationToken)
     {
         var equipment = new EquipmentDto
         {
@@ -35,7 +35,7 @@ public class CreateEquipmentHandler : IRequestHandler<CreateEquipmentCommand, Gu
         _context.Equipments.Add(_mapper.Map<Equipment>(equipment));
         await _context.SaveChangesAsync(cancellationToken);
 
-        return equipment.Id;
+        return equipment;
     }
 }
 

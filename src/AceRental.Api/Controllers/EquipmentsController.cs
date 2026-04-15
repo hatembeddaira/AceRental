@@ -1,45 +1,61 @@
-﻿using AceRental.Application.Equipments.Command;
-using AceRental.Application.Equipments.Dtos;
-using AceRental.Application.Equipments.Queries;
+﻿using AceRental.Application.Equipments.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Formatter;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
+using AceRental.Application.Equipments.Command;
+using AceRental.Application.Equipments.Dtos;
 
 namespace AceRental.Api.Controllers
 {
-    public class EquipmentsController : ApiControllerBase
+    public class EquipmentsController : ODataController
     {
+        private readonly IMediator _mediator;
+
+        public EquipmentsController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
         [HttpGet]
-        [ProducesResponseType(typeof(List<EquipmentDetailsDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<EquipmentDetailsDto>>> GetAll()
+        [EnableQuery]
+        [ProducesResponseType(typeof(IQueryable<EquipmentDetailsDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get()
         {
-            var result = await Mediator.Send(new GetAllEquipmentsQuery());
+            var result = await _mediator.Send(new GetAllEquipmentsQuery());
             return Ok(result);
         }
 
-        [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(EquipmentDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<EquipmentDto>> Get(Guid id)
+        [HttpGet]
+        [EnableQuery]
+        [ProducesResponseType(typeof(EquipmentDetailsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Get([FromODataUri] Guid key)
         {
-            var result = await Mediator.Send(new GetEquipmentQuery(id));
-            return Ok(result);
+            var result = await _mediator.Send(new GetAllEquipmentsQuery());
+            var equipment = result.FirstOrDefault(e => e.Id == key);
+            return Ok(equipment);
         }
 
-        [HttpGet("GetAvailability/{id:guid}/{startDate:datetime}/{endDate:datetime}")]
+        [HttpGet]
+        [EnableQuery]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        public async Task<ActionResult<int>> GetAvailability(Guid id, DateTime startDate, DateTime endDate)
+        public async Task<IActionResult> Availability([FromODataUri] Guid key, [FromODataUri] DateTime startDate, [FromODataUri] DateTime endDate)
         {
-            var result = await Mediator.Send(new GetEquipmentAvailabilityQuery(id, startDate, endDate));
+            var result = await _mediator.Send(new GetEquipmentAvailabilityQuery(key, startDate, endDate));
             return Ok(result);
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]  //  201 Created
+        [ProducesResponseType(typeof(EquipmentDto), StatusCodes.Status201Created)]  //  201 Created
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    //  validation
         [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
-        public async Task<ActionResult<Guid>> Create(CreateEquipmentCommand command)
+        public async Task<IActionResult> Post([FromBody] CreateEquipmentCommand command)
         {
-            var id = await Mediator.Send(command);
-            return CreatedAtAction(nameof(Get), new { id }, id);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var result = await _mediator.Send(command);
+            return Created(result);
         }
     }
 }

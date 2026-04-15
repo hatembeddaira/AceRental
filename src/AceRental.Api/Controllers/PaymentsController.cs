@@ -12,8 +12,8 @@ namespace AceRental.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<PaymentDetailsDto>>> GetAll(Guid reservationId)
         {
-                var result = await Mediator.Send(new GetAllPaymentsQuery(reservationId));
-                return Ok(result);
+            var result = await Mediator.Send(new GetAllPaymentsQuery(reservationId));
+            return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
@@ -21,8 +21,8 @@ namespace AceRental.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PaymentDetailsDto>> Get(Guid id)
         {
-                var result = await Mediator.Send(new GetPaymentDetailsQuery(id));
-                return Ok(result);
+            var result = await Mediator.Send(new GetPaymentDetailsQuery(id));
+            return Ok(result);
         }
 
         [HttpPost]
@@ -31,15 +31,8 @@ namespace AceRental.Api.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
         public async Task<ActionResult<Guid>> Create(CreatePaymentCommand command)
         {
-            try
-            {
-                var result = await Mediator.Send(command);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var id = await Mediator.Send(command);
+            return CreatedAtAction(nameof(Get), new { id }, id);
         }
     }
 }

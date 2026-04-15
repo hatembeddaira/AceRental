@@ -1,12 +1,14 @@
 using AceRental.Application.Clients.Dtos;
+using AceRental.Domain.Entities;
 using AceRental.Infrastructure.Persistence;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace AceRental.Application.Clients.Queries
 {
-    public class GetAllClientsHandle : IRequestHandler<GetAllClientsQuery, List<ClientDto>>
+    public class GetAllClientsHandle : IRequestHandler<GetAllClientsQuery, IQueryable<ClientDto>>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -17,14 +19,11 @@ namespace AceRental.Application.Clients.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<ClientDto>> Handle(GetAllClientsQuery request, CancellationToken cancellationToken)
+        public async Task<IQueryable<ClientDto>> Handle(GetAllClientsQuery request, CancellationToken cancellationToken)
         {
-            // 1. Récupérer le stock total de l'équipement
-            var Clients = await _context.Clients
-                .Include(r => r.Reservations)
+            return  _context.Clients
                 .AsNoTracking()
-                .ToListAsync(cancellationToken);
-            return _mapper.Map<List<ClientDto>>(Clients);
+                .ProjectTo<ClientDto>(_mapper.ConfigurationProvider);
         }
     }
 }

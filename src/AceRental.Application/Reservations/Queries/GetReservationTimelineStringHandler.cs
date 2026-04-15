@@ -1,7 +1,9 @@
 using System.Data.Common;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AceRental.Application.Exceptions;
 using AceRental.Application.Reservations.Dtos;
+using AceRental.Domain.Entities;
 using AceRental.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +19,13 @@ namespace AceRental.Application.Reservations.Queries
             _context = context;
         }
 
-        public async Task<string> Handle(GetReservationTimelineStringQuery request, CancellationToken ct)
+        public async Task<string> Handle(GetReservationTimelineStringQuery request, CancellationToken cancellationToken)
         {
+            var reservation = await _context.Reservations
+                    .FirstOrDefaultAsync(e => e.Id == request.ReservationId, cancellationToken);
+            if (reservation == null) 
+                throw new NotFoundException(nameof(Reservation), request.ReservationId);
+
             var history = await _context.ReservationHistorys
                 .Where(x => x.ReservationId == request.ReservationId)
                 .Select(h => new
@@ -38,7 +45,7 @@ namespace AceRental.Application.Reservations.Queries
                 //         })
                 // )
                 .OrderBy(x => x.Date)
-                .ToListAsync(ct);
+                .ToListAsync(cancellationToken);
 
             // var str = history.Select(h => (JsonSerializer.Deserialize<JsonElement>(h.DataSnapshotJson)).GetProperty("New").GetString() + " (" + h.HistoryType.ToString() + ")")
             // .ToList();

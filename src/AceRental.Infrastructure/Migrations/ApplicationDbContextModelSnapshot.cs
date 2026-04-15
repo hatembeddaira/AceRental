@@ -90,7 +90,7 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("DailyPrice")
+                    b.Property<decimal>("DailyPriceHT")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -107,11 +107,11 @@ namespace AceRental.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("NewPurchasePrice")
+                    b.Property<decimal>("NewPurchasePriceTTC")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("PurchasePrice")
+                    b.Property<decimal>("PurchasePriceTTC")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -155,9 +155,8 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("InvoiceNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("InvoiceNumber")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -199,7 +198,8 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("DailyPrice")
+                    b.Property<decimal>("DailyPriceHT")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -355,12 +355,15 @@ namespace AceRental.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TVA")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(2, 2)
+                        .HasColumnType("decimal(2,2)");
 
                     b.Property<decimal>("TotalHT")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalTTC")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -422,7 +425,15 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("TotalAmount")
+                    b.Property<decimal>("TVA")
+                        .HasPrecision(2, 2)
+                        .HasColumnType("decimal(2,2)");
+
+                    b.Property<decimal>("TotalHT")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalTTC")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -536,7 +547,7 @@ namespace AceRental.Infrastructure.Migrations
             modelBuilder.Entity("AceRental.Domain.Entities.Invoice", b =>
                 {
                     b.HasOne("AceRental.Domain.Entities.Reservation", "Reservation")
-                        .WithMany()
+                        .WithMany("Invoices")
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -566,7 +577,7 @@ namespace AceRental.Infrastructure.Migrations
             modelBuilder.Entity("AceRental.Domain.Entities.Payment", b =>
                 {
                     b.HasOne("AceRental.Domain.Entities.Reservation", "Reservation")
-                        .WithMany("Payments")
+                        .WithMany()
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -647,9 +658,9 @@ namespace AceRental.Infrastructure.Migrations
                 {
                     b.Navigation("History");
 
-                    b.Navigation("Items");
+                    b.Navigation("Invoices");
 
-                    b.Navigation("Payments");
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

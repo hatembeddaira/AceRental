@@ -51,21 +51,24 @@ POST {{Api_HostAddress}}/Api/v1/Equipments/
 Content-Type: application/json
 
 {
-  "reference": "DSR112",
-  "name": "Yamaha DSR112",
-  "description": "Enceinte yamaha dsr112",
-  "dailyPrice": 50,
-  "purchasePrice": 500,
-  "newPurchasePrice": 1000,
+  "reference": "DBR21",
+  "name": "Yamaha DBR21",
+  "description": "Enceinte yamaha dbr21",
+  "dailyPrice": 75,
+  "purchasePrice": 750,
+  "newPurchasePrice": 1600,
   "totalStock": 4,
   "category": 0
 }
 
 ### Get Equipment
-GET {{Api_HostAddress}}/Api/v1/Equipments/821423d3-a472-491d-9886-42c20134285a
+GET {{Api_HostAddress}}/Api/v1/Equipments?$filter=Id eq b79d3481-df2c-4287-a340-01d4c7a86edd&$expand=Packs
+Content-Type: application/json
+
+### Get Equipment
+GET {{Api_HostAddress}}/Api/v1/Equipments(b79d3481-df2c-4287-a340-01d4c7a86edd)?$expand=Packs
 Content-Type: application/json
 
 ### Get All Equipment
-GET {{Api_HostAddress}}/Api/v1/Equipments/
+GET {{Api_HostAddress}}/api/v1/Equipments?$expand=Packs
 Content-Type: application/json
-

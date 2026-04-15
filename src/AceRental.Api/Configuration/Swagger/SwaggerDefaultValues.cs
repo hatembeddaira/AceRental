@@ -1,76 +1,50 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi; // Tout est ici
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Globalization;
+using Microsoft.OpenApi.Models; 
+using System.Linq;
 using System.Text.Json;
 
-namespace AceRental.Api.Configuration.Swagger
+namespace AceRental.Api.Configuration.Swagger;
+
+public class SwaggerDefaultValues : IOperationFilter
 {
-    /// <summary>
-    /// Configuration des valeurs par defaut de Swagger
-    /// </summary>
-    public class SwaggerDefaultValues : IOperationFilter
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        /// <summary>
-        /// Configuration
-        /// </summary>
-        /// <param name="operation"></param>
-        /// <param name="context"></param>
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        var apiDescription = context.ApiDescription;
+
+        // On gère la dépréciation
+        operation.Deprecated |= apiDescription.IsDeprecated();
+
+        if (operation.Parameters == null)
         {
-            if (operation is not null && context is not null)
-            {
-                operation.Deprecated |= context.ApiDescription.IsDeprecated();
-
-                HandleResponseType(operation, context);
-
-                if (operation.Parameters == null)
-                {
-                    return;
-                }
-
-                HandleParameters(operation, context);
-            }
+            return;
         }
 
-        private static void HandleResponseType(OpenApiOperation operation, OperationFilterContext context)
+        foreach (var parameter in operation.Parameters)
         {
-            foreach (var responseType in context.ApiDescription.SupportedResponseTypes)
+            // Sécurité : FirstOrDefault pour éviter le crash "Sequence contains no matching element"
+            var description = apiDescription.ParameterDescriptions
+                .FirstOrDefault(p => p.Name == parameter.Name);
+
+            if (description == null) continue;
+
+            if (parameter.Description == null)
             {
-                var responseKey = responseType.IsDefaultResponse
-                                  ? "default"
-                                  : responseType.StatusCode.ToString(CultureInfo.InvariantCulture);
-                var response = operation.Responses![responseKey];
-
-                foreach (var contentType in response.Content!.Keys)
-                {
-                    if (!responseType.ApiResponseFormats.Any(x => x.MediaType == contentType))
-                    {
-                        response.Content.Remove(contentType);
-                    }
-                }
+                parameter.Description = description.ModelMetadata?.Description;
             }
-        }
 
-        private static void HandleParameters(OpenApiOperation operation, OperationFilterContext context)
-        {
-            foreach (var parameter in operation.Parameters!)
-            {
-                var description = context.ApiDescription.ParameterDescriptions
-                                                .First(p => p.Name == parameter.Name);
+            // Correction Read-Only : Cast vers la classe concrète OpenApiSchema
+            // if (parameter.Schema is OpenApiSchema concreteSchema)
+            // {
+            //     if (concreteSchema.Default == null && description.DefaultValue != null)
+            //     {
+            //         // En v2.x sans Models, on instancie directement l'objet de base
+            //         concreteSchema.Default = new OpenApiString(description.DefaultValue.ToString());
+            //     }
+            // }
 
-                parameter.Description ??= description.ModelMetadata?.Description;
-
-                //if (parameter.Schema.Default == null && description.DefaultValue != null)
-                //{
-                //    var json = JsonSerializer.Serialize(
-                //        description.DefaultValue,
-                //        description.ModelMetadata!.ModelType);
-                //    parameter.Schema.Default = OpenApiAnyFactory.CreateFromJson(json);
-                //}
-
-                //parameter.Required |= description.IsRequired;
-            }
+            // parameter.Required |= description.IsRequired;
         }
     }
 }

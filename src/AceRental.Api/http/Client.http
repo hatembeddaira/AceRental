@@ -16,11 +16,15 @@ Content-Type: application/json
 }
 
 
-### Get Equipment
-GET {{Api_HostAddress}}/Api/v1/Equipments/821423d3-a472-491d-9886-42c20134285a
+### Get Client
+GET {{Api_HostAddress}}/Api/v1/Clients?$filter=Id eq 3fa85f64-5717-4562-b3fc-2c963f66afa6&$expand=Reservations
 Content-Type: application/json
 
-### Get All Equipment
-GET {{Api_HostAddress}}/Api/v1/Equipments/
+### Get Client
+GET {{Api_HostAddress}}/Api/v1/Clients(3fa85f64-5717-4562-b3fc-2c963f66afa6)
+Content-Type: application/json
+
+### Get All Clients
+GET {{Api_HostAddress}}/api/v1/Clients?$expand=Reservations
 Content-Type: application/json
 

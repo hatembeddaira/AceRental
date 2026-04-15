@@ -19,15 +19,14 @@ namespace AceRental.Application.Reservations.Queries
 
         public async Task<List<ReservationDetailsDto>> Handle(GetAllReservationsQuery request, CancellationToken cancellationToken)
         {
-            // 1. Récupérer le stock total de l'équipement
-            var Reservations = await _context.Reservations
+            var reservations = await _context.Reservations
                 .Include(r => r.Client)
                 .Include(r => r.Invoices)
                 .Include(r => r.Items).ThenInclude(i => i.Equipment)
                 .Include(r => r.Items).ThenInclude(i => i.Pack)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
-            return _mapper.Map<List<ReservationDetailsDto>>(Reservations);
+            return _mapper.Map<List<ReservationDetailsDto>>(reservations);
         }
     }
 }

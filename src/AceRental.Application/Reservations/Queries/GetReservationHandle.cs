@@ -1,4 +1,5 @@
-using AceRental.Application.Clients.Dtos;
+using AceRental.Domain.Entities;
+using AceRental.Application.Exceptions;
 using AceRental.Application.Reservations.Dtos;
 using AceRental.Infrastructure.Persistence;
 using AutoMapper;
@@ -20,15 +21,14 @@ namespace AceRental.Application.Reservations.Queries
 
         public async Task<ReservationDetailsDto> Handle(GetReservationQuery request, CancellationToken cancellationToken)
         {
-            // 1. Récupérer le stock total de l'équipement
-            var Reservation = await _context.Reservations
+            var reservation = await _context.Reservations
                 .Include(r => r.Client)
                 .Include(r => r.Invoices)
                 .Include(r => r.Items).ThenInclude(i => i.Equipment)
                 .Include(r => r.Items).ThenInclude(i => i.Pack)            
                 .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == request.ReservationId, cancellationToken);
-            return _mapper.Map<ReservationDetailsDto>(Reservation);
+                .FirstOrDefaultAsync(e => e.Id == request.ReservationId, cancellationToken);         
+            return _mapper.Map<ReservationDetailsDto>(reservation);
         }
     }
 }
