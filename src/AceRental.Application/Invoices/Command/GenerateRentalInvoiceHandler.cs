@@ -35,7 +35,7 @@ namespace AceRental.Application.Invoices.Command
             {
                 Id = Guid.NewGuid(),
                 ReservationId = reservation.Id,
-                InvoiceNumber = 0, // Logique de numérotation à améliorer
+                // InvoiceNumber = 0, // Logique de numérotation à améliorer
                 CreatedAt = DateTime.UtcNow,
                 AmountHT = reservation.TotalHT
             };

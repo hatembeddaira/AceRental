@@ -13,7 +13,6 @@ public class Equipment : BaseEntity
     public decimal NewPurchasePriceTTC { get; set; }
     public int TotalStock { get; set; }
     public EquipmentCategory Category { get; set; } = EquipmentCategory.Autres;
-    
-    // Pour la gestion des packs
     public ICollection<PackItem> PackItems { get; set; } = [];
+    public List<ReservationEquipments> Reservations { get; set; } = [];
 }

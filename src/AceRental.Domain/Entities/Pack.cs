@@ -9,5 +9,6 @@ namespace AceRental.Domain.Entities
         public string? Description { get; set; }
         public decimal DailyPriceHT { get; set; }
         public ICollection<PackItem> Items { get; set; } = new List<PackItem>();
+        public List<ReservationPacks> Reservations { get; set; } = [];
     }
 }

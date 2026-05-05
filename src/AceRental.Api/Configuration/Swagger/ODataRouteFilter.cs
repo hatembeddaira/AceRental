@@ -4,18 +4,27 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AceRental.Api.Configuration.Swagger;
 
-public class ODataRouteFilter : IDocumentFilter
+public class ODataRouteFilter : IOperationFilter
 {
-    public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        // On cherche les routes qui ont à la fois une version parenthèses () et une version slash {}
-        var routesToRemove = swaggerDoc.Paths
-            .Where(path => path.Key.Contains("/{key}") && !path.Key.Contains("("))
+        // On vérifie si la route contient des paramètres entre accolades {}
+        var pathParameters = context.ApiDescription.ParameterDescriptions
+            .Where(p => p.Source.Id == "Path")
+            .Select(p => p.Name)
             .ToList();
 
-        foreach (var route in routesToRemove)
+        if (!pathParameters.Any()) return;
+
+        // On cherche les paramètres que Swagger a mis en 'Query' mais qui sont déjà dans le 'Path'
+        var parametersToRemove = operation.Parameters
+            .Where(p => p.In == ParameterLocation.Query && 
+                        pathParameters.Any(pp => pp.Equals(p.Name, System.StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        foreach (var parameter in parametersToRemove)
         {
-            swaggerDoc.Paths.Remove(route.Key);
+            operation.Parameters.Remove(parameter);
         }
     }
 }

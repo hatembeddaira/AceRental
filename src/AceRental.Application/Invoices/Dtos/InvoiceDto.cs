@@ -12,20 +12,15 @@ namespace AceRental.Application.Invoices.Dtos
     public class InvoiceDto
     {
         public Guid Id { get; set; }
-        public required int InvoiceNumber { get; set; } = 0;
+        public int InvoiceNumber { get; private set; } 
         public decimal AmountHT { get; set; }
         public decimal TVA { get; set; } = 0.20m;
         public decimal AmountTTC => AmountHT * (1 + TVA);
         public bool IsPaid { get; set; }
         public DateTime CreatedAt { get; set; }
         public InvoiceType Type { get; set; }
-
-        // Relation 1-to-1 avec la réservation
         public Guid ReservationId { get; set; }
-        public ReservationDetailsDto Reservation { get; set; } = null!;
-        
-        // Relation 1-to-n avec la Paiement
-        public Guid PaymentId { get; set; }
-        public ICollection<PaymentDto> Payment { get; set; } = null!;
+        public ReservationDto Reservation { get; set; } = null!;
+        // public ICollection<PaymentDto> Payment { get; set; } = null!;
     }
 }

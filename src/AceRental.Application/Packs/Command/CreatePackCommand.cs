@@ -9,4 +9,4 @@ public record CreatePackCommand(
     string Description,
     decimal DailyPriceHT,
     List<PackItemDto> Items
-    ) : IRequest<Guid>;
+    ) : IRequest<PackDetailsDto>;

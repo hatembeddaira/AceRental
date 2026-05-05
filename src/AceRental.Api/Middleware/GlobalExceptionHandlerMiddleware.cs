@@ -91,6 +91,16 @@ public class GlobalExceptionHandlerMiddleware
                 )
             ),
 
+            ArgumentNullException argNull => (
+                StatusCodes.Status400BadRequest,
+                CreateProblem(
+                    title: "Requête invalide",
+                    detail: argNull.Message,
+                    status: StatusCodes.Status400BadRequest,
+                    instance: context.Request.Path
+                )
+            ),
+            
             _ => (
                 StatusCodes.Status500InternalServerError,
                 CreateProblem(
@@ -111,12 +121,22 @@ public class GlobalExceptionHandlerMiddleware
         else
             _logger.LogWarning(exception, "Erreur {StatusCode} sur {Method} {Path}", statusCode, context.Request.Method, context.Request.Path);
 
-        context.Response.StatusCode = statusCode;
-        context.Response.ContentType = "application/problem+json";
+        // Vérifier si la réponse a déjà commencé pour éviter l'exception
+        if (!context.Response.HasStarted)
+        {
+            context.Response.StatusCode = statusCode;
+            context.Response.ContentType = "application/problem+json";
 
-        await context.Response.WriteAsync(
-            JsonSerializer.Serialize(problemDetails, JsonOptions)
-        );
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(problemDetails, JsonOptions)
+            );
+        }
+        else
+        {
+            // La réponse a déjà commencé, on ne peut plus la modifier
+            // L'exception sera propagée ou gérée ailleurs
+            _logger.LogError(exception, "Impossible de modifier la réponse car elle a déjà commencé sur {Method} {Path}", context.Request.Method, context.Request.Path);
+        }
     }
 
     private static ProblemDetails CreateProblem(string title, string detail, int status, string instance)

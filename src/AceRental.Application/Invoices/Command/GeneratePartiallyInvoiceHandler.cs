@@ -34,7 +34,6 @@ namespace AceRental.Application.Invoices.Command
             {
                 Id = Guid.NewGuid(),
                 ReservationId = reservation.Id,
-                InvoiceNumber = 0, // Logique de numérotation à améliorer
                 Type = InvoiceType.PartiallyInvoice,
                 AmountHT = reservation.TotalHT
             };
@@ -46,18 +45,5 @@ namespace AceRental.Application.Invoices.Command
             // Send Mail or Notification 
             return partiallyInvoice.Id;
         }
-        // private async Task<int> GenerateInvoiceNumber()
-        // {
-        //     var lastInvoiceNumber = await _context.Invoices
-        //         .IgnoreQueryFilters()
-        //         .Where(ri => ri.CreatedAt.Year == DateTime.Now.Year)
-        //         .OrderByDescending(ri => ri.InvoiceNumber)
-        //         .Select(x => x.InvoiceNumber).FirstOrDefaultAsync();
-
-        //     if (lastInvoiceNumber == 0)
-        //         lastInvoiceNumber = DateTime.Now.Year * 1000;
-
-        //     return lastInvoiceNumber + 1;
-        // }
     }
 }

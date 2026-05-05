@@ -19,9 +19,13 @@ namespace AceRental.Domain.Entities
         public Guid ClientId { get; set; }
         public required Client Client { get; set; }
         public int CurrentVersion { get; set; } = 1;
-        public List<ReservationItem> Items { get; set; } = [];
+        public List<ReservationEquipments> Equipments { get; set; } = [];
+        public List<ReservationPacks> Packs { get; set; } = [];
+        public List<ReservationServices> Services { get; set; } = [];
         public List<ReservationHistory> History { get; set; } = [];
         public List<Invoice> Invoices { get; set; } = [];
+        public List<Quote> Quotes { get; set; } = [];
+        public List<Payment> Payments { get; set; } = [];
 
         
     }

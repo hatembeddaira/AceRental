@@ -1,4 +1,4 @@
-﻿using AceRental.Application.Reservations.Dtos;
+﻿using AceRental.Application.Quotes.Dtos;
 using AceRental.Domain.Entities;
 using AutoMapper;
 

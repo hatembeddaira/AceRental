@@ -59,7 +59,7 @@ namespace AceRental.Application.Reservations.Command
                 case FinancialStatus.PartiallyPaid:
                     {
                         // Déclenchement automatique du PartiallyInvoiced si le statut devient PartiallyPaid
-                        await _mediator.Send(new ChangeFinancialStatusCommand(reservation.Id, FinancialStatus.PartiallyInvoiced), cancellationToken);
+                        await _mediator.Send(new ChangeFinancialStatusCommand(){ ReservationId = reservation.Id, Status = FinancialStatus.PartiallyInvoiced }, cancellationToken);
                     }
                     ;
                     break;
@@ -77,7 +77,7 @@ namespace AceRental.Application.Reservations.Command
 
                         if (reservation.Workflow == Workflow.B2C && reservation.LogisticStatus == LogisticStatus.Checked)
                         {
-                            await _mediator.Send(new ChangeLogisticStatusCommand(reservation.Id, LogisticStatus.Finished), cancellationToken);
+                            await _mediator.Send(new ChangeLogisticStatusCommand(){ ReservationId = reservation.Id, Status = LogisticStatus.Finished }, cancellationToken);
                         }
                     }
                     ;
@@ -86,11 +86,11 @@ namespace AceRental.Application.Reservations.Command
                     {
                         if (reservation.Workflow == Workflow.B2B && reservation.LogisticStatus == LogisticStatus.Checked)
                         {
-                            await _mediator.Send(new ChangeLogisticStatusCommand(reservation.Id, LogisticStatus.Finished), cancellationToken);
+                            await _mediator.Send(new ChangeLogisticStatusCommand(){ ReservationId = reservation.Id, Status = LogisticStatus.Finished }, cancellationToken);
                         }
                         else if (reservation.LogisticStatus == LogisticStatus.Damaged)
                         {
-                            await _mediator.Send(new ChangeLogisticStatusCommand(reservation.Id, LogisticStatus.Finished), cancellationToken);
+                            await _mediator.Send(new ChangeLogisticStatusCommand(){ ReservationId = reservation.Id, Status = LogisticStatus.Finished }, cancellationToken);
                         }
                         else
                         {

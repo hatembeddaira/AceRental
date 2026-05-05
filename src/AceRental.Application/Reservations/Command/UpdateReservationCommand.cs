@@ -1,14 +1,17 @@
-﻿using AceRental.Application.Reservations.Dtos;
+﻿using System.Text.Json.Serialization;
+using AceRental.Application.Reservations.Dtos;
 using AceRental.Domain.Enum;
 using MediatR;
 
 namespace AceRental.Application.Reservations.Command;
 
-public record UpdateReservationCommand(
-    Guid ReservationId,
-    DateTime StartDate,
-    DateTime EndDate,
-    List<ReservationItemDto> Items
-    ) : IRequest<bool>;
-
-//public record ReservationItemDto(Guid? EquipmentId, Guid? PackId, int Quentity);
+public record UpdateReservationCommand() : IRequest<bool>
+{
+    [JsonIgnore]
+    public Guid ReservationId { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public List<ReservationEquipmentsDto>? Equipments { get; set; }
+    public List<ReservationPacksDto>? Packs { get; set; }
+    public List<ReservationServicesDto>? Services { get; set; }
+}

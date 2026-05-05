@@ -11,6 +11,7 @@ namespace AceRental.Application.Common.Mapping
         public EquipmentDetailsProfile()
         {
             CreateMap<Equipment, EquipmentDetailsDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(source => source.Id))
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Reference))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(source => source.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(source => source.Description))

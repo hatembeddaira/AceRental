@@ -1,14 +1,13 @@
+using System.Text.Json.Serialization;
 using AceRental.Domain.Enum;
 using MediatR;
 
 namespace AceRental.Application.Reservations.Command
 {
-    public record ChangeLogisticStatusCommand(
-    Guid ReservationId,
-    LogisticStatus Status
-    ) : IRequest<bool>;
-    // public record ChangeLogisticStatusCommand(
-    // Guid ReservationId,
-    // FinancialStatus Status
-    // ) : IRequest<bool>;
+    public class ChangeLogisticStatusCommand : IRequest<bool>
+    {
+        [JsonIgnore]
+        public Guid ReservationId { get; set; }
+        public LogisticStatus Status { get; set; }
+    }
 }

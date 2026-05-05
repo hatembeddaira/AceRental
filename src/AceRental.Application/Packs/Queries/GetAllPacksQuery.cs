@@ -3,5 +3,5 @@ using MediatR;
 
 namespace AceRental.Application.Packs.Queries
 {
-    public record GetAllPacksQuery() : IRequest<List<PackDetailsDto>>; 
+    public record GetAllPacksQuery() : IRequest<IQueryable<PackDetailsDto>>; 
 }

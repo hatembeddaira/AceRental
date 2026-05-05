@@ -28,10 +28,13 @@ public class ApplicationDbContext : DbContext
     public DbSet<Client> Clients => Set<Client>();
     public DbSet<Reservation> Reservations => Set<Reservation>();
     public DbSet<ReservationHistory> ReservationHistorys => Set<ReservationHistory>();
-    public DbSet<ReservationItem> ReservationItems => Set<ReservationItem>();
+    public DbSet<ReservationEquipments> ReservationEquipments => Set<ReservationEquipments>();
+    public DbSet<ReservationPacks> ReservationPacks => Set<ReservationPacks>();
+    public DbSet<ReservationServices> ReservationServices => Set<ReservationServices>();
     public DbSet<Quote> Quotes => Set<Quote>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<Service> Services => Set<Service>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,11 +45,13 @@ public class ApplicationDbContext : DbContext
             modelBuilder.ApplyConfiguration(new EquipmentConfiguration());
             modelBuilder.ApplyConfiguration(new PackConfiguration());
             modelBuilder.ApplyConfiguration(new PackItemConfiguration());
-            modelBuilder.ApplyConfiguration(new ReservationItemConfiguration());
-            modelBuilder.ApplyConfiguration(new ReservationConfiguration());
+            modelBuilder.ApplyConfiguration(new ReservationEquipmentsConfiguration());
+            modelBuilder.ApplyConfiguration(new ReservationPacksConfiguration());
+            modelBuilder.ApplyConfiguration(new ReservationServicesConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new QuoteConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceConfiguration());
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
@@ -98,8 +103,12 @@ public class ApplicationDbContext : DbContext
                 case EntityState.Modified:
                     entry.Entity.SetUpdatedBy(userId);
                     break;
-                case EntityState.Deleted:
-                    // Intercepter le DELETE → transformer en soft delete
+                case EntityState.Deleted :
+                    // if (entry.Entity is not ReservationItem)
+                    // {
+                    //     // Intercepter le DELETE → transformer en soft delete
+                        
+                    // }
                     entry.State = EntityState.Modified;
                     entry.Entity.SoftDelete(userId);
                     break;
@@ -122,7 +131,7 @@ public class ApplicationDbContext : DbContext
 
         foreach (var invoice in newInvoices)
         {
-            invoice.InvoiceNumber = await GetNextInvoiceSequenceValue(cancellationToken);
+            invoice.InvoiceNumber = await GetNextInvoiceNumberAsync(cancellationToken);
         }
     }
     private static LambdaExpression GenerateSoftDeleteFilter(Type entityType)
@@ -135,22 +144,32 @@ public class ApplicationDbContext : DbContext
         return Expression.Lambda(body, param);
     }
 
-    // Méthode helper pour appeler la séquence SQL
-    private async Task<int> GetNextInvoiceSequenceValue(CancellationToken ct)
+    // Méthode helper pour récupérer le dernier numéro de facture
+    public async Task<int> GetLastInvoiceNumberAsync(CancellationToken cancellationToken = default)
     {
-        var parameter = new Microsoft.Data.SqlClient.SqlParameter
-        {
-            ParameterName = "@result",
-            SqlDbType = System.Data.SqlDbType.Int,
-            Direction = System.Data.ParameterDirection.Output
-        };
-
-        // Note : On utilise la syntaxe SQL brute pour récupérer la valeur de la séquence
-        await Database.ExecuteSqlRawAsync("SET @result = NEXT VALUE FOR shared.InvoiceNumberSequence", new[] { parameter }, ct);
-        var lastInvoiceNumber = (int)parameter.Value;
-        if (lastInvoiceNumber == 0)
-            lastInvoiceNumber = DateTime.Now.Year * 1000;
-
-        return lastInvoiceNumber;
+        return await Invoices
+            .AsNoTracking()
+            .MaxAsync(i => (int?)i.InvoiceNumber, cancellationToken)
+            .ConfigureAwait(false) ?? 0;
     }
+
+    // Méthode helper pour générer le prochain numéro de facture
+    public async Task<int> GetNextInvoiceNumberAsync(CancellationToken cancellationToken = default)
+    {
+        var currentYear = DateTime.Now.Year;
+        var yearPrefix = currentYear * 1000;
+        var lastNumber = await GetLastInvoiceNumberAsync(cancellationToken);
+        if (lastNumber == 0 || lastNumber < yearPrefix)
+        {
+            return yearPrefix + 1;
+        }
+
+        if (lastNumber >= yearPrefix && lastNumber < yearPrefix + 1000)
+        {
+            return lastNumber + 1;
+        }
+
+        return yearPrefix + 1;
+    }
+
 }

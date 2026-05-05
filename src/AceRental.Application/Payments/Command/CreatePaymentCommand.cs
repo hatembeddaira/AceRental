@@ -11,6 +11,6 @@ public record CreatePaymentCommand(
     PaymentMethod Method,
     PaymentType Type,
     string? TransactionId
-    ) : IRequest<Guid>;
+    ) : IRequest<PaymentDto>;
 
 //public record PaymentItemDto(Guid? EquipmentId, Guid? PackId, int Quentity);

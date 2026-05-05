@@ -4,7 +4,5 @@ using MediatR;
 
 namespace AceRental.Application.Payments.Queries
 {
-    public record GetAllPaymentsQuery(
-        Guid ReservationId
-    ) : IRequest<List<PaymentDetailsDto>>; 
+    public record GetAllPaymentsQuery() : IRequest<IQueryable<PaymentDetailsDto>>; 
 }

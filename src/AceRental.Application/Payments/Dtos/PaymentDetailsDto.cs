@@ -13,6 +13,6 @@ namespace AceRental.Application.Payments.Dtos
         public PaymentType  Type { get; set; }
         public string? TransactionId { get; set; }
 
-        public virtual ReservationDto Reservation { get; set; }       
+        public required ReservationDto Reservation { get; set; }       
     }
 }

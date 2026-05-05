@@ -4,5 +4,5 @@ using MediatR;
 
 namespace AceRental.Application.Reservations.Queries
 {
-    public record GetAllReservationsQuery() : IRequest<List<ReservationDetailsDto>>; 
+    public record GetAllReservationsQuery() : IRequest<IQueryable<ReservationDetailsDto>>; 
 }

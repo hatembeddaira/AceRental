@@ -28,7 +28,7 @@ namespace AceRental.Application.Equipments.Queries
 
             // 2. Calculer la somme des quantités déjà réservées sur cette période
             // Une réservation chevauche si (Start1 < End2) AND (End1 > Start2)
-            var rentedQuantity = await _context.ReservationItems
+            var rentedQuantity = await _context.ReservationEquipments
                 .Where(ri => ri.EquipmentId == request.EquipmentId)
                 .Where(ri => ri.Reservation.LogisticStatus != LogisticStatus.Cancelled)
                 .Where(ri => ri.Reservation.StartDate < request.EndDate && ri.Reservation.EndDate > request.StartDate)

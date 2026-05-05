@@ -14,4 +14,4 @@ public record CreateEquipmentCommand(
     [Required] decimal NewPurchasePriceTTC,
     [Required] int TotalStock,
     EquipmentCategory Category 
-    ) : IRequest<EquipmentDto>;
+    ) : IRequest<EquipmentDetailsDto>;

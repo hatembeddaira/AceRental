@@ -7,16 +7,16 @@ Content-Type: application/json
 {
   "reference": "DO",
   "name": "Pack DO",
-  "description": "Pack de deux enceintes en facade et quatre retours",
-  "dailyPrice": 500,
+  "description": "Pack de deux enceintes en facade et deux retours",
+  "dailyPriceHT": 500,
   "items": [
     {
-      "equipmentId": "b79d3481-df2c-4287-a340-01d4c7a86edd",
+      "equipmentId": "c71beabe-518f-4da0-ac38-442df3319720",
       "quantity": 2   
     },
     {
-      "equipmentId": "9e337776-4f9f-4393-9d91-9989a6f30f99",
-      "quantity": 4      
+      "equipmentId": "1cf8e37e-52a2-47e7-9973-910262aae973",
+      "quantity": 2      
     }
   ]
 }
@@ -29,7 +29,7 @@ Content-Type: application/json
   "reference": "SOL",
   "name": "Pack SOL",
   "description": "Pack de deux enceintes en facade et trois retours",
-  "dailyPrice": 400,
+  "dailyPriceHT": 400,
   "items": [
     {
       "equipmentId": "06090152-518d-4b93-8c80-9df8d5e9eb0b",
@@ -50,7 +50,7 @@ Content-Type: application/json
   "reference": "RE",
   "name": "Pack RE",
   "description": "Pack de deux enceintes en facade et deux retours",
-  "dailyPrice": 300,
+  "dailyPriceHT": 300,
   "items": [
     {
       "equipmentId": "06090152-518d-4b93-8c80-9df8d5e9eb0b",
@@ -68,6 +68,6 @@ GET {{Api_HostAddress}}/Api/v1/Packs/821423d3-a472-491d-9886-42c20134285a
 Content-Type: application/json
 
 ### Get All Pack
-GET {{Api_HostAddress}}/Api/v1/Packs/
+GET {{Api_HostAddress}}/Api/v1/Packs?$expand=Items($expand=Equipment)
 Content-Type: application/json
 

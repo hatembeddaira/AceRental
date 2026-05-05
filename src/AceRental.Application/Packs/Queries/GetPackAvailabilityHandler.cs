@@ -30,8 +30,8 @@ public class GetPackAvailabilityHandler : IRequestHandler<GetPackAvailabilityQue
         foreach (var item in packItems)
         {
             // Calculer combien il en reste en stock (même logique que pour un produit seul)
-            var rentedQty = await _context.ReservationItems
-                .Where(ri => ri.EquipmentId == item.EquipmentId &&
+            var rentedQty = await _context.ReservationPacks
+                .Where(ri => ri.PackId == item.EquipmentId &&
                              ri.Reservation.LogisticStatus != LogisticStatus.Cancelled &&
                              ri.Reservation.StartDate < request.EndDate && 
                              ri.Reservation.EndDate > request.StartDate)

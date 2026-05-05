@@ -1,5 +1,7 @@
 using AceRental.Application.Clients.Dtos;
 using AceRental.Application.Invoices.Dtos;
+using AceRental.Application.Payments.Dtos;
+using AceRental.Application.Quotes.Dtos;
 using AceRental.Domain.Enum;
 
 namespace AceRental.Application.Reservations.Dtos
@@ -19,7 +21,11 @@ namespace AceRental.Application.Reservations.Dtos
         public Guid ClientId { get; set; }
         public ClientReservationDto Client { get; set; } = null!;
         public int CurrentVersion { get; set; } = 1;
-        public ICollection<ReservationItemDto> Items { get; set; } = [];
+        public ICollection<ReservationEquipmentsDto> Equipments { get; set; } = [];
+        public ICollection<ReservationPacksDto> Packs { get; set; } = [];
+        public ICollection<ReservationServicesDto> Services { get; set; } = [];
         public ICollection<InvoiceDto> Invoices { get; set; } = [];
+        public ICollection<QuoteDto> Quotes { get; set; } = [];
+        public ICollection<PaymentDto> Payments { get; set; } = [];
     }
 }

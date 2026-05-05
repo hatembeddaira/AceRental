@@ -4,6 +4,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models; 
 using System.Linq;
 using System.Text.Json;
+using Microsoft.OpenApi.Any;
 
 namespace AceRental.Api.Configuration.Swagger;
 
@@ -35,16 +36,16 @@ public class SwaggerDefaultValues : IOperationFilter
             }
 
             // Correction Read-Only : Cast vers la classe concrète OpenApiSchema
-            // if (parameter.Schema is OpenApiSchema concreteSchema)
-            // {
-            //     if (concreteSchema.Default == null && description.DefaultValue != null)
-            //     {
-            //         // En v2.x sans Models, on instancie directement l'objet de base
-            //         concreteSchema.Default = new OpenApiString(description.DefaultValue.ToString());
-            //     }
-            // }
+            if (parameter.Schema is OpenApiSchema concreteSchema)
+            {
+                if (concreteSchema.Default == null && description.DefaultValue != null)
+                {
+                    // En v2.x sans Models, on instancie directement l'objet de base
+                    concreteSchema.Default = new OpenApiString(description.DefaultValue.ToString());
+                }
+            }
 
-            // parameter.Required |= description.IsRequired;
+            parameter.Required |= description.IsRequired;
         }
     }
 }

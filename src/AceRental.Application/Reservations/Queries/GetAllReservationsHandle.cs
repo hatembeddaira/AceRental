@@ -1,12 +1,14 @@
 using AceRental.Application.Reservations.Dtos;
+using AceRental.Domain.Entities;
 using AceRental.Infrastructure.Persistence;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace AceRental.Application.Reservations.Queries
 {
-    public class GetAllReservationsHandle : IRequestHandler<GetAllReservationsQuery, List<ReservationDetailsDto>>
+    public class GetAllReservationsHandle : IRequestHandler<GetAllReservationsQuery, IQueryable<ReservationDetailsDto>>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -17,16 +19,19 @@ namespace AceRental.Application.Reservations.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<ReservationDetailsDto>> Handle(GetAllReservationsQuery request, CancellationToken cancellationToken)
+        public async Task<IQueryable<ReservationDetailsDto>> Handle(GetAllReservationsQuery request, CancellationToken cancellationToken)
         {
-            var reservations = await _context.Reservations
-                .Include(r => r.Client)
+            
+            return _context.Reservations
+                .Include(r => r.Equipments)
+                .Include(r => r.Packs)
+                .Include(r => r.Services)
                 .Include(r => r.Invoices)
-                .Include(r => r.Items).ThenInclude(i => i.Equipment)
-                .Include(r => r.Items).ThenInclude(i => i.Pack)
+                .Include(r => r.Quotes)
+                .Include(r => r.Payments)
+                .Include(r => r.Client)
                 .AsNoTracking()
-                .ToListAsync(cancellationToken);
-            return _mapper.Map<List<ReservationDetailsDto>>(reservations);
+                .ProjectTo<ReservationDetailsDto>(_mapper.ConfigurationProvider);
         }
     }
 }

@@ -1,5 +1,7 @@
 using AceRental.Application.Clients.Dtos;
+using AceRental.Application.Invoices.Dtos;
 using AceRental.Application.Payments.Dtos;
+using AceRental.Application.Quotes.Dtos;
 using AceRental.Domain.Enum;
 
 namespace AceRental.Application.Reservations.Dtos
@@ -18,6 +20,5 @@ namespace AceRental.Application.Reservations.Dtos
         public decimal TotalTTC => TotalHT * (1 + TVA);
         public Guid ClientId { get; set; }
         public int CurrentVersion { get; set; } = 1;
-        public ICollection<ReservationItemDto> Items { get; set; } = [];
     }
 }

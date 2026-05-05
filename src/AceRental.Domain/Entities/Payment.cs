@@ -14,5 +14,7 @@ namespace AceRental.Domain.Entities
         public string? TransactionId { get; set; }     // Numéro de transaction ou chèque
 
         public virtual Reservation Reservation { get; set; } = null!;
+        public Guid? InvoiceId { get; set; }
+        public virtual Invoice? Invoice { get; set; }
     }
 }

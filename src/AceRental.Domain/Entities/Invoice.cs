@@ -11,5 +11,6 @@ namespace AceRental.Domain.Entities
         
         public Guid ReservationId { get; set; }
         public Reservation Reservation { get; set; } = null!;
+        public List<Payment> Payments { get; set; } = [];
     }
 }

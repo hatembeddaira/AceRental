@@ -17,7 +17,7 @@ namespace AceRental.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.3")
+                .HasAnnotation("ProductVersion", "10.0.0-preview.2.25163.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -294,6 +294,9 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("InvoiceId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -321,6 +324,8 @@ namespace AceRental.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
 
                     b.HasIndex("ReservationId");
 
@@ -406,18 +411,14 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FinancialStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("FinancialStatus")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("LogisticStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("LogisticStatus")
+                        .HasColumnType("int");
 
                     b.Property<int>("ReservationNumber")
                         .HasColumnType("int");
@@ -426,14 +427,54 @@ namespace AceRental.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("TVA")
-                        .HasPrecision(2, 2)
-                        .HasColumnType("decimal(2,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalHT")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalTTC")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Workflow")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("Reservations");
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.ReservationEquipments", b =>
+                {
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EquipmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPriceAtTimeOfBooking")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -443,19 +484,11 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Workflow")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.HasKey("ReservationId", "EquipmentId");
 
-                    b.HasKey("Id");
+                    b.HasIndex("EquipmentId");
 
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("ReservationNumber")
-                        .IsUnique();
-
-                    b.ToTable("Reservations", (string)null);
+                    b.ToTable("ReservationEquipments", (string)null);
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.ReservationHistory", b =>
@@ -493,10 +526,12 @@ namespace AceRental.Infrastructure.Migrations
                     b.ToTable("ReservationHistorys");
                 });
 
-            modelBuilder.Entity("AceRental.Domain.Entities.ReservationItem", b =>
+            modelBuilder.Entity("AceRental.Domain.Entities.ReservationPacks", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PackId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -508,20 +543,11 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("EquipmentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("PackId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("ReservationId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("UnitPriceAtTimeOfBooking")
                         .HasPrecision(18, 2)
@@ -533,15 +559,93 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("EquipmentId");
+                    b.HasKey("ReservationId", "PackId");
 
                     b.HasIndex("PackId");
 
-                    b.HasIndex("ReservationId");
+                    b.ToTable("ReservationPacks", (string)null);
+                });
 
-                    b.ToTable("ReservationItems", (string)null);
+            modelBuilder.Entity("AceRental.Domain.Entities.ReservationServices", b =>
+                {
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPriceAtTimeOfBooking")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ReservationId", "ServiceId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("ReservationServices", (string)null);
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.Service", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DailyPriceHT")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ServiceName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.Invoice", b =>
@@ -576,11 +680,18 @@ namespace AceRental.Infrastructure.Migrations
 
             modelBuilder.Entity("AceRental.Domain.Entities.Payment", b =>
                 {
+                    b.HasOne("AceRental.Domain.Entities.Invoice", "Invoice")
+                        .WithMany("Payments")
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("AceRental.Domain.Entities.Reservation", "Reservation")
-                        .WithMany()
+                        .WithMany("Payments")
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Invoice");
 
                     b.Navigation("Reservation");
                 });
@@ -588,7 +699,7 @@ namespace AceRental.Infrastructure.Migrations
             modelBuilder.Entity("AceRental.Domain.Entities.Quote", b =>
                 {
                     b.HasOne("AceRental.Domain.Entities.Reservation", "Reservation")
-                        .WithMany()
+                        .WithMany("Quotes")
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -601,10 +712,29 @@ namespace AceRental.Infrastructure.Migrations
                     b.HasOne("AceRental.Domain.Entities.Client", "Client")
                         .WithMany("Reservations")
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.ReservationEquipments", b =>
+                {
+                    b.HasOne("AceRental.Domain.Entities.Equipment", "Equipment")
+                        .WithMany("Reservations")
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AceRental.Domain.Entities.Reservation", "Reservation")
+                        .WithMany("Equipments")
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Equipment");
+
+                    b.Navigation("Reservation");
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.ReservationHistory", b =>
@@ -616,27 +746,42 @@ namespace AceRental.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AceRental.Domain.Entities.ReservationItem", b =>
+            modelBuilder.Entity("AceRental.Domain.Entities.ReservationPacks", b =>
                 {
-                    b.HasOne("AceRental.Domain.Entities.Equipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentId");
-
                     b.HasOne("AceRental.Domain.Entities.Pack", "Pack")
-                        .WithMany()
-                        .HasForeignKey("PackId");
+                        .WithMany("Reservations")
+                        .HasForeignKey("PackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("AceRental.Domain.Entities.Reservation", "Reservation")
-                        .WithMany("Items")
+                        .WithMany("Packs")
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Equipment");
-
                     b.Navigation("Pack");
 
                     b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.ReservationServices", b =>
+                {
+                    b.HasOne("AceRental.Domain.Entities.Reservation", "Reservation")
+                        .WithMany("Services")
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AceRental.Domain.Entities.Service", "Service")
+                        .WithMany("Reservations")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Reservation");
+
+                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.Client", b =>
@@ -647,20 +792,42 @@ namespace AceRental.Infrastructure.Migrations
             modelBuilder.Entity("AceRental.Domain.Entities.Equipment", b =>
                 {
                     b.Navigation("PackItems");
+
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.Invoice", b =>
+                {
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.Pack", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.Reservation", b =>
                 {
+                    b.Navigation("Equipments");
+
                     b.Navigation("History");
 
                     b.Navigation("Invoices");
 
-                    b.Navigation("Items");
+                    b.Navigation("Packs");
+
+                    b.Navigation("Payments");
+
+                    b.Navigation("Quotes");
+
+                    b.Navigation("Services");
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.Service", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

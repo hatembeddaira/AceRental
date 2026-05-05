@@ -65,10 +65,10 @@ namespace AceRental.Application.Reservations.Command
                 case LogisticStatus.Cancelled:
                     {
                         // Déclenchement automatique du Refunded s'il avait des paiements
-                        var resultPayments = await _mediator.Send(new GetAllPaymentsQuery(reservation.Id), cancellationToken);
-                        if(resultPayments.Any() && resultPayments.Sum(p => p.Amount) > 0)
+                        var resultPayments = await _mediator.Send(new GetAllPaymentsQuery(), cancellationToken);
+                        if(resultPayments.Any() && resultPayments.Where(x=> x.ReservationId == reservation.Id).Sum(p => p.Amount) > 0)
                         {
-                            await _mediator.Send(new ChangeFinancialStatusCommand(reservation.Id, FinancialStatus.Refunded), cancellationToken);
+                            await _mediator.Send(new ChangeFinancialStatusCommand(){ ReservationId = reservation.Id, Status = FinancialStatus.Refunded }, cancellationToken);
                         }
                     }
                     ;
@@ -89,7 +89,7 @@ namespace AceRental.Application.Reservations.Command
                 case LogisticStatus.Checked:
                     {   
                         // Génération de la facture de location
-                        await _mediator.Send(new ChangeFinancialStatusCommand(reservation.Id, FinancialStatus.RentalInvoiced), cancellationToken);
+                        await _mediator.Send(new ChangeFinancialStatusCommand(){ ReservationId = reservation.Id, Status = FinancialStatus.RentalInvoiced }, cancellationToken);
                     }
                     ;
                     break;

@@ -26,6 +26,12 @@ namespace AceRental.Infrastructure.Configurations
                 .WithMany(i => i.Invoices)
                 .HasForeignKey(p => p.ReservationId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Relation 1-N : Une facture peut avoir plusieurs paiements
+            builder.HasMany(i => i.Payments)
+                .WithOne(p => p.Invoice)
+                .HasForeignKey(p => p.InvoiceId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

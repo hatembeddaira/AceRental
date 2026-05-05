@@ -1,12 +1,13 @@
 using AceRental.Application.Payments.Dtos;
 using AceRental.Infrastructure.Persistence;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace AceRental.Application.Payments.Queries
 {
-    public class GetAllPaymentsHandle : IRequestHandler<GetAllPaymentsQuery, List<PaymentDetailsDto>>
+    public class GetAllPaymentsHandle : IRequestHandler<GetAllPaymentsQuery, IQueryable<PaymentDetailsDto>>
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -17,15 +18,12 @@ namespace AceRental.Application.Payments.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<PaymentDetailsDto>> Handle(GetAllPaymentsQuery request, CancellationToken cancellationToken)
+        public async Task<IQueryable<PaymentDetailsDto>> Handle(GetAllPaymentsQuery request, CancellationToken cancellationToken)
         {
             
-            var payments = await _context.Payments
-                .Include(r => r.Reservation)           
+            return _context.Payments
                 .AsNoTracking()
-                .Where(e => e.ReservationId == request.ReservationId)
-                .ToListAsync(cancellationToken);
-            return _mapper.Map<List<PaymentDetailsDto>>(payments);
+                .ProjectTo<PaymentDetailsDto>(_mapper.ConfigurationProvider);
         }
     }
 }

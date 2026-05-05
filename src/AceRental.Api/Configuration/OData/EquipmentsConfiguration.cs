@@ -20,10 +20,10 @@ namespace AceRental.Api.Configuration.OData
                 var dto = builder.EntitySet<EquipmentDetailsDto>("Equipments").EntityType;
                 dto.HasKey(e => e.Id);
 
-                var getAvailability = builder.EntityType<EquipmentDetailsDto>().Collection.Function(nameof(EquipmentsController.Availability));
-                getAvailability.Parameter<Guid>("id").Required();
-                getAvailability.Parameter<DateTime>("startDate").Required();
-                getAvailability.Parameter<DateTime>("endDate").Required();
+                var getAvailability = dto.Collection.Function("Availability");
+                getAvailability.Parameter<Guid>("id");
+                getAvailability.Parameter<DateTime>("startDate");
+                getAvailability.Parameter<DateTime>("endDate");
                 getAvailability.Returns<int>();          
             }
 

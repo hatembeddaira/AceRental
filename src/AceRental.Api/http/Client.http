@@ -21,7 +21,7 @@ GET {{Api_HostAddress}}/Api/v1/Clients?$filter=Id eq 3fa85f64-5717-4562-b3fc-2c9
 Content-Type: application/json
 
 ### Get Client
-GET {{Api_HostAddress}}/Api/v1/Clients(3fa85f64-5717-4562-b3fc-2c963f66afa6)
+GET {{Api_HostAddress}}/Api/v1/Clients(3fa85f64-5717-4562-b3fc-2c963f66afa6)?$expand=Reservations
 Content-Type: application/json
 
 ### Get All Clients

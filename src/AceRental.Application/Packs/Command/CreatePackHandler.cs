@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AceRental.Application.Packs.Command;
 
-public class CreatePackHandler : IRequestHandler<CreatePackCommand, Guid>
+public class CreatePackHandler : IRequestHandler<CreatePackCommand, PackDetailsDto>
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -19,7 +19,7 @@ public class CreatePackHandler : IRequestHandler<CreatePackCommand, Guid>
         _mapper = mapper;
     }
 
-    public async Task<Guid> Handle(CreatePackCommand request, CancellationToken cancellationToken)
+    public async Task<PackDetailsDto> Handle(CreatePackCommand request, CancellationToken cancellationToken)
     {
         if (request.Items.Count == 0) 
             throw new NotFoundException($"Pas d'équipements dans le pack.");
@@ -31,9 +31,8 @@ public class CreatePackHandler : IRequestHandler<CreatePackCommand, Guid>
                 throw new UnavailableQuantityException(item.EquipmentId);
         }
 
-        var pack = new PackDetailsDto
+        var pack = new Pack
         {            
-            Id = Guid.NewGuid(),
             Reference = request.Reference,
             Name = request.Name,
             Description = request.Description,
@@ -43,19 +42,17 @@ public class CreatePackHandler : IRequestHandler<CreatePackCommand, Guid>
 
         foreach (var item in request.Items)
         {
-            pack.Items.Add(new PackItemDto
+            pack.Items.Add(new PackItem
             {
-                Id = Guid.NewGuid(),
-                PackId = item.PackId,
+                PackId = pack.Id,
                 EquipmentId = item.EquipmentId,
                 Quantity = item.Quantity
             });
         }
 
-        _context.Packs.Add(_mapper.Map<Pack>(pack));
+        _context.Packs.Add(pack);
         await _context.SaveChangesAsync(cancellationToken);
-
-        return pack.Id;
+        return _mapper.Map<PackDetailsDto>(pack);
     }
     private async Task<bool> CheckAvailability(Guid equipmentId, int requestedQty)
     {

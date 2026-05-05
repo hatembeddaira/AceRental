@@ -1,4 +1,4 @@
-dotnet ef migrations add MigrationV46 --project src/AceRental.Infrastructure --startup-project src/AceRental.Api --output-dir Migrations
+dotnet ef migrations add MigrationV49 --project src/AceRental.Infrastructure --startup-project src/AceRental.Api --output-dir Migrations
 
 dotnet ef database update --project src/AceRental.Infrastructure --startup-project src/AceRental.Api
 

@@ -10,46 +10,6 @@ public class ODataQueryOptionsFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var relativePath = context.ApiDescription.RelativePath;
-        if (string.IsNullOrEmpty(relativePath)) return;
-
-        // 1. DÉTECTION DES PARAMÈTRES DANS LES PARENTHÈSES {param}
-        var matches = Regex.Matches(relativePath, @"\{([a-zA-Z0-9_]+)\}");
-
-        if (matches.Any())
-        {
-            
-            // var pathParamNames = pathVariableMatches
-            // .Cast<Match>() // Nécessaire pour LINQ sur MatchCollection
-            // .Select(m => m.Groups["pName"].Value)
-            // .ToList();
-            
-
-            foreach (Match match in matches)
-            {
-                string pName = match.Groups["pName"].Value;
-                // On cherche l'ancien paramètre (souvent en Query par défaut)
-                var oldParam = operation.Parameters.FirstOrDefault(p =>
-                    p.Name.Equals(pName, StringComparison.OrdinalIgnoreCase));
-
-                if (oldParam != null)
-                {
-                    // On le supprime car ses propriétés 'In' et 'Required' sont read-only
-                    operation.Parameters.Remove(oldParam);
-
-                    // On en crée un nouveau identique mais positionné dans le PATH
-                    operation.Parameters.Add(new OpenApiParameter
-                    {
-                        Name = oldParam.Name,
-                        Description = oldParam.Description,
-                        Required = true,
-                        In = ParameterLocation.Path, // Enfin assignable ici !
-                        Schema = oldParam.Schema
-                    });
-                }
-            }
-        }
-
         // 2. AJOUT DES OPTIONS ODATA ($filter, etc.)
         var hasEnableQuery = context.MethodInfo.GetCustomAttributes(typeof(EnableQueryAttribute), true).Any();
         if (hasEnableQuery)
@@ -69,8 +29,36 @@ public class ODataQueryOptionsFilter : IOperationFilter
                 }
             }
         }
-    }
+        
+        var relativePath = context.ApiDescription.RelativePath;
+        if (string.IsNullOrEmpty(relativePath) || !relativePath.Contains("(")) return;
 
+        // 1. On identifie les paramètres qui sont déjà dans les parenthèses {id}, {startDate}, etc.
+        foreach (var parameter in operation.Parameters.ToList())
+        {
+            // Si le paramètre est présent dans le template de route entre accolades
+            if (relativePath.Contains($"{{{parameter.Name}}}"))
+            {
+                // On force Swagger à comprendre qu'il fait partie du PATH, pas de la QUERY
+                parameter.In = ParameterLocation.Path;
+                parameter.Required = true;
+            }
+        }
+
+        // 2. Nettoyage de sécurité : supprimer les paramètres en Query qui ont le même nom
+        // car Swashbuckle a tendance à les recréer par erreur pour les types simples.
+        var pathParamNames = operation.Parameters
+            .Where(p => p.In == ParameterLocation.Path)
+            .Select(p => p.Name).ToList();
+
+        var duplicates = operation.Parameters
+            .Where(p => p.In == ParameterLocation.Query && pathParamNames.Contains(p.Name))
+            .ToList();
+
+        foreach (var dup in duplicates) operation.Parameters.Remove(dup);
+
+        
+    }
 }
 
 

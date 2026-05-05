@@ -18,8 +18,12 @@ namespace AceRental.Infrastructure.Configurations
             builder.HasKey(pi => new { pi.EquipmentId, pi.PackId });
 
             builder.HasOne(pi => pi.Equipment)
-            .WithMany(e => e.PackItems) // L'entité Equipment doit avoir ICollection<PackItem> PackItems
+            .WithMany(e => e.PackItems) 
             .HasForeignKey(pi => pi.EquipmentId);
+
+            builder.HasOne(pi => pi.Pack)
+            .WithMany(p => p.Items) 
+            .HasForeignKey(pi => pi.PackId);
 
         }
     }

@@ -8,7 +8,7 @@ Content-Type: application/json
   "reference": "ART315",
   "name": "RCF ART 315",
   "description": "Enceinte rcf art315",
-  "dailyPrice": 50,
+  "dailyPriceHT": 50,
   "purchasePrice": 500,
   "newPurchasePrice": 1000,
   "totalStock": 2,
@@ -24,7 +24,7 @@ Content-Type: application/json
   "reference": "W400a",
   "name": "Montarbo W400a",
   "description": "Enceinte Montarbo W400a",
-  "dailyPrice": 50,
+  "dailyPriceHT": 50,
   "purchasePrice": 500,
   "newPurchasePrice": 1000,
   "totalStock": 2,
@@ -39,7 +39,7 @@ Content-Type: application/json
   "reference": "DSR115",
   "name": "Yamaha DSR115",
   "description": "Enceinte yamaha dsr115",
-  "dailyPrice": 75,
+  "dailyPriceHT": 75,
   "purchasePrice": 750,
   "newPurchasePrice": 1600,
   "totalStock": 2,
@@ -51,10 +51,25 @@ POST {{Api_HostAddress}}/Api/v1/Equipments/
 Content-Type: application/json
 
 {
-  "reference": "DBR21",
-  "name": "Yamaha DBR21",
-  "description": "Enceinte yamaha dbr21",
-  "dailyPrice": 75,
+  "reference": "DSR112",
+  "name": "Yamaha DSR112",
+  "description": "Enceinte yamaha dsr112",
+  "dailyPriceHT": 50,
+  "purchasePrice": 500,
+  "newPurchasePrice": 1000,
+  "totalStock": 4,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "DBR15",
+  "name": "Yamaha DBR15",
+  "description": "Enceinte yamaha dbr15",
+  "dailyPriceHT": 75,
   "purchasePrice": 750,
   "newPurchasePrice": 1600,
   "totalStock": 4,
@@ -66,9 +81,13 @@ GET {{Api_HostAddress}}/Api/v1/Equipments?$filter=Id eq b79d3481-df2c-4287-a340-
 Content-Type: application/json
 
 ### Get Equipment
-GET {{Api_HostAddress}}/Api/v1/Equipments(b79d3481-df2c-4287-a340-01d4c7a86edd)?$expand=Packs
+GET {{Api_HostAddress}}/Api/v1/Equipments(1cf8e37e-52a2-47e7-9973-910262aae973)?$expand=Packs
 Content-Type: application/json
 
 ### Get All Equipment
 GET {{Api_HostAddress}}/api/v1/Equipments?$expand=Packs
+Content-Type: application/json
+
+### Get Availability
+GET {{Api_HostAddress}}/api/v1/Equipments/Availability(id=c71beabe-518f-4da0-ac38-442df3319720,startDate=2025-02-02,endDate=2025-02-03)
 Content-Type: application/json

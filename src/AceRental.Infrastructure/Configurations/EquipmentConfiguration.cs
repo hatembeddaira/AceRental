@@ -27,6 +27,7 @@ namespace AceRental.Infrastructure.Configurations
                 .HasConversion<string>()
                 .HasMaxLength(20);
 
+        
         }
     }
 }
