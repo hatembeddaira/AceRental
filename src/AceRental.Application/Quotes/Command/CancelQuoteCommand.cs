@@ -3,7 +3,7 @@ using MediatR;
 
 namespace AceRental.Application.Quotes.Command;
 
-public record GenerateQuoteCommand() : IRequest<QuoteDto>
+public record CancelQuoteCommand() : IRequest<bool>
 {
-    public Guid ReservationId { get; set; }
+    public Guid QuoteId { get; set; }
 }

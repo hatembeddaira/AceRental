@@ -170,6 +170,11 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<decimal>("TaxRate")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -338,19 +343,22 @@ namespace AceRental.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ArchivedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsArchived")
                         .HasColumnType("bit");
 
                     b.Property<int>("QuoteNumber")
@@ -367,16 +375,6 @@ namespace AceRental.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("TotalTTC")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("QuoteNumber")
@@ -385,6 +383,48 @@ namespace AceRental.Infrastructure.Migrations
                     b.HasIndex("ReservationId");
 
                     b.ToTable("Quotes", (string)null);
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.QuoteLines", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DailyPriceHT")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("QuoteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuoteId");
+
+                    b.ToTable("QuoteLines", (string)null);
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.Reservation", b =>
@@ -628,9 +668,13 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ServiceName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -644,6 +688,9 @@ namespace AceRental.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Reference")
+                        .IsUnique();
 
                     b.ToTable("Services", (string)null);
                 });
@@ -705,6 +752,17 @@ namespace AceRental.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.QuoteLines", b =>
+                {
+                    b.HasOne("AceRental.Domain.Entities.Quote", "Quote")
+                        .WithMany("QuoteLines")
+                        .HasForeignKey("QuoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Quote");
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.Reservation", b =>
@@ -806,6 +864,11 @@ namespace AceRental.Infrastructure.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.Quote", b =>
+                {
+                    b.Navigation("QuoteLines");
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.Reservation", b =>

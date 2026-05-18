@@ -6,10 +6,11 @@ using AutoMapper;
 using AceRental.Domain.Enum;
 using AceRental.Application.Exceptions;
 using AceRental.Application.Quotes.Dtos;
+using AceRental.Domain.Extensions;
 
 namespace AceRental.Application.Quotes.Command;
 
-public class GenerateQuoteHandler : IRequestHandler<GenerateQuoteCommand, Guid>
+public class GenerateQuoteHandler : IRequestHandler<GenerateQuoteCommand, QuoteDto>
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -20,45 +21,65 @@ public class GenerateQuoteHandler : IRequestHandler<GenerateQuoteCommand, Guid>
         _mapper = mapper;
     }
 
-    public async Task<Guid> Handle(GenerateQuoteCommand request, CancellationToken cancellationToken)
+    public async Task<QuoteDto> Handle(GenerateQuoteCommand request, CancellationToken cancellationToken)
     {
-        // 1. Récupérer la réservation 
         var reservation = await _context.Reservations
+            .Include(r => r.Equipments)
+                .ThenInclude(re => re.Equipment)
+            .Include(r => r.Packs)
+                .ThenInclude(rp => rp.Pack)
+            .Include(r => r.Services)
+                .ThenInclude(rs => rs.Service)
+            .Include(r => r.Client)
             .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);
 
         if (reservation == null) 
             throw new NotFoundException(nameof(Reservation), request.ReservationId);
+        
+        if (!reservation.LogisticStatus.CanTransitionTo(LogisticStatus.Quote, reservation))
+                throw new BusinessRuleException($"Transition impossible de {reservation?.LogisticStatus} vers {LogisticStatus.Quote} " +
+                $"dans le workflow {reservation!.Workflow} avec un statut financière = {reservation!.FinancialStatus}");
 
-        // 2. Créer l'objet Devis
-        var quote = new QuoteDto
+        List<QuoteLines> quoteLines = [];
+
+        quoteLines.AddRange(reservation.Equipments.Select(rl => new QuoteLines
+            {
+                Reference = rl.Equipment.Reference,
+                Name = rl.Equipment.Name,
+                DailyPriceHT = rl.UnitPriceAtTimeOfBooking,
+                Quantity = rl.Quantity,
+                Type = ReservationItemType.Equipment
+            }).ToList());
+        quoteLines.AddRange(reservation.Packs.Select(rl => new QuoteLines
+            {
+                Reference = rl.Pack.Reference,
+                Name = rl.Pack.Name,
+                DailyPriceHT = rl.UnitPriceAtTimeOfBooking,
+                Quantity = rl.Quantity,
+                Type = ReservationItemType.Pack
+            }).ToList());
+        quoteLines.AddRange(reservation.Services.Select(rl => new QuoteLines
+            {
+                Reference = rl.Service.Reference,
+                Name = rl.Service.Name,
+                DailyPriceHT = rl.UnitPriceAtTimeOfBooking,
+                Quantity = rl.Quantity,
+                Type = ReservationItemType.Service
+            }).ToList());
+
+
+        var quote = new Quote
         {
-            Id = Guid.NewGuid(),
             ReservationId = reservation.Id,
-            QuoteNumber = await GenerateQuoteNumber(), // Logique de numérotation à améliorer
-            CreatedAt = DateTime.UtcNow,
-            ExpiryDate = DateTime.UtcNow.AddDays(15),
-            TotalHT = reservation.TotalHT
+            TotalHT = reservation.TotalHT,
+            QuoteLines = quoteLines,
         };
 
-        // 3. Mettre à jour le statut de la réservation si nécessaire
         reservation.LogisticStatus = LogisticStatus.Quote;
 
-        _context.Quotes.Add(_mapper.Map<Quote>(quote));
+        _context.Quotes.Add(quote);
         await _context.SaveChangesAsync(cancellationToken);
         // Send Mail or Notification 
-        return quote.Id;
-    }
-    private async Task<int> GenerateQuoteNumber()
-    {
-        var lastReservationNumber = await _context.Quotes
-            .IgnoreQueryFilters()
-            .Where(ri => ri.CreatedAt.Year == DateTime.Now.Year)
-            .OrderByDescending(ri => ri.QuoteNumber)
-            .Select(x=> x.QuoteNumber).FirstOrDefaultAsync();
-
-        if(lastReservationNumber == 0)
-            lastReservationNumber = DateTime.Now.Year * 1000;
-            
-        return lastReservationNumber + 1;
+        return _mapper.Map<QuoteDto>(quote);
     }
 }

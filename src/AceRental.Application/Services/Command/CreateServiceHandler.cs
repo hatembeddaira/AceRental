@@ -23,10 +23,15 @@ public class CreateServiceHandler : IRequestHandler<CreateServiceCommand, Servic
 
     public async Task<ServiceDto> Handle(CreateServiceCommand request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(request.ServiceName))
+        if (string.IsNullOrEmpty(request.Reference))
             throw new ValidationException(new List<ValidationFailure>
             {
-                new ValidationFailure(nameof(request.ServiceName), "Le nom du service est requis.")
+                new ValidationFailure(nameof(request.Reference), "La référence du service est requise.")
+            });
+        if (string.IsNullOrEmpty(request.Name))
+            throw new ValidationException(new List<ValidationFailure>
+            {
+                new ValidationFailure(nameof(request.Name), "Le nom du service est requis.")
             });
         if (request.DailyPriceHT <= 0)
             throw new ValidationException(new List<ValidationFailure>
@@ -34,17 +39,17 @@ public class CreateServiceHandler : IRequestHandler<CreateServiceCommand, Servic
                 new ValidationFailure(nameof(request.DailyPriceHT), "Le prix journalier est requis.")
             });
         
-        var Service = new ServiceDto
+        var service = new Service
         {
-            Id = Guid.NewGuid(),
-            ServiceName = request.ServiceName,
+            Name = request.Name,
+            Reference = request.Reference,
             Type = request.Type,
             DailyPriceHT = request.DailyPriceHT
         };
 
-        _context.Services.Add(_mapper.Map<Service>(Service));
+        _context.Services.Add(service);
         await _context.SaveChangesAsync(cancellationToken);
-        return Service;
+        return _mapper.Map<ServiceDto>(service);
     }
 }
 

@@ -1,29 +1,28 @@
-using AceRental.Domain.Entities;
+﻿using AceRental.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AceRental.Infrastructure.Configurations
 {
-    public class ServiceConfiguration : IEntityTypeConfiguration<Service>
+    public class QuoteLinesConfiguration : IEntityTypeConfiguration<QuoteLines>
     {
-        public void Configure(EntityTypeBuilder<Service> builder)
+        public void Configure(EntityTypeBuilder<QuoteLines> builder)
         {
             if (builder is null)
             {
                 return;
             }
 
-            builder.ToTable("Services");
-            builder.HasQueryFilter(e => !e.IsDeleted);
+            builder.ToTable("QuoteLines");
             builder.Property(ri => ri.DailyPriceHT)
             .HasPrecision(18, 2);
-            builder.HasIndex(i => i.Reference)
-            .IsUnique();
-
-            // Configuration des Enums en chaînes de caractères dans la DB (plus lisible)
             builder.Property(p => p.Type)
                 .HasConversion<string>()
                 .HasMaxLength(20);
+
+            builder.HasOne(pi => pi.Quote)
+            .WithMany(p => p.QuoteLines) 
+            .HasForeignKey(pi => pi.QuoteId);
         }
     }
 }

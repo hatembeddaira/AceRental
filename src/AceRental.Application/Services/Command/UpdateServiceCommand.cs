@@ -9,7 +9,8 @@ public record UpdateServiceCommand : IRequest<bool>
 {
     [JsonIgnore]
     public Guid Id { get; set; }
-    public string? ServiceName { get; set; }
+    public string? Name { get; set; }
+    public string? Reference { get; set; }
     public ServiceType? Type { get; set; }
     public decimal? DailyPriceHT { get; set; }
 }

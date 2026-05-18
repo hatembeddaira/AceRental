@@ -14,7 +14,6 @@ namespace AceRental.Infrastructure.Configurations
             }
 
             builder.ToTable("Quotes");
-            builder.HasQueryFilter(e => !e.IsDeleted);
             builder.HasIndex(i => i.QuoteNumber)
             .IsUnique();
 
@@ -22,8 +21,12 @@ namespace AceRental.Infrastructure.Configurations
             .HasPrecision(18, 2);
             builder.Property(ri => ri.TVA)
             .HasPrecision(2, 2);
-            builder.Property(ri => ri.TotalTTC)
-            .HasPrecision(18, 2);
+
+            // Relation 1 → N avec QuoteLines
+            builder.HasMany(r => r.QuoteLines)
+                .WithOne(i => i.Quote)
+                .HasForeignKey(i => i.QuoteId)
+                .OnDelete(DeleteBehavior.Cascade); // supprime les items si pack supprimée
         }
     }
 }

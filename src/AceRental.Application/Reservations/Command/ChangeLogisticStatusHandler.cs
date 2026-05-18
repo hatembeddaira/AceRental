@@ -9,6 +9,7 @@ using System.Text.Json;
 using AceRental.Domain.Extensions;
 using AceRental.Application.Payments.Queries;
 using AceRental.Application.Exceptions;
+using AceRental.Application.Quotes.Command;
 
 namespace AceRental.Application.Reservations.Command
 {
@@ -28,13 +29,16 @@ namespace AceRental.Application.Reservations.Command
         public async Task<bool> Handle(ChangeLogisticStatusCommand request, CancellationToken cancellationToken)
         {
             var reservation = await _context.Reservations
+            .Include(r => r.Quotes)
+            .Include(r => r.Payments)
                 .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);            
             if (reservation == null) 
                 throw new NotFoundException(nameof(Reservation), request.ReservationId);
             
             // 1. Validation de la transition
             if (!reservation.LogisticStatus.CanTransitionTo(request.Status, reservation))
-                throw new BusinessRuleException($"Transition impossible de {reservation?.LogisticStatus} vers {request.Status} dans le workflow {reservation!.Workflow} avec un statut financière = {reservation!.FinancialStatus}");
+                throw new BusinessRuleException($"Transition impossible de {reservation?.LogisticStatus} vers {request.Status} " +
+                $"dans le workflow {reservation!.Workflow} avec un statut financière = {reservation!.FinancialStatus}");
 
             // 2. Snapshot minimal pour l'historique
             var historyEntry = new ReservationHistoryDto {
@@ -52,10 +56,10 @@ namespace AceRental.Application.Reservations.Command
             }
 
             _context.ReservationHistorys.Add(_mapper.Map<ReservationHistory>(historyEntry));
-            reservation.LogisticStatus = request.Status;
             reservation.CurrentVersion++;
-
             await AutoDeclancheAsync(request.Status, reservation, cancellationToken);
+            reservation.LogisticStatus = request.Status;
+            
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
         private async Task  AutoDeclancheAsync(LogisticStatus status, Reservation reservation, CancellationToken cancellationToken)
@@ -64,11 +68,16 @@ namespace AceRental.Application.Reservations.Command
             {
                 case LogisticStatus.Cancelled:
                     {
-                        // Déclenchement automatique du Refunded s'il avait des paiements
-                        var resultPayments = await _mediator.Send(new GetAllPaymentsQuery(), cancellationToken);
-                        if(resultPayments.Any() && resultPayments.Where(x=> x.ReservationId == reservation.Id).Sum(p => p.Amount) > 0)
+                        // Déclenchement automatique du Refunded s'il avait des paiements associés
+                        if(reservation.Payments.Any())
                         {
                             await _mediator.Send(new ChangeFinancialStatusCommand(){ ReservationId = reservation.Id, Status = FinancialStatus.Refunded }, cancellationToken);
+                        }
+                        // Annulation du devis associé
+                        var quote = reservation.Quotes.FirstOrDefault(x => !x.IsArchived);
+                        if(quote != null)
+                        {
+                            var resultDelete = await _mediator.Send(new CancelQuoteCommand(){ QuoteId = quote.Id }, cancellationToken);
                         }
                     }
                     ;

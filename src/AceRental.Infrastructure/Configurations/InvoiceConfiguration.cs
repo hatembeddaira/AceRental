@@ -19,7 +19,9 @@ namespace AceRental.Infrastructure.Configurations
             .HasPrecision(18, 2);
             builder.HasIndex(i => i.InvoiceNumber)
             .IsUnique();
-
+            builder.Property(p => p.Type)
+                .HasConversion<string>()
+                .HasMaxLength(50);
 
             // Relation 1-N : Une réservation peut avoir plusieurs factures
             builder.HasOne(p => p.Reservation)

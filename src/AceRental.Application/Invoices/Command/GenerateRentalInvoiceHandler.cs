@@ -1,12 +1,12 @@
 
 using AceRental.Application.Exceptions;
-using AceRental.Application.Invoices.Dtos;
 using AceRental.Domain.Entities;
 using AceRental.Domain.Enum;
 using AceRental.Infrastructure.Persistence;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using AceRental.Domain.Extensions;
 
 namespace AceRental.Application.Invoices.Command
 {
@@ -26,23 +26,25 @@ namespace AceRental.Application.Invoices.Command
         public async Task<Guid> Handle(GenerateRentalInvoiceCommand request, CancellationToken cancellationToken)
         {
             var reservation = await _context.Reservations
-                .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);
-
+                .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);            
             if (reservation == null) 
                 throw new NotFoundException(nameof(Reservation), request.ReservationId);
+            
+            if (!reservation.FinancialStatus.CanTransitionTo(FinancialStatus.RentalInvoiced, reservation))
+                throw new BusinessRuleException($"Transition impossible de {reservation?.FinancialStatus} vers {FinancialStatus.RentalInvoiced} " +
+                $"dans le workflow {reservation!.Workflow} avec un statut logistique = {reservation!.LogisticStatus}");
 
-            var rentalInvoice = new InvoiceDto
+            var rentalInvoice = new Invoice
             {
-                Id = Guid.NewGuid(),
                 ReservationId = reservation.Id,
-                // InvoiceNumber = 0, // Logique de numérotation à améliorer
-                CreatedAt = DateTime.UtcNow,
-                AmountHT = reservation.TotalHT
+                AmountHT = reservation.TotalHT,
+                IsPaid = true,
+                Type = InvoiceType.RentalInvoice
             };
 
             reservation.FinancialStatus = FinancialStatus.RentalInvoiced;
 
-            _context.Invoices.Add(_mapper.Map<Invoice>(rentalInvoice));
+            _context.Invoices.Add(rentalInvoice);
             await _context.SaveChangesAsync(cancellationToken);
             // Send Mail or Notification 
             return rentalInvoice.Id;

@@ -20,17 +20,16 @@ namespace AceRental.Application.Quotes.Queries
 
         public async Task<IQueryable<QuoteDto>> Handle(GetAllQuotesQuery request, CancellationToken cancellationToken)
         {
-            return _context.Quotes
+            var query = _context.Quotes
                 .AsNoTracking()
+                .Include(q => q.QuoteLines)
                 .Include(q => q.Reservation)
-                    .ThenInclude(r => r.Client)           // Client de la réservation
-                //.Include(q => q.Reservation)
-                //    .ThenInclude(r => r.Items)            // Items de la réservation
-                //.Include(q => q.Reservation)
-                //    .ThenInclude(r => r.Invoices)         // Factures de la réservation
-                //        .ThenInclude(i => i.Payments)     // Paiements des factures
+                    .ThenInclude(r => r.Client)
                 .Include(q => q.Reservation)
-                   .ThenInclude(r => r.Payments)         // Paiements directs de la réservation
+                   .ThenInclude(r => r.Payments);
+
+            return query
+                .IgnoreQueryFilters()
                 .OrderByDescending(q => q.CreatedAt)
                 .ProjectTo<QuoteDto>(_mapper.ConfigurationProvider);
         }

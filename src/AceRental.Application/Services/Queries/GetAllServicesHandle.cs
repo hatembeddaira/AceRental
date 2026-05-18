@@ -22,7 +22,7 @@ namespace AceRental.Application.Services.Queries
         {
             return _context.Services
                 .AsNoTracking()
-                .OrderBy(s => s.ServiceName)
+                .OrderBy(s => s.Name)
                 .ProjectTo<ServiceDto>(_mapper.ConfigurationProvider);
         }
     }

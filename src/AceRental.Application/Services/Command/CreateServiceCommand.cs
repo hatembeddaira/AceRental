@@ -5,7 +5,8 @@ using MediatR;
 namespace AceRental.Application.Services.Command;
 
 public record CreateServiceCommand(
-    string ServiceName,
+    string Name,
+    string Reference,
     ServiceType Type,
     decimal DailyPriceHT
     ) : IRequest<ServiceDto>;

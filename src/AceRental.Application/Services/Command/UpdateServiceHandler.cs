@@ -30,8 +30,11 @@ public class UpdateServiceHandler : IRequestHandler<UpdateServiceCommand, bool>
         if (Service == null)
             throw new NotFoundException(nameof(Service), request.Id);
 
-        if (!string.IsNullOrEmpty(request.ServiceName))
-            Service.ServiceName = request.ServiceName;
+        if (!string.IsNullOrEmpty(request.Name))
+            Service.Name = request.Name;
+            
+        if (!string.IsNullOrEmpty(request.Reference))
+            Service.Reference = request.Reference;
 
         if (request.Type != null)
             Service.Type = (ServiceType)request.Type;

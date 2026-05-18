@@ -8,6 +8,7 @@ using AceRental.Application.Payments.Queries;
 using AceRental.Application.Reservations.Command;
 using AutoMapper;
 using AceRental.Domain.Enum;
+using AceRental.Application.Exceptions;
 
 namespace AceRental.Application.Payments.Command;
 
@@ -26,25 +27,19 @@ public class CreatePaymentHandler : IRequestHandler<CreatePaymentCommand, Paymen
 
     public async Task<PaymentDto> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
     {
+        var reservation = await _context.Reservations
+            .FirstOrDefaultAsync(r => r.Id == request.ReservationId, cancellationToken);            
+        if (reservation == null) 
+            throw new NotFoundException(nameof(Reservation), request.ReservationId);
 
-        var resevations = await _mediator.Send(new GetAllReservationsQuery(), cancellationToken);
-        if (resevations == null) 
-            throw new KeyNotFoundException("Pas de réservation");
-
-        var resultResevation = resevations.Where(r => r.Id == request.ReservationId);
-
-        if (resultResevation == null) 
-            throw new KeyNotFoundException("Réservation introuvable.");
-        if (request.Type == PaymentType.Installment && resultResevation.Select(r => r.TotalTTC).FirstOrDefault() < 1500)
+        if (request.Type == PaymentType.Installment && reservation.TotalTTC < 1500)
             throw new InvalidOperationException("Le paiement échelonné est réservé aux montants supérieurs à 1500€.");
 
         FinancialStatus financialStatus;
         if(request.Type == PaymentType.Balance)
         {   
-
-            var resultPayments = await _mediator.Send(new GetAllPaymentsQuery(), cancellationToken);
-            if(resultResevation.Select(r => r.TotalTTC).FirstOrDefault() != 
-                resultPayments.Where(x=> x.ReservationId == request.ReservationId).Sum(p => p.Amount) + request.Amount)
+            var montantPaiements = _context.Payments.Where(x=> x.ReservationId == request.ReservationId).Sum(p => p.Amount);
+            if(reservation.TotalTTC != montantPaiements + request.Amount)
                 throw new InvalidOperationException("Le type de paiement Balance doit correspondre au solde restant de la réservation.");
             
             financialStatus = FinancialStatus.Paid;   
@@ -54,9 +49,8 @@ public class CreatePaymentHandler : IRequestHandler<CreatePaymentCommand, Paymen
             financialStatus = FinancialStatus.PartiallyPaid;
         }
 
-        var newPayment = new PaymentDto
+        var newPayment = new Payment
         {
-            Id = Guid.NewGuid(),
             ReservationId = request.ReservationId,
             Amount = request.Amount,
             Date = request.Date,
@@ -66,13 +60,13 @@ public class CreatePaymentHandler : IRequestHandler<CreatePaymentCommand, Paymen
         };
         
         // Ajouter le paiement à la collection
-        _context.Payments.Add(_mapper.Map<Payment>(newPayment));
+        _context.Payments.Add(newPayment);
 
         // Mettre à jour le statut financier global de la réservation
         var result = await _mediator.Send(new ChangeFinancialStatusCommand(){ ReservationId = request.ReservationId, Status = financialStatus }, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return newPayment;
+        return _mapper.Map<PaymentDto>(newPayment);
     }
 }
 
