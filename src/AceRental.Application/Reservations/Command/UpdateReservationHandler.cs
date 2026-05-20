@@ -48,9 +48,13 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
         if (reservation == null)
             throw new NotFoundException(nameof(Reservation), request.ReservationId);
 
-        if (!reservation.LogisticStatus.CanTransitionTo(LogisticStatus.Draft, reservation))
-                throw new BusinessRuleException($"Transition impossible de {reservation?.LogisticStatus} vers {LogisticStatus.Draft} " +
-                $"dans le workflow {reservation!.Workflow} avec un statut financière = {reservation!.FinancialStatus}");
+        if (reservation!.Workflow == Workflow.B2B && !reservation.LogisticStatus.CanTransitionTo(LogisticStatus.Draft, reservation))
+            throw new BusinessRuleException($"Transition impossible de {reservation?.LogisticStatus} vers {LogisticStatus.Draft} " +
+            $"dans le workflow {reservation!.Workflow} avec un statut financière = {reservation!.FinancialStatus}");
+
+        if (reservation!.Workflow == Workflow.B2C && !reservation.LogisticStatus.CanTransitionTo(LogisticStatus.Basket, reservation))
+            throw new BusinessRuleException($"Transition impossible de {reservation?.LogisticStatus} vers {LogisticStatus.Basket} " +
+            $"dans le workflow {reservation!.Workflow} avec un statut financière = {reservation!.FinancialStatus}");
 
 
         var isAvailable = await CheckAvailabilityItems(

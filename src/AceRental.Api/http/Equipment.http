@@ -66,13 +66,28 @@ POST {{Api_HostAddress}}/Api/v1/Equipments/
 Content-Type: application/json
 
 {
-  "reference": "DBR15",
-  "name": "Yamaha DBR15",
-  "description": "Enceinte yamaha dbr15",
+  "reference": "DSR118",
+  "name": "Yamaha DSR118",
+  "description": "Caisson de basse yamaha dsr118",
   "dailyPriceHT": 75,
-  "purchasePrice": 750,
+  "purchasePrice": 800,
   "newPurchasePrice": 1600,
-  "totalStock": 4,
+  "totalStock": 2,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "MG24",
+  "name": "Yamaha MG24",
+  "description": "Console yamaha MG24",
+  "dailyPriceHT": 50,
+  "purchasePrice": 500,
+  "newPurchasePrice": 1600,
+  "totalStock": 1,
   "category": 0
 }
 

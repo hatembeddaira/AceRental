@@ -1,0 +1,112 @@
+@Api_HostAddress = http://localhost:5000
+
+### Create Service
+POST {{Api_HostAddress}}/Api/v1/Services/
+Content-Type: application/json
+
+{
+  "name": "TECHSON",
+  "reference": "Technicien de son",
+  "type": 0,
+  "dailyPriceHT": 100
+}
+
+
+### Create Service
+POST {{Api_HostAddress}}/Api/v1/Services/
+Content-Type: application/json
+
+{
+  "name": "TECH",
+  "reference": "Technicien",
+  "type": 0,
+  "dailyPriceHT": 70
+}
+
+
+### Create Service
+POST {{Api_HostAddress}}/Api/v1/Services/
+Content-Type: application/json
+
+{
+  "name": "TRANSPORT",
+  "reference": "Transport",
+  "type": 1,
+  "dailyPriceHT": 0
+}
+
+### Create Service
+POST {{Api_HostAddress}}/Api/v1/Services/
+Content-Type: application/json
+
+{
+  "reference": "DSR115",
+  "name": "Yamaha DSR115",
+  "description": "Enceinte yamaha dsr115",
+  "dailyPriceHT": 75,
+  "purchasePrice": 750,
+  "newPurchasePrice": 1600,
+  "totalStock": 2,
+  "category": 0
+}
+
+### Create Service
+POST {{Api_HostAddress}}/Api/v1/Services/
+Content-Type: application/json
+
+{
+  "reference": "DSR112",
+  "name": "Yamaha DSR112",
+  "description": "Enceinte yamaha dsr112",
+  "dailyPriceHT": 50,
+  "purchasePrice": 500,
+  "newPurchasePrice": 1000,
+  "totalStock": 4,
+  "category": 0
+}
+
+### Create Service
+POST {{Api_HostAddress}}/Api/v1/Services/
+Content-Type: application/json
+
+{
+  "reference": "DSR118",
+  "name": "Yamaha DSR118",
+  "description": "Caisson de basse yamaha dsr118",
+  "dailyPriceHT": 75,
+  "purchasePrice": 800,
+  "newPurchasePrice": 1600,
+  "totalStock": 2,
+  "category": 0
+}
+
+### Create Service
+POST {{Api_HostAddress}}/Api/v1/Services/
+Content-Type: application/json
+
+{
+  "reference": "MG24",
+  "name": "Yamaha MG24",
+  "description": "Console yamaha MG24",
+  "dailyPriceHT": 50,
+  "purchasePrice": 500,
+  "newPurchasePrice": 1600,
+  "totalStock": 1,
+  "category": 0
+}
+
+### Get Service
+GET {{Api_HostAddress}}/Api/v1/Services?$filter=Id eq b79d3481-df2c-4287-a340-01d4c7a86edd&
+Content-Type: application/json
+
+### Get Service
+GET {{Api_HostAddress}}/Api/v1/Services(1cf8e37e-52a2-47e7-9973-910262aae973)?
+Content-Type: application/json
+
+### Get All Service
+GET {{Api_HostAddress}}/api/v1/Services?
+Content-Type: application/json
+
+### Get Availability
+GET {{Api_HostAddress}}/api/v1/Services/Availability(id=c71beabe-518f-4da0-ac38-442df3319720,startDate=2025-02-02,endDate=2025-02-03)
+Content-Type: application/json

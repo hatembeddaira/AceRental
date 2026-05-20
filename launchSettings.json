@@ -4,7 +4,8 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "acerental.api": "StartDebugging"
+        "acerental.api": "StartDebugging",
+        "acerental.frontend": "StartDebugging"
       }
     }
   }

@@ -14,7 +14,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             //.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
-            .UseSqlServer("Data Source=.\\SQLSERVER;Database=AceRental;User Id=sa;Password=Admin-12345;MultipleActiveResultSets=True;Encrypt=False;")
+            .UseSqlServer("Server=localhost;Database=AceRental;User Id=sa;Password=AceRental@2026!;MultipleActiveResultSets=True;Encrypt=False;TrustServerCertificate=True;")
             .Options;
 
         return new ApplicationDbContext(options);

@@ -20,7 +20,7 @@ public class UpdateServiceHandler : IRequestHandler<UpdateServiceCommand, bool>
 
     public async Task<bool> Handle(UpdateServiceCommand request, CancellationToken cancellationToken)
     {
-        if (request.DailyPriceHT <= 0)
+        if (request.DailyPriceHT < 0)
             throw new ValidationException(new List<ValidationFailure>
             {
                 new ValidationFailure(nameof(request.DailyPriceHT), "Le prix journalier est requis.")
