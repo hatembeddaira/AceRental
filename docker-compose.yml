@@ -26,6 +26,9 @@ services:
     build:
       context: ../AceRental.FrontEnd
       dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:3000
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "3000:3000"
     networks:
