@@ -49,19 +49,6 @@ namespace AceRental.Application.Invoices.Command
             // Send Mail or Notification 
             return rentalInvoice.Id;
         }
-        // private async Task<int> GenerateInvoiceNumber()
-        // {
-        //     var lastRentalInvoiceNumber = await _context.Invoices
-        //         .IgnoreQueryFilters()
-        //         .Where(ri => ri.CreatedAt.Year == DateTime.Now.Year)
-        //         .OrderByDescending(ri => ri.InvoiceNumber)
-        //         .Select(x => x.InvoiceNumber).FirstOrDefaultAsync();
-
-        //     if (lastRentalInvoiceNumber == 0)
-        //         lastRentalInvoiceNumber = DateTime.Now.Year * 1000;
-
-        //     return lastRentalInvoiceNumber + 1;
-        // }
     }
 
 }

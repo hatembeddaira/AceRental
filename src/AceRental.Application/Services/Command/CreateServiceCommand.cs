@@ -8,5 +8,6 @@ public record CreateServiceCommand(
     string Name,
     string Reference,
     ServiceType Type,
-    decimal DailyPriceHT
+    decimal PriceHT,
+    bool IsDailyPrice
     ) : IRequest<ServiceDto>;

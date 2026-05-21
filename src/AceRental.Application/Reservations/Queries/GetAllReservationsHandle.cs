@@ -31,6 +31,7 @@ namespace AceRental.Application.Reservations.Queries
                 .Include(r => r.Payments)
                 .Include(r => r.Client)
                 .AsNoTracking()
+                .IgnoreQueryFilters()
                 .ProjectTo<ReservationDetailsDto>(_mapper.ConfigurationProvider);
         }
     }

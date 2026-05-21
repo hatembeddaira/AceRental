@@ -34,6 +34,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Quote> Quotes => Set<Quote>();
     public DbSet<QuoteLines> QuoteLines => Set<QuoteLines>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
+    public DbSet<InvoiceLines> InvoiceLines => Set<InvoiceLines>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<Service> Services => Set<Service>();
 
@@ -50,6 +51,7 @@ public class ApplicationDbContext : DbContext
             modelBuilder.ApplyConfiguration(new ReservationPacksConfiguration());
             modelBuilder.ApplyConfiguration(new ReservationServicesConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceLinesConfiguration());
             modelBuilder.ApplyConfiguration(new QuoteConfiguration());
             modelBuilder.ApplyConfiguration(new QuoteLinesConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentConfiguration());

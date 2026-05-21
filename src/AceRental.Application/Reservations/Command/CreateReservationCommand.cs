@@ -9,7 +9,7 @@ public record CreateReservationCommand(
     DateTime StartDate,
     DateTime EndDate,
     Workflow Workflow,
-    List<ReservationEquipmentsDto>? Equipments,
-    List<ReservationPacksDto>? Packs,
-    List<ReservationServicesDto>? Services
+    List<ReservationEquipmentsCommandeDto>? Equipments,
+    List<ReservationPacksCommandeDto>? Packs,
+    List<ReservationServicesCommandeDto>? Services
     ) : IRequest<ReservationDetailsDto>;

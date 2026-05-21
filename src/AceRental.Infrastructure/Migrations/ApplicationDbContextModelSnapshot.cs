@@ -167,7 +167,7 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<Guid>("ReservationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("TaxRate")
+                    b.Property<decimal>("TVA")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Type")
@@ -189,6 +189,48 @@ namespace AceRental.Infrastructure.Migrations
                     b.HasIndex("ReservationId");
 
                     b.ToTable("Invoices", (string)null);
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.InvoiceLines", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DailyPriceHT")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("InvoiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.ToTable("InvoiceLines", (string)null);
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.Pack", b =>
@@ -658,12 +700,11 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("DailyPriceHT")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDailyPrice")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -671,6 +712,10 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("PriceHT")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Reference")
                         .IsRequired()
@@ -704,6 +749,17 @@ namespace AceRental.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("AceRental.Domain.Entities.InvoiceLines", b =>
+                {
+                    b.HasOne("AceRental.Domain.Entities.Invoice", "Invoice")
+                        .WithMany("InvoiceLines")
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("AceRental.Domain.Entities.PackItem", b =>
@@ -856,6 +912,8 @@ namespace AceRental.Infrastructure.Migrations
 
             modelBuilder.Entity("AceRental.Domain.Entities.Invoice", b =>
                 {
+                    b.Navigation("InvoiceLines");
+
                     b.Navigation("Payments");
                 });
 

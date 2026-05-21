@@ -35,7 +35,9 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
     }
     public async Task<ReservationDetailsDto> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
     {
-        if ((request.EndDate - request.StartDate).Days <= 0)
+        // int totalDays = (request.EndDate - request.StartDate).Days;
+        int totalDays = GetTotalDays(request.StartDate, request.EndDate);
+        if (totalDays <= 0)
             throw new ValidationException(new List<ValidationFailure>
             {
                 new ValidationFailure(nameof(request.EndDate), "La date de fin doit être postérieure à la date de début.")
@@ -75,7 +77,7 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
         var lstIdServices = request.Services?.Select(s => s.ServiceId) ?? new List<Guid>();
         var servicesInDb = await _context.Services
             .Where(s => lstIdServices.Contains(s.Id))
-            .ToDictionaryAsync(s => s.Id, s => s);
+            .ToListAsync();
         
         if (request.Equipments != null)
         {
@@ -112,41 +114,35 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
                     ServiceId = item.ServiceId,
                     ReservationId = reservation.Id,
                     Quantity = item.Quantity,
-                    UnitPriceAtTimeOfBooking = servicesInDb[item.ServiceId]?.DailyPriceHT ?? 0
+                    UnitPriceAtTimeOfBooking = item.UnitPriceAtTimeOfBooking != null ? (decimal)item.UnitPriceAtTimeOfBooking : servicesInDb.FirstOrDefault(s => s.Id == item.ServiceId)?.PriceHT ?? 0
                 });
             }
         }
 
-        reservation.TotalHT = reservation.Equipments.Sum(e => e.Quantity * e.UnitPriceAtTimeOfBooking) +
-                              reservation.Packs.Sum(p => p.Quantity * p.UnitPriceAtTimeOfBooking) +
-                              reservation.Services.Sum(s => s.Quantity * s.UnitPriceAtTimeOfBooking);
+        reservation.TotalHT = reservation.Equipments.Sum(e => e.Quantity * e.UnitPriceAtTimeOfBooking) * totalDays +
+                              reservation.Packs.Sum(p => p.Quantity * p.UnitPriceAtTimeOfBooking) * totalDays +
+                              servicesInDb.Where(s => reservation.Services.Select(rs => rs.ServiceId).Contains(s.Id) && s.IsDailyPrice)
+                                    .Sum(s => reservation.Services.Where(rs => rs.ServiceId == s.Id).Sum(rs => rs.Quantity * rs.UnitPriceAtTimeOfBooking) * totalDays) +
+                              servicesInDb.Where(s => reservation.Services.Select(rs => rs.ServiceId).Contains(s.Id) && !s.IsDailyPrice)
+                                    .Sum(s => reservation.Services.Where(rs => rs.ServiceId == s.Id).Sum(rs => rs.Quantity * rs.UnitPriceAtTimeOfBooking));
 
         _context.Reservations.Add(_mapper.Map<Reservation>(reservation));
         await _context.SaveChangesAsync(cancellationToken);
         return reservation;
     }
+
+    private int GetTotalDays(DateTime startDate, DateTime endDate)
+    {
+        if (endDate <= startDate)
+        {
+            return 0; // Sécurité si les dates sont inversées ou identiques
+        }
+        TimeSpan difference = endDate - startDate;
+        return (int)Math.Ceiling(difference.TotalDays);
+    }
+
     private async Task<bool> CheckAvailabilityItems(Dictionary<Guid, int> lstEquipments, DateTime start, DateTime end, CancellationToken cancellationToken)
     {
-        // var equipmentsToCheck = new Dictionary<Guid, int>();
-
-        // foreach (var item in lstEquipments)
-        // {
-        //     equipmentsToCheck[item.EquipmentId] = equipmentsToCheck.GetValueOrDefault(item.EquipmentId) + item.Quantity;
-        // }
-        // foreach (var item in request.Packs)
-        // {
-        //     // On récupère la composition du pack pour savoir quels équipements vérifier
-        //     var packComposition = await _context.Packs
-        //         .Include(x => x.Items)
-        //         .Where(pe => pe.Id == item.PackId)
-        //         .FirstOrDefaultAsync();
-
-        //     foreach (var e in packComposition?.Items!)
-        //     {
-        //         equipmentsToCheck[e.EquipmentId] = equipmentsToCheck.GetValueOrDefault(e.EquipmentId) + (e.Quantity * item.Quantity);
-        //     }
-        // }
-
         // On vérifie la disponibilité pour chaque équipement unique identifié
         foreach (var (eqId, qty) in lstEquipments)
         {

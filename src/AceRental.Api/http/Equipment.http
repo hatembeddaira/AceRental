@@ -66,6 +66,66 @@ POST {{Api_HostAddress}}/Api/v1/Equipments/
 Content-Type: application/json
 
 {
+  "reference": "mg24",
+  "name": "Yamaha MG24",
+  "description": "Console analogique yamaha mg24",
+  "dailyPriceHT": 50,
+  "purchasePrice": 500,
+  "newPurchasePrice": 1600,
+  "totalStock": 4,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "M32R",
+  "name": "Midas M32R",
+  "description": "Console numérique midas m32r",
+  "dailyPriceHT": 120,
+  "purchasePrice": 1600,
+  "newPurchasePrice": 2500,
+  "totalStock": 1,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "DBR15",
+  "name": "Yamaha DBR15",
+  "description": "Enceinte yamaha dbr15",
+  "dailyPriceHT": 75,
+  "purchasePrice": 750,
+  "newPurchasePrice": 1600,
+  "totalStock": 4,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "M32R",
+  "name": "Midas M32R",
+  "description": "Console numérique midas m32r",
+  "dailyPriceHT": 120,
+  "purchasePrice": 1600,
+  "newPurchasePrice": 2500,
+  "totalStock": 1,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
   "reference": "DSR118",
   "name": "Yamaha DSR118",
   "description": "Caisson de basse yamaha dsr118",

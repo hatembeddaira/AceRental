@@ -29,8 +29,8 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
     public async Task<bool> Handle(UpdateReservationCommand request, CancellationToken cancellationToken)
     {
 
-        if (request.EndDate != null && 
-            request.StartDate != null && 
+        if (request.EndDate != null &&
+            request.StartDate != null &&
             ((DateTime)request.EndDate - (DateTime)request.StartDate).Days <= 0)
             throw new ValidationException(new List<ValidationFailure>
             {
@@ -75,11 +75,10 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
         };
         _context.ReservationHistorys.Add(_mapper.Map<ReservationHistory>(historyEntry));
 
-        // Gérer les modifications d'items en premier
         if (request.Equipments != null && request.Equipments.Any())
         {
-            var currentItems = reservation.Equipments.Select(i => new ReservationEquipmentsDto 
-            { 
+            var currentItems = reservation.Equipments.Select(i => new ReservationEquipmentsDto
+            {
                 EquipmentId = i.EquipmentId,
                 Quantity = i.Quantity,
                 UnitPriceAtTimeOfBooking = i.UnitPriceAtTimeOfBooking,
@@ -93,8 +92,8 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
         }
         if (request.Packs != null && request.Packs.Any())
         {
-            var currentItems = reservation.Packs.Select(i => new ReservationPacksDto 
-            { 
+            var currentItems = reservation.Packs.Select(i => new ReservationPacksDto
+            {
                 PackId = i.PackId,
                 Quantity = i.Quantity,
                 UnitPriceAtTimeOfBooking = i.UnitPriceAtTimeOfBooking,
@@ -108,8 +107,8 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
         }
         if (request.Services != null && request.Services.Any())
         {
-            var currentItems = reservation.Services.Select(i => new ReservationServicesDto 
-            { 
+            var currentItems = reservation.Services.Select(i => new ReservationServicesDto
+            {
                 ServiceId = i.ServiceId,
                 Quantity = i.Quantity,
                 UnitPriceAtTimeOfBooking = i.UnitPriceAtTimeOfBooking,
@@ -126,7 +125,7 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
         reservation.StartDate = request.StartDate != null ? request.StartDate.Value : reservation.StartDate;
         reservation.EndDate = request.EndDate != null ? request.EndDate.Value : reservation.EndDate;
         reservation.CurrentVersion++;
-        
+
         reservation.TotalHT = reservation.Equipments.Sum(e => e.Quantity * e.UnitPriceAtTimeOfBooking) +
                               reservation.Packs.Sum(p => p.Quantity * p.UnitPriceAtTimeOfBooking) +
                               reservation.Services.Sum(s => s.Quantity * s.UnitPriceAtTimeOfBooking);
@@ -165,7 +164,7 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
             }
         }
         return true;
-    }    
+    }
     private async Task<bool> CheckAvailability(Guid reservationId, Guid equipmentId, DateTime start, DateTime end, int requestedQty, CancellationToken cancellationToken)
     {
         // Logique : Somme des quantités louées dans les réservations qui chevauchent ces dates
@@ -173,20 +172,27 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
         var totalStock = (await _context.Equipments.FindAsync(equipmentId))?.TotalStock ?? 0;
         return (totalStock - rentedQty) >= requestedQty;
     }
-    private bool HaveReservationEquipmentsChanged(List<ReservationEquipmentsDto> currentItems, List<ReservationEquipmentsDto> newItems)
+    private bool HaveReservationEquipmentsChanged(List<ReservationEquipmentsDto> currentItems, List<ReservationEquipmentsCommandeDto> newItems)
+    {
+        if (currentItems.Count != newItems.Count) return true;
+        foreach (var newItem in newItems)
+        {
+            var oldItem = currentItems.FirstOrDefault(i => i.EquipmentId == newItem.EquipmentId);
+            if (oldItem == null || oldItem.Quantity != newItem.Quantity || oldItem.UnitPriceAtTimeOfBooking != newItem.UnitPriceAtTimeOfBooking)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private bool HaveReservationPacksChanged(List<ReservationPacksDto> currentItems, List<ReservationPacksCommandeDto> newItems)
     {
         if (currentItems.Count != newItems.Count) return true;
 
-        // On crée un dictionnaire : Clé = (IdEquipement ou IdPack) | Valeur = Quantité
-        var currentMapping = currentItems.ToDictionary(
-            i => i.EquipmentId,
-            i => i.Quantity
-        );
-
         foreach (var newItem in newItems)
         {
-            // Si l'ID n'existe pas dans l'ancienne liste ou si la quantité diffère
-            if (!currentMapping.TryGetValue(newItem.EquipmentId, out int currentQty) || currentQty != newItem.Quantity)
+            var oldItem = currentItems.FirstOrDefault(i => i.PackId == newItem.PackId);
+            if (oldItem == null || oldItem.Quantity != newItem.Quantity)
             {
                 return true;
             }
@@ -194,49 +200,20 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
 
         return false;
     }
-    private bool HaveReservationPacksChanged(List<ReservationPacksDto> currentItems, List<ReservationPacksDto> newItems)
+    private bool HaveReservationServicesChanged(List<ReservationServicesDto> currentItems, List<ReservationServicesCommandeDto> newItems)
     {
         if (currentItems.Count != newItems.Count) return true;
-
-        // On crée un dictionnaire : Clé = (IdEquipement ou IdPack) | Valeur = Quantité
-        var currentMapping = currentItems.ToDictionary(
-            i => i.PackId,
-            i => i.Quantity
-        );
-
         foreach (var newItem in newItems)
         {
-            // Si l'ID n'existe pas dans l'ancienne liste ou si la quantité diffère
-            if (!currentMapping.TryGetValue(newItem.PackId, out int currentQty) || currentQty != newItem.Quantity)
+            var oldItem = currentItems.FirstOrDefault(i => i.ServiceId == newItem.ServiceId);
+            if (oldItem == null || oldItem.Quantity != newItem.Quantity || oldItem.UnitPriceAtTimeOfBooking != newItem.UnitPriceAtTimeOfBooking)
             {
                 return true;
             }
         }
-
         return false;
     }
-    private bool HaveReservationServicesChanged(List<ReservationServicesDto> currentItems, List<ReservationServicesDto> newItems)
-    {
-        if (currentItems.Count != newItems.Count) return true;
-
-        // On crée un dictionnaire : Clé = (IdEquipement ou IdPack) | Valeur = Quantité
-        var currentMapping = currentItems.ToDictionary(
-            i => i.ServiceId,
-            i => i.Quantity
-        );
-
-        foreach (var newItem in newItems)
-        {
-            // Si l'ID n'existe pas dans l'ancienne liste ou si la quantité diffère
-            if (!currentMapping.TryGetValue(newItem.ServiceId, out int currentQty) || currentQty != newItem.Quantity)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    private async Task UpdateReservationEquipmentsAsync(Reservation reservation, List<ReservationEquipmentsDto> updatedEquipments, CancellationToken cancellationToken)
+    private async Task UpdateReservationEquipmentsAsync(Reservation reservation, List<ReservationEquipmentsCommandeDto> updatedEquipments, CancellationToken cancellationToken)
     {
         // 1. Supprimer les items qui ne sont plus dans la nouvelle liste
         var toRemove = reservation.Equipments.Where(old => !updatedEquipments.Any(n => n.EquipmentId == old.EquipmentId)).ToList();
@@ -247,8 +224,9 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
 
         // 2. Préparation des prix
         var allItemIds = updatedEquipments.Select(i => i.EquipmentId).ToList();
-        var equipments = await _context.Equipments.Where(e => allItemIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id, cancellationToken);
-        // decimal totalAmount = 0;
+        var equipments = await _context.Equipments
+                                    .Where(s => allItemIds.Contains(s.Id))
+                                    .ToDictionaryAsync(s => s.Id, cancellationToken);
 
         // 3. Mise à jour ou ajout des items
         foreach (var item in updatedEquipments)
@@ -256,12 +234,14 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
             var existing = reservation.Equipments.FirstOrDefault(i => i.EquipmentId == item.EquipmentId);
             decimal unitPrice = 0;
 
-            if (equipments.TryGetValue(item.EquipmentId, out var eq)) unitPrice = eq.DailyPriceHT;
+            if (equipments.TryGetValue(item.EquipmentId, out var eq))
+                unitPrice = eq.DailyPriceHT;
 
             if (existing != null)
             {
                 existing.Quantity = item.Quantity;
-                existing.UnitPriceAtTimeOfBooking = unitPrice;
+                existing.UnitPriceAtTimeOfBooking = item.UnitPriceAtTimeOfBooking == null ? unitPrice : (decimal)item.UnitPriceAtTimeOfBooking;
+            
             }
             else
             {
@@ -269,18 +249,14 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
                 {
                     EquipmentId = item.EquipmentId,
                     Quantity = item.Quantity,
-                    UnitPriceAtTimeOfBooking = unitPrice,
+                    UnitPriceAtTimeOfBooking = item.UnitPriceAtTimeOfBooking == null ? unitPrice : (decimal)item.UnitPriceAtTimeOfBooking,
                     ReservationId = reservation.Id
                 };
                 _context.ReservationEquipments.Add(newItem);
             }
-
-            // totalAmount += (unitPrice * item.Quantity * (reservation.EndDate - reservation.StartDate).Days);
         }
-
-        // reservation.TotalHT = totalAmount;
     }
-    private async Task UpdateReservationPacksAsync(Reservation reservation, List<ReservationPacksDto> updatedPacks, CancellationToken cancellationToken)
+    private async Task UpdateReservationPacksAsync(Reservation reservation, List<ReservationPacksCommandeDto> updatedPacks, CancellationToken cancellationToken)
     {
         // 1. Supprimer les items qui ne sont plus dans la nouvelle liste
         var toRemove = reservation.Packs.Where(old => !updatedPacks.Any(n => n.PackId == old.PackId)).ToList();
@@ -291,9 +267,9 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
 
         // 2. Préparation des prix
         var allItemIds = updatedPacks.Select(i => i.PackId).ToList();
-        var packs = await _context.Packs.Where(p => allItemIds.Contains(p.Id)).ToDictionaryAsync(p => p.Id, cancellationToken);
-        
-        // decimal totalAmount = 0;
+        var packs = await _context.Packs
+                                    .Where(s => allItemIds.Contains(s.Id))
+                                    .ToDictionaryAsync(s => s.Id, cancellationToken);
 
         // 3. Mise à jour ou ajout des items
         foreach (var item in updatedPacks)
@@ -301,7 +277,8 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
             var existing = reservation.Packs.FirstOrDefault(i => i.PackId == item.PackId);
             decimal unitPrice = 0;
 
-            if (packs.TryGetValue(item.PackId, out var p)) unitPrice = p.DailyPriceHT;
+            if (packs.TryGetValue(item.PackId, out var p))
+                unitPrice = p.DailyPriceHT;
 
             if (existing != null)
             {
@@ -319,13 +296,9 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
                 };
                 _context.ReservationPacks.Add(newItem);
             }
-
-            // totalAmount += (unitPrice * item.Quantity * (reservation.EndDate - reservation.StartDate).Days);
         }
-
-        // reservation.TotalHT = totalAmount;
-    }  
-    private async Task UpdateReservationServicesAsync(Reservation reservation, List<ReservationServicesDto> updatedServices, CancellationToken cancellationToken)
+    }
+    private async Task UpdateReservationServicesAsync(Reservation reservation, List<ReservationServicesCommandeDto> updatedServices, CancellationToken cancellationToken)
     {
         // 1. Supprimer les items qui ne sont plus dans la nouvelle liste
         var toRemove = reservation.Services.Where(old => !updatedServices.Any(n => n.ServiceId == old.ServiceId)).ToList();
@@ -336,11 +309,9 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
 
         // 2. Préparation des prix
         var allItemIds = updatedServices.Select(i => i.ServiceId).ToList();
-        var equipments = await _context.Equipments.Where(e => allItemIds.Contains(e.Id)).ToDictionaryAsync(e => e.Id, cancellationToken);
-        var packs = await _context.Packs.Where(p => allItemIds.Contains(p.Id)).ToDictionaryAsync(p => p.Id, cancellationToken);
-        var services = await _context.Services.Where(s => allItemIds.Contains(s.Id)).ToDictionaryAsync(s => s.Id, cancellationToken);
-
-        // decimal totalAmount = 0;
+        var services = await _context.Services
+                                    .Where(s => allItemIds.Contains(s.Id))
+                                    .ToDictionaryAsync(s => s.Id, cancellationToken);
 
         // 3. Mise à jour ou ajout des items
         foreach (var item in updatedServices)
@@ -348,12 +319,13 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
             var existing = reservation.Services.FirstOrDefault(i => i.ServiceId == item.ServiceId);
             decimal unitPrice = 0;
 
-            if (services.TryGetValue(item.ServiceId, out var s)) unitPrice = s.DailyPriceHT;
+            if (services.TryGetValue(item.ServiceId, out var s))
+                unitPrice = s.PriceHT;
 
             if (existing != null)
             {
                 existing.Quantity = item.Quantity;
-                existing.UnitPriceAtTimeOfBooking = unitPrice;
+                existing.UnitPriceAtTimeOfBooking = item.UnitPriceAtTimeOfBooking == null ? unitPrice : (decimal)item.UnitPriceAtTimeOfBooking;
             }
             else
             {
@@ -361,19 +333,15 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
                 {
                     ServiceId = item.ServiceId,
                     Quantity = item.Quantity,
-                    UnitPriceAtTimeOfBooking = unitPrice,
+                    UnitPriceAtTimeOfBooking = item.UnitPriceAtTimeOfBooking == null ? unitPrice : (decimal)item.UnitPriceAtTimeOfBooking,
                     ReservationId = reservation.Id
                 };
                 _context.ReservationServices.Add(newItem);
             }
-
-            // totalAmount += (unitPrice * item.Quantity * (reservation.EndDate - reservation.StartDate).Days);
         }
-
-        // reservation.TotalHT = totalAmount;
     }
 
-       
+
 }
 
 

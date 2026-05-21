@@ -33,10 +33,10 @@ public class CreateServiceHandler : IRequestHandler<CreateServiceCommand, Servic
             {
                 new ValidationFailure(nameof(request.Name), "Le nom du service est requis.")
             });
-        if (request.DailyPriceHT < 0)
+        if (request.PriceHT < 0)
             throw new ValidationException(new List<ValidationFailure>
             {
-                new ValidationFailure(nameof(request.DailyPriceHT), "Le prix journalier est requis.")
+                new ValidationFailure(nameof(request.PriceHT), "Le prix est requis.")
             });
         
         var service = new Service
@@ -44,7 +44,8 @@ public class CreateServiceHandler : IRequestHandler<CreateServiceCommand, Servic
             Name = request.Name,
             Reference = request.Reference,
             Type = request.Type,
-            DailyPriceHT = request.DailyPriceHT
+            PriceHT = request.PriceHT,
+            IsDailyPrice = request.IsDailyPrice
         };
 
         _context.Services.Add(service);
