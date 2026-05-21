@@ -1,0 +1,16 @@
+<div class="container-xxl" style="margin-top: 15px;">
+  <nav style="--bs-breadcrumb-divider: '';" aria-label="breadcrumb">
+    <ol class="breadcrumbs-ol">
+      <li  class="breadcrumb-item" *ngFor="let bc of breadcrumbService.breadcrumbs; let last = last" [class.active]="last">
+      @if(bc === breadcrumbService.breadcrumbs[breadcrumbService.breadcrumbs.length-1])
+      {
+        <a>{{ bc.label }}</a>
+      }
+      @else
+      {
+        <a [routerLink]="bc.url">{{ bc.label }}</a>
+      }
+    </li>
+    </ol>
+  </nav>
+</div>

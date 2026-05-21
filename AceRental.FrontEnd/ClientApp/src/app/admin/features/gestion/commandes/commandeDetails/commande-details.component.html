@@ -1,0 +1,254 @@
+<div class="container-xxl">
+    <h2>Commande du M. {{commande.prenomClient}} {{commande.nomClient}}</h2>
+    <div class="row" style="padding-bottom: 15px;">
+        <div class="col-md-8">
+            <div class="row product" *ngFor="let item of commande.packs">
+                <div class="col-md-2 image">
+                    <img  style=" height: 100px; align-self: center;" [src]="item.pack.image" class="img-fluid rounded-start" [alt]="item.pack.libelle">
+                </div>
+                <div class="col-md-10 body">
+                    
+                    <div class="row">
+                        <div class="col-md-4 date-range">
+                            <h4 class="title">{{item.pack.libelle}}</h4>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="ligne">
+                                <div style="min-width: 130px;">
+                                    <div class="input-group overflow-hidden">
+                                        <div style="border: 1px solid #212529;"  class="btn-group-vertical btn btn-outline-light border-right-0 btn-lg bg-white txt-gray-600 p-0">
+                                            <button type="button" class="btn bg-white py-0 txt-gray-500" (click)="moins(item)">
+                                                @if (item.quantite <= 1) {
+                                                <i class="bi bi-trash3"></i>
+                                                }
+                                                @if (item.quantite > 1) {
+                                                <i  class="bi bi-dash"></i>
+                                                }
+                                            </button>
+                                        </div>
+                                        <button style="border: 1px solid #212529;"  type="button" class="btn btn btn-outline-light px-0" >
+                                            <input type="text" class="border-0 txt-sm text-center" style="width: 2em;height: 100%;font-size: 1.3em !important;" id="line_1" data-origin-value="1" [value]="item.quantite" data-event="" onchange="" maxlength="2">
+                                        </button>
+                                        <div style="border: 1px solid #212529;" class="btn-group-vertical btn  btn-outline-light  btn-lg bg-white txt-gray-600 p-0">
+                                            <button type="button" class="btn bg-white py-0 txt-gray-500" (click)="plus(item)">
+                                                <i  class="bi bi-plus-lg"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="prix">{{item.pack.prix * item.quantite}}€</div>
+                            </div>
+                            
+                        </div>
+                    </div> 
+                    <!-- @if (commande.multipleLivraison) 
+                    {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field class="example-full-width" >
+                                <mat-label>Adresse</mat-label>
+                                <input [disabled]="!commande.multipleLivraison" matInput placeholder="Ex. 100 Main St" value="1600 Amphitheatre Pkwy">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Adresse 2</mat-label>
+                                <input [disabled]="!commande.multipleLivraison"  matInput value="">
+                            </mat-form-field>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Ville</mat-label>
+                                <input [disabled]="!commande.multipleLivraison"  matInput placeholder="Ex. San Francisco">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>État</mat-label>
+                                <input [disabled]="!commande.multipleLivraison"  matInput placeholder="Ex. California">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Code Postal</mat-label>
+                                <input [disabled]="!commande.multipleLivraison"  matInput #postalCode maxlength="5" placeholder="Ex. 94105" value="91700">
+                            </mat-form-field>
+                        </div>
+                    </div>  
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-md-7"></div>
+                        <div class="col-md-5">
+                            <button type="button" class="btn btn-yellow effect btn-xs">Calculer les frais d'expédition</button>
+                        </div>  
+                    </div>
+                    } -->
+                </div>
+            </div>
+        </div>  
+        <div class="col-md-4">
+            <div class="card border-dark mb-3" >
+                <div class="card-header">
+                    Détails commande
+                </div>
+                <div class="card-body">
+                    <div class="ligne">
+                        <div class="ligne-col title">Référence :</div>
+                        <div class="ligne-col value">{{commande.reference}}</div>
+                    </div>
+                    <div class="ligne">
+                        <div class="ligne-col title">Raison Sociale :</div>
+                        <div class="ligne-col value">{{commande.raisonSociale}}</div>
+                    </div>
+                    <div class="ligne">
+                        <div class="ligne-col title">Etat de commande :</div>
+                        <div class="ligne-col value">Commande {{commande.etat}}</div>
+                    </div>
+                    <div class="ligne">
+                        <div class="ligne-col title">Date création</div>
+                        <div class="ligne-col value">{{commande.dateCreation}}</div>
+                    </div>
+                    <div class="ligne">
+                        <div class="ligne-col title">Dernière modification</div>
+                        <div class="ligne-col value">{{commande.derniereModification}}</div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col-md-12">                            
+                            <div class="form-check form-switch form-check-inline">
+                                <input class="form-check-input" type="checkbox" role="switch" [checked]="commande.livraison" (change)="onLivraisonInclusChecked($event)">
+                                <label class="form-check-label" for="switchCheckDefault">Livraison inclus</label>
+                            </div>
+                            <!-- <div class="form-check form-switch form-check-inline">
+                                <input class="form-check-input" type="checkbox" role="switch" [checked]="commande.multipleLivraison" (change)="onMultipleAdresseChecked($event)">
+                                <label class="form-check-label" for="switchCheckChecked">Multiple adresse</label>
+                            </div> -->
+                        </div>
+                    </div>
+                    @if (!commande.livraison!) 
+                    {
+                    <div class="ligne">
+                        <div class="ligne-col title">Livraison</div>
+                        <div class="ligne-col value">Pas de livraison pour cette commande</div>
+                    </div>
+                    }
+                    <!-- @if (commande.livraison && commande.multipleLivraison) 
+                    {
+                    <div class="ligne">
+                        <div class="ligne-col title">Adresse de livraison</div>
+                        <div class="ligne-col value">Multiple adresse</div>
+                    </div>
+                    } -->
+                    @if (commande.livraison) 
+                    {
+                    <div class="ligne">
+                        <div class="ligne-col title">Adresse de livraison</div>
+                        <!-- <div class="ligne-col value">{{commande.adresseLivraison}}</div> -->
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field class="example-full-width" >
+                                <mat-label>Adresse</mat-label>
+                                <input matInput placeholder="Ex. 100 Main St" value="1600 Amphitheatre Pkwy">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Adresse 2</mat-label>
+                                <input  matInput value="">
+                            </mat-form-field>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Ville</mat-label>
+                                <input  matInput placeholder="Ex. San Francisco">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>État</mat-label>
+                                <input  matInput placeholder="Ex. California">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Code Postal</mat-label>
+                                <input  matInput #postalCode maxlength="5" placeholder="Ex. 94105" value="91700">
+                            </mat-form-field>
+                        </div>
+                    </div>  
+                    }                    
+                    <!-- <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" [checked]="multiplePeriodeChecked" (change)="onMultiplePeriodeChecked($event)">
+                                <label class="form-check-label" for="switchCheckChecked">Multiple période</label>
+                            </div>
+                        </div>
+                    </div>
+                    @if (!multiplePeriodeChecked)
+                    {
+                    <div class="col-md-12 date-range" style="margin-top: 15px;">
+                        <mat-form-field style="width: 100%;">
+                            <mat-label>Période de location</mat-label>
+                            <mat-date-range-input [formGroup]="range" [rangePicker]="periodeCommande">
+                                <input matStartDate formControlName="start" placeholder="Date début">
+                                <input matEndDate formControlName="end" placeholder="Date fin">
+                            </mat-date-range-input>
+                            <mat-datepicker-toggle matIconSuffix [for]="periodeCommande"></mat-datepicker-toggle>
+                            <mat-date-range-picker #periodeCommande></mat-date-range-picker>
+                            <mat-datepicker #periodeCommande color="primary"></mat-datepicker>
+
+                            @if (range.controls.start.hasError('matStartDateInvalid')) {
+                                <mat-error>Date début invalide</mat-error>
+                            }
+                            @if (range.controls.end.hasError('matEndDateInvalid')) {
+                                <mat-error>Date fin invalide</mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+                    } -->
+                </div>
+            </div>
+            <div class="card border-dark mb-3" >
+                <div class="card-header">
+                    Total panier
+                </div>
+                <div class="card-body">
+                    <div class="ligne">
+                        <div class="ligne-col title">Sous-total</div>
+                        <div class="ligne-col value">{{commande.totale}}€ (TTC)</div>
+                    </div>
+                    @if (commande.livraison) 
+                    {
+                    <div class="ligne">
+                        <div class="ligne-col title">Expédition</div>
+                        <div class="ligne-col value">{{commande.totaleExpedition}}€ (TTC)</div>
+                    </div>
+                    }
+                    <div class="ligne">
+                        <div class="ligne-col title">Total</div>
+                        <div class="ligne-col value">{{commande.totale}}€ (dont 164,34€ TVA)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-dark effect btn-l">Passer la commande</button>
+                </div>  
+            </div> 
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-12">
+                    <button [routerLink]="['/admin/devis/', commande.id]" type="button" class="btn btn-dark effect btn-l">Envoyer le devis</button>
+                </div>  
+            </div> 
+        </div>   
+    </div>
+</div>  

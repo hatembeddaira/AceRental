@@ -1,0 +1,73 @@
+<div class="container-xxl">
+    <h2>Liste des commandes</h2>
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number">
+            N° Commande
+            </th>
+            <td mat-cell *matCellDef="let element">{{element.id}}</td>
+        </ng-container>
+        <ng-container matColumnDef="nomClient">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+            Nom Client
+            </th>
+            <td mat-cell *matCellDef="let element">{{element.nomClient}}</td>
+        </ng-container>
+        <ng-container matColumnDef="prenomClient">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+            Prénom Client
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.prenomClient}} </td>
+        </ng-container>
+        <ng-container matColumnDef="raisonSociale">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+            Raison sociale
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.raisonSociale}} </td>
+        </ng-container>
+        <ng-container matColumnDef="dateCreation">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+            Date création
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.dateCreation}} </td>
+        </ng-container>
+        <ng-container matColumnDef="derniereModification">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+            Dernière modification
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.derniereModification}} </td>
+        </ng-container>
+        <ng-container matColumnDef="dateDebutReservation">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Trier par date début reservation">
+            Date début réservation
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.dateDebutReservation}} </td>
+        </ng-container>
+        <ng-container matColumnDef="dateFinReservation">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Trier par date fin reservation">
+            Date fin réservation
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.dateFinReservation}} </td>
+        </ng-container>
+        <ng-container matColumnDef="prix">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+            Prix
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.prix}} </td>
+        </ng-container>
+        <ng-container matColumnDef="statut">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+            Statut
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.statut}} </td>
+        </ng-container>
+        <ng-container matColumnDef="edit">
+            <th mat-header-cell *matHeaderCellDef >Edit</th>
+            <td mat-cell *matCellDef="let element">
+                <a type="button" [routerLink]="['/admin/commande/', element.id]" target="_blank" class="btn btn-dark effect btn-xs">Afficher</a>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

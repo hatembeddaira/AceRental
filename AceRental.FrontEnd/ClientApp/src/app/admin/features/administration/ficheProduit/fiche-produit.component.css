@@ -1,0 +1,44 @@
+.container-xl{
+    padding-bottom: 15px;
+}
+.example-full-width {
+  width: 100%;
+  margin: 15px 0 0 0;
+}
+
+.form-check-label{
+  padding-top: 8px;
+}
+.form-check{
+  padding-left : 0 !important;
+}
+.carousel-item {
+  text-align: center;   /* centre horizontalement ce qu'il y a dedans */
+      height: 100% !important; /* s'assure que les items prennent toute la hauteur du carousel */
+}
+.carousel-indicators {
+    position: relative !important;
+    margin-top: 20px;
+}
+.carousel-inner{
+    height: 335px;
+}
+.carousel-dark .carousel-indicators [data-bs-target]{
+    background-color: #fcdb16 !important;
+}
+.image {
+  width: auto !important;
+  height: 100% !important;
+  max-height: 335px;
+  max-width: 75%;
+  object-fit: cover;
+  margin: 0 auto; 
+  /* display: inline-block !important; */
+  display: flex;
+  justify-content: center; /* horizontal */
+  align-items: center;
+}
+img{
+  max-width: 100%; 
+  max-height: 300px;
+}

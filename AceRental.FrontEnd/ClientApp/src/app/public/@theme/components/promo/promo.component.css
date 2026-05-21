@@ -1,0 +1,18 @@
+.yellow{
+    background-color: #fcdb16;
+    color: #2b2b35;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: "BarlowCondensed", sans-serif !important;
+    margin: 0;
+}
+.yellow .float-start{
+    padding: 2px 0;
+    text-align: center;
+    font-family: 'Good Times' !important;
+}
+.dark{
+    /* background-color: #212529; */
+    color: #fcdb16;
+    padding: 5px 15px 0 10px;
+}

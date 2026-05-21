@@ -1,0 +1,221 @@
+<div class="container-xxl">
+    <div class="row product">
+        <div class="col-md-8">
+            <div id="carouselExampleDark" class="carousel carousel-dark slide">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                    <img src="/assets/img/29367_1.jpg" class="d-block w-100" style="height: 100%;" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                    <img src="/assets/img/29367_2.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                    <img src="/assets/img/29366_6.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                    <img src="/assets/img/29366_1.jpg" class="d-block w-100" alt="...">
+                    </div>
+                </div>
+                
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-12 title">
+                    PACK DO
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 prix">
+                    209,00€
+                </div>
+                <div class="col-md-4 ref">
+                    Ref : 107850
+                </div>
+            </div>            
+            <div class="row">
+                <div class="col-md-12 description">
+                    Ce système de sonorisation professionnel complet est idéal pour la sonorisation de vos événements DJ en intérieur ou extérieur.
+                </div>
+            </div>          
+            <div class="row">
+                <div class="col-md-12 date-range">
+                    <mat-form-field style="width: 100%;">
+                        <mat-label>Période de location</mat-label>
+                        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                            <input matStartDate formControlName="start" placeholder="Date début">
+                            <input matEndDate formControlName="end" placeholder="Date fin">
+                        </mat-date-range-input>
+                        <!-- <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint> -->
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+                        <mat-datepicker #picker2 color="primary"></mat-datepicker>
+
+                        @if (range.controls.start.hasError('matStartDateInvalid')) {
+                            <mat-error>Date début invalide</mat-error>
+                        }
+                        @if (range.controls.end.hasError('matEndDateInvalid')) {
+                            <mat-error>Date fin invalide</mat-error>
+                        }
+                    </mat-form-field>
+                    <!-- <p>Selected range: {{range.value | json}}</p> -->
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-6 ">
+                    <mat-form-field>
+                        <mat-label>Quantité</mat-label>
+                        <input matInput type="number" min="1" max="10" step="1" [formControl]="num">    
+                        @if (num.get('age')?.errors?.['required']) {
+                        <mat-error>Enter number only</mat-error>
+                        }
+                        @if (num.get('age')?.errors?.['min']) {
+                        <mat-error>Minimum number is </mat-error>
+                        }                   
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-yellow effect btn-l">Réserver</button>
+                </div>
+            </div>  
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-dark effect btn-l">Ajouter au panier</button>
+                </div>  
+            </div> 
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-4">
+                    <i class="bi bi-suit-heart"></i> Sauvegarder
+                </div>
+                <div class="col-md-4">
+                    <i class="bi bi-share"></i> Partager
+                </div>  
+            </div>             
+            <div class="row" style="margin-top: 10px;">
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            OPTION COMPRISES
+                        </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <div class="row">
+                            <div class="col-md-6">
+                                <i class="bi bi-check2-all"></i> Gratuit dans un rayon de 20km
+                            </div>
+                            <div class="col-md-6">
+                                <i class="bi bi-check2-all"></i> Installation
+                            </div>
+                            <div class="col-md-6">
+                                <i class="bi bi-check2-all"></i> La présence d'un technicien sur place PENDANT TOUT L'EVENEMENT
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>  
+            </div> 
+            <!-- <div class="row" style="border: 1px solid black;border-radius: 10px; margin: 25px 0 0 0; padding: 15px;">
+                <div class="box">
+                    <span><i class="bi bi-truck"></i> Livraison standard</span>
+                    <span class="right">Gratuit dans un rayon de 20km</span>
+                </div>
+                <div class="box">
+                    <span style="margin-left: auto;font-size: 12px; font-weight: 500;">Sainte genevieve des bois (91700)</span>
+                </div>
+                <hr>
+                <a class="btn btn-dark effect btn-m" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Link with href
+                </a>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <form class="example-form">
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-md-12">
+                                    <mat-form-field class="example-full-width" style="width: 100%;">
+                                        <mat-label>Addresse</mat-label>
+                                        <input matInput>
+                                    </mat-form-field>
+                                </div> 
+                            </div> 
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-md-12">
+                                    <mat-form-field class="example-full-width" style="width: 100%;">
+                                        <mat-label>Addresse 2</mat-label>
+                                        <input matInput>
+                                    </mat-form-field>
+                                </div> 
+                            </div> 
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-md-4">
+                                    <mat-form-field class="example-full-width" style="width: 100%;">
+                                        <mat-label>Pays</mat-label>
+                                        <input matInput placeholder="Ex. San Francisco">
+                                    </mat-form-field>
+                                </div> 
+                                <div class="col-md-4">
+                                    <mat-form-field class="example-full-width" style="width: 100%;">
+                                        <mat-label>Ville</mat-label>
+                                        <input matInput placeholder="Ex. California">
+                                    </mat-form-field>
+                                </div> 
+                                <div class="col-md-4">
+                                    <mat-form-field class="example-full-width" style="width: 100%;">
+                                        <mat-label>Code Postale</mat-label>
+                                        <input matInput #postalCode maxlength="5" placeholder="Ex. 94105" value="94043">
+                                    </mat-form-field>
+                                </div> 
+                            </div>  
+                            <div class="row" style="margin-top: 10px; font-size: 12px;">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-dark effect btn-m">Calculer les frais de livraison</button>
+                                </div>  
+                            </div> 
+                        </form>
+
+                    </div>
+                </div> 
+           
+                <div class="experiance">
+                    <h3>8</h3>
+                    <h4>Years<br> Experience Working</h4>
+                </div>
+            </div>        -->
+        </div>
+        <div class="row">
+            <mat-tab-group>
+                <mat-tab label="Description">
+                    <p>
+                        Ce système de sonorisation professionnel complet est idéal pour la sonorisation de vos événements DJ en intérieur ou extérieur.
+                    </p>
+                    <p>
+                        Grâce à l’enceinte de graves (caisson de basses) hautes performances, ce système est adapté à la diffusion de tous les types de musiques jusqu’à 150 personnes. La console de sonorisation fournie permet la connexion et le mixage des différentes sources : connectez plusieurs régies DJ ou contrôleurs DJ pour des transitions fluides entre vos artistes lors de votre soirée DJ.
+                    </p>
+                    <p>
+                        2N8 vous facilite la location de sonorisation DJ grâce à ce système complet et sa notice d’installation facile illustrée. Notre système de code couleurs vous évitera toute erreur de câblage pour un résultat pro rapide !
+                    </p>
+                </mat-tab>
+                <mat-tab label="Informations complémentaires"> Content 2 </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</div>
+
+
+
