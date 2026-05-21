@@ -8,6 +8,7 @@ namespace AceRental.Application.Services.Dtos
         public required string Reference { get; set; }
         public required string Name { get; set; }
         public ServiceType Type { get; set; }
-        public decimal DailyPriceHT { get; set; }
+        public decimal PriceHT { get; set; }
+        public bool IsDailyPrice { get; set; } = true; 
     }
 }

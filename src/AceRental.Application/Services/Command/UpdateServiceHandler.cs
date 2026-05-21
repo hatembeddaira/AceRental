@@ -20,10 +20,10 @@ public class UpdateServiceHandler : IRequestHandler<UpdateServiceCommand, bool>
 
     public async Task<bool> Handle(UpdateServiceCommand request, CancellationToken cancellationToken)
     {
-        if (request.DailyPriceHT <= 0)
+        if (request.PriceHT < 0)
             throw new ValidationException(new List<ValidationFailure>
             {
-                new ValidationFailure(nameof(request.DailyPriceHT), "Le prix journalier est requis.")
+                new ValidationFailure(nameof(request.PriceHT), "Le prix est requis.")
             });
 
         var Service = await _context.Services.FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
@@ -32,15 +32,19 @@ public class UpdateServiceHandler : IRequestHandler<UpdateServiceCommand, bool>
 
         if (!string.IsNullOrEmpty(request.Name))
             Service.Name = request.Name;
-            
+
         if (!string.IsNullOrEmpty(request.Reference))
             Service.Reference = request.Reference;
 
         if (request.Type != null)
             Service.Type = (ServiceType)request.Type;
 
-        if (request.DailyPriceHT != null)
-        Service.DailyPriceHT = (decimal)request.DailyPriceHT;
+        if (request.PriceHT != null)
+            Service.PriceHT = (decimal)request.PriceHT;
+
+        if (request.IsDailyPrice != null)
+            Service.IsDailyPrice = (bool)request.IsDailyPrice;
+
         return await _context.SaveChangesAsync(cancellationToken) > 0;
     }
 }

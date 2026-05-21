@@ -155,7 +155,9 @@ public class GlobalExceptionHandlerMiddleware
         => new(errors)
         {
             Title = "Erreurs de validation",
-            Detail = "Un ou plusieurs champs sont invalides.",
+            Detail = "Un ou plusieurs champs sont invalides." +
+                     Environment.NewLine +
+                     string.Join(Environment.NewLine, errors.SelectMany(e => e.Value.Select(v => $" - {e.Key} : {v}"))),
             Status = StatusCodes.Status422UnprocessableEntity,
             Instance = instance,
             Type = "https://httpstatuses.com/422"

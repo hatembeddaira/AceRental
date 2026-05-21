@@ -12,5 +12,7 @@ public record UpdateServiceCommand : IRequest<bool>
     public string? Name { get; set; }
     public string? Reference { get; set; }
     public ServiceType? Type { get; set; }
-    public decimal? DailyPriceHT { get; set; }
+    public decimal? PriceHT { get; set; }
+    public bool? IsDailyPrice { get; set; }
+    
 }

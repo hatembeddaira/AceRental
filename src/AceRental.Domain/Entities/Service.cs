@@ -8,7 +8,8 @@ namespace AceRental.Domain.Entities
         public required string Reference { get; set; }
         public required string Name { get; set; }
         public ServiceType Type { get; set; }
-        public decimal DailyPriceHT { get; set; }
+        public decimal PriceHT { get; set; }
+        public bool IsDailyPrice { get; set; } = true; 
         public List<ReservationServices> Reservations { get; set; } = [];
     }
 }

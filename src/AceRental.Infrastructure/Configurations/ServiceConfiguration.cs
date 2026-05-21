@@ -15,7 +15,7 @@ namespace AceRental.Infrastructure.Configurations
 
             builder.ToTable("Services");
             builder.HasQueryFilter(e => !e.IsDeleted);
-            builder.Property(ri => ri.DailyPriceHT)
+            builder.Property(ri => ri.PriceHT)
             .HasPrecision(18, 2);
             builder.HasIndex(i => i.Reference)
             .IsUnique();

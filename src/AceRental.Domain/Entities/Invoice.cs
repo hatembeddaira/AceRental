@@ -7,11 +7,12 @@ namespace AceRental.Domain.Entities
     {
         public int InvoiceNumber { get; set; } 
         public decimal AmountHT { get; set; }
-        public decimal TaxRate { get; set; } = 0.20m;
+        public decimal TVA { get; set; } = 0.20m;
         public bool IsPaid { get; set; }        
         public InvoiceType Type { get; set; }
         public Guid ReservationId { get; set; }
         public Reservation Reservation { get; set; } = null!;
         public List<Payment> Payments { get; set; } = [];
+        public ICollection<InvoiceLines> InvoiceLines { get; set; } = [];
     }
 }

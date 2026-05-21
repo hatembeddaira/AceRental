@@ -9,5 +9,8 @@ namespace AceRental.Domain.Enum
         
         [Description("Transport")]
         Transport = 1,
+        
+        [Description("Frais de réparation")]
+        Repair = 2,
     }
 }

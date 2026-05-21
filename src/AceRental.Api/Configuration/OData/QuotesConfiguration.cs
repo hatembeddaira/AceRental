@@ -17,9 +17,8 @@ namespace AceRental.Api.Configuration.OData
 
             if (apiVersion == ApiVersions.V1)
             {
-                var quotes = builder.EntitySet<QuoteDto>("Quotes");
-                quotes.EntityType.HasKey(e => e.Id);
-                // quotes.HasRequiredBinding(e => e.Reservation, builder.EntitySet<ReservationDto>("Reservations"));
+                var dto = builder.EntitySet<QuoteDto>("Quotes");
+                dto.EntityType.HasKey(e => e.Id);
             }
         }
     }

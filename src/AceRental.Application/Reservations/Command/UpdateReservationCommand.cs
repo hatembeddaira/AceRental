@@ -11,7 +11,7 @@ public record UpdateReservationCommand() : IRequest<bool>
     public Guid ReservationId { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
-    public List<ReservationEquipmentsDto>? Equipments { get; set; }
-    public List<ReservationPacksDto>? Packs { get; set; }
-    public List<ReservationServicesDto>? Services { get; set; }
+    public List<ReservationEquipmentsCommandeDto>? Equipments { get; set; }
+    public List<ReservationPacksCommandeDto>? Packs { get; set; }
+    public List<ReservationServicesCommandeDto>? Services { get; set; }
 }

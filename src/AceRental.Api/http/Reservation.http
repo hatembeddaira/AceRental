@@ -85,7 +85,8 @@ Content-Type: application/json
   "services": [
     {
       "serviceId": "3b1102cc-1551-47c9-aca0-9704d0311067",
-      "quantity": 2      
+      "quantity": 2,
+      "unitPriceAtTimeOfBooking":0      
     }
   ]
 }
@@ -97,5 +98,10 @@ Content-Type: application/json
 
 ### Get All Reservation
 GET {{Api_HostAddress}}/Api/v1/Reservations?$expand=Client,Payments,Quotes,Invoices,Services,Packs,Equipments
+Content-Type: application/json
+
+
+### Get All Reservation for Client
+GET {{Api_HostAddress}}/Api/v1/Reservations?$filter=ClientId eq 3fa85f64-5717-4562-b3fc-2c963f66afa6&$expand=Client,Payments,Quotes($expand=QuoteLines),Invoices,Services,Packs,Equipments
 Content-Type: application/json
 

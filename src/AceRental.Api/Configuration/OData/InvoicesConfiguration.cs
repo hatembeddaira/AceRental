@@ -16,10 +16,8 @@ namespace AceRental.Api.Configuration.OData
 
             if (apiVersion == ApiVersions.V1)
             {
-                var dto = builder.EntitySet<InvoiceDto>("Invoices").EntityType;
-                dto.HasKey(e => e.Id);
-                // dto.HasRequired(i => i.Reservation);
-                // dto.HasMany(i => i.Payment);
+                var dto = builder.EntitySet<InvoiceDto>("Invoices");
+                dto.EntityType.HasKey(e => e.Id);
             }
         }
     }
