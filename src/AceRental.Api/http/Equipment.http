@@ -106,6 +106,51 @@ Content-Type: application/json
   "category": 0
 }
 
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "M32R",
+  "name": "Midas M32R",
+  "description": "Console numérique midas m32r",
+  "dailyPriceHT": 120,
+  "purchasePrice": 1600,
+  "newPurchasePrice": 2500,
+  "totalStock": 1,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "DSR118",
+  "name": "Yamaha DSR118",
+  "description": "Caisson de basse yamaha dsr118",
+  "dailyPriceHT": 75,
+  "purchasePrice": 800,
+  "newPurchasePrice": 1600,
+  "totalStock": 2,
+  "category": 0
+}
+
+### Create Equipment
+POST {{Api_HostAddress}}/Api/v1/Equipments/
+Content-Type: application/json
+
+{
+  "reference": "MG24",
+  "name": "Yamaha MG24",
+  "description": "Console yamaha MG24",
+  "dailyPriceHT": 50,
+  "purchasePrice": 500,
+  "newPurchasePrice": 1600,
+  "totalStock": 1,
+  "category": 0
+}
+
 ### Get Equipment
 GET {{Api_HostAddress}}/Api/v1/Equipments?$filter=Id eq b79d3481-df2c-4287-a340-01d4c7a86edd&$expand=Packs
 Content-Type: application/json

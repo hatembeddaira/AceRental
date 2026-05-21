@@ -9,15 +9,37 @@ services:
       - "1433:1433"
     networks:
       - gatewayAceRental
-  api:
+  acerental-api:
+    # container_name: acerental-api
+    image: ${DOCKER_REGISTRY-}acerentalapi
     build:
       context: ./src
       dockerfile: AceRental.Api/Dockerfile
-    container_name: ace-rental-Api
     restart: unless-stopped
     ports:
       - "5000:5000"
     networks:
       - gatewayAceRental
+  acerental-frontend:
+    # container_name: acerental-frontend
+    image: ${DOCKER_REGISTRY-}acerentalfrontend
+    build:
+      context: ../AceRental.FrontEnd
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - gatewayAceRental
+  acerental-angular:
+    # container_name: acerental-angular
+    image: ${DOCKER_REGISTRY-}acerentalangular
+    build:
+      context: ../AceRental.FrontEnd
+      dockerfile: ClientApp/Dockerfile
+    ports:
+      - "4200:4200"
+    networks:
+      - gatewayAceRental
+
 networks:
     gatewayAceRental: {}

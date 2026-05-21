@@ -30,5 +30,6 @@ RUN dotnet publish "AceRental.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publis
 # Étape 3 : Image finale (Runtime - plus légère)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
+EXPOSE 5000
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "AceRental.Api.dll"]

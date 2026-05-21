@@ -5,17 +5,75 @@ POST {{Api_HostAddress}}/Api/v1/Packs/
 Content-Type: application/json
 
 {
-  "reference": "DO",
-  "name": "Pack DO",
-  "description": "Pack de deux enceintes en facade et deux retours",
-  "dailyPriceHT": 500,
+  "reference": "SOL",
+  "name": "Pack SOL",
+  "description": "Pack de deux enceintes en facade et deux retours et une console analogique",
+  "dailyPriceHT": 300,
   "items": [
     {
-      "equipmentId": "c71beabe-518f-4da0-ac38-442df3319720",
+      "equipmentId": "20ff66f9-323a-487b-afcc-ded80b101866",
       "quantity": 2   
     },
     {
-      "equipmentId": "1cf8e37e-52a2-47e7-9973-910262aae973",
+      "equipmentId": "0394d635-58d3-4e34-8ff6-4f963ebcbd97",
+      "quantity": 2      
+    },
+    {
+      "equipmentId": "9285e5bf-a47c-4c46-aeed-872eb73788c1",
+      "quantity": 1      
+    }
+  ]
+}
+
+### Create Pack
+POST {{Api_HostAddress}}/Api/v1/Packs/
+Content-Type: application/json
+
+{
+  "reference": "RE",
+  "name": "Pack RE",
+  "description": "Pack de deux enceintes en facade, quatres retours et une console analogique",
+  "dailyPriceHT": 400,
+  "items": [
+    {
+      "equipmentId": "20ff66f9-323a-487b-afcc-ded80b101866",
+      "quantity": 2   
+    },
+    {
+      "equipmentId": "0394d635-58d3-4e34-8ff6-4f963ebcbd97",
+      "quantity": 4      
+    },
+    {
+      "equipmentId": "9285e5bf-a47c-4c46-aeed-872eb73788c1",
+      "quantity": 1      
+    }
+  ]
+}
+
+### Create Pack
+POST {{Api_HostAddress}}/Api/v1/Packs/
+Content-Type: application/json
+
+{
+  "reference": "DO",
+  "name": "Pack DO",
+  "description": "Pack de deux enceintes en facade, deux caissons de basse, quatres retours et une console analogique",
+  "dailyPriceHT": 550,
+  "items": [
+    {
+      "equipmentId": "20ff66f9-323a-487b-afcc-ded80b101866",
+      "quantity": 2   
+    },
+    {
+      "equipmentId": "0394d635-58d3-4e34-8ff6-4f963ebcbd97",
+      "quantity": 4      
+    },
+    {
+      "equipmentId": "9285e5bf-a47c-4c46-aeed-872eb73788c1",
+      "quantity": 1      
+    },
+    {
+      "equipmentId": "a224731d-4c50-415c-8ec0-b3d7b689d221",
       "quantity": 2      
     }
   ]
