@@ -76,8 +76,8 @@ export class CommandeDetailsComponent implements OnInit {
       return total + packCommande.pack.prix * packCommande.quantite;
     }, 0);
     const totalProduits = this.commande.produits.reduce((total, produitCommande) => {
-      return total + produitCommande.produit.prix * produitCommande.quantite;
+      return total + produitCommande.produit.DailyPriceHT * produitCommande.quantite;
     }, 0);
-    this.commande.totale = totalPacks;
+    this.commande.totale = totalPacks + totalProduits;
   }
 }

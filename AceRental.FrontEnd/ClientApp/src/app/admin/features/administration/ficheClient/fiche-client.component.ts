@@ -21,29 +21,66 @@ import { CommonModule } from '@angular/common';
 })
 export class FicheClientComponent implements OnInit {
   CiviliteH:boolean = true;
-  id!: number;
+  id!: string;
   client!: ClientDto;
   clientForm!: FormGroup;
-
-  constructor(route: ActivatedRoute, private fb: FormBuilder){
-    this.id = Number(route.snapshot.paramMap.get('id'));
+  clientService: ClientService;
+  constructor(route: ActivatedRoute, private fb: FormBuilder,private _clientService: ClientService){
+    this.id = route.snapshot.paramMap.get('id') || '';
+    this.clientService = _clientService;
+    // Initialize form controls before async data arrives.
+    this.clientForm = this.fb.group({
+      id: [''],
+      clientNumber: [''],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      civilite: ['H', Validators.required],
+      nomClient: ['', Validators.required],
+      prenomClient: ['', Validators.required],
+      raisonSociale: [''],
+      tel: ['', Validators.pattern(/^(0[1-9]\d{8}|\+33[1-9]\d{8})$/)],
+      portable: ['', Validators.pattern(/^(0[67]\d{8}|\+33[67]\d{8})$/)],
+      adresse: [''],
+      complementAdresse: [''],
+      codepostale: ['', [Validators.pattern(/^\d{5}$/)]],
+      ville: ['']
+    });
   }
   ngOnInit(): void {
-    this.client  = ClientService.getClientById(this.id);
-    this.clientForm = this.fb.group({
-      email: [this.client.email, [Validators.required, Validators.email]],
-      password: [this.client.password, Validators.required],
-      civilite: [this.client.civilite, Validators.required],
-      nomClient: [this.client.nomClient, Validators.required],
-      prenomClient: [this.client.prenomClient, Validators.required],
-      raisonSociale: [this.client.raisonSociale],
-      tel: [this.client.tel, Validators.pattern(/^(0[1-9]\d{8}|\+33[1-9]\d{8})$/)],
-      portable: [this.client.portable, Validators.pattern(/^(0[67]\d{8}|\+33[67]\d{8})$/)],
-      adresse: [this.client.adresse],
-      complementAdresse: [this.client.complementAdresse],
-      codepostale: [this.client.codepostale, [Validators.pattern(/^\d{5}$/)]],
-      ville: [this.client.ville]
+    if (!this.id) {
+      throw new Error('Identifiant client manquant.');
+    }
+
+    this.clientService.getById(this.id).subscribe({
+      next: client => {
+        if (!client) {
+          throw new Error('Client introuvable.');
+        }
+
+        console.log('Response from API:', client);
+        this.client = client;
+        this.patchValue(this.client);
+      },
+      error: err => console.error(err)
     });
+  }
+  patchValue(client: ClientDto): void {
+    this.clientForm.patchValue({
+          id: client.Id,
+          clientNumber: client.ClientNumber,
+          email: client.Email,
+          password: '',
+          civilite: 'H',
+          nomClient: client.LastName,
+          prenomClient: client.FirstName,
+          raisonSociale: client.RaisonSociale,
+          tel: client.TelNumber,
+          portable: client.PhoneNumber,
+          adresse: client.Address,
+          complementAdresse: client.ComplementAdresse,
+          codepostale: client.PostalCode,
+          ville: client.City
+        });
   }
   submit(): void {
     if (this.clientForm.valid) {
@@ -51,7 +88,7 @@ export class FicheClientComponent implements OnInit {
     }
   }
   reset(): void {
-    this.clientForm.reset(this.client);
+    this.patchValue(this.client);
   }
   hasError(controlName: string, error: string): boolean {
     const control = this.clientForm.get(controlName);

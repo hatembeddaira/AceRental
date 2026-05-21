@@ -5,6 +5,7 @@ import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { CommandesService } from '../../../../services/commandes.service';
 import { ClientService } from '../../../../services/client.service';
+import { ClientDto } from '../../../../interfaces/client-dto';
 
 @Component({
   selector: 'app-clients.component',
@@ -13,17 +14,28 @@ import { ClientService } from '../../../../services/client.service';
   styleUrl: './clients.component.css',
 })
 export class ClientsComponent {
-private _liveAnnouncer = inject(LiveAnnouncer);
-  displayedColumns: string[] = ['id', 'raisonSociale', 'nomClient', 'prenomClient', 'dateCreation', 'email', 'edit'];
-  dataSource = new MatTableDataSource(ClientService.getAllClients());
-
-  constructor(){
-
+  private _liveAnnouncer = inject(LiveAnnouncer);
+  displayedColumns: string[] = ['Id', 'ClientNumber', 'RaisonSociale', 'LastName', 'FirstName', 'Email', 'edit'];
+  dataSource = new MatTableDataSource<ClientDto>([]);
+  clientService: ClientService;
+  constructor(private _clientService: ClientService) {
+    this.clientService = _clientService;
   }
 
+  ngOnInit(): void {
+    this.clientService.get().subscribe({
+      next: clients => {
+        this.dataSource.data = clients;
+        console.log(clients);
+      },
+      error: err => console.error(err)
+    });
+  }
   @ViewChild(MatSort) sort: MatSort | undefined;
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+    }
   }
 
    /** Announce the change in sort state for assistive technology. */

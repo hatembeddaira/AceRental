@@ -1,6 +1,6 @@
 import { PackCommandeDto } from "./pack-commande-dto";
 import { ProduitCommandeDto } from "./produit-commande-dto";
-import { ProduitDto } from "./produit-dto";
+import { EquipmentsDto } from "./produit-dto";
 
 export interface CommandeDto {
     id: number;

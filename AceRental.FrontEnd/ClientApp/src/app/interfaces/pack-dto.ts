@@ -1,5 +1,5 @@
 import { OptionComprisesDto } from "./option-comprises-dto";
-import { ProduitDto } from "./produit-dto";
+import { EquipmentsDto } from "./produit-dto";
 
 export interface PackDto {
     id: number;
@@ -8,6 +8,6 @@ export interface PackDto {
     description : string;
     prix : number;
     image: string;
-    produits : ProduitDto[];
+    produits : EquipmentsDto[];
     optionComprises : OptionComprisesDto[];
 }

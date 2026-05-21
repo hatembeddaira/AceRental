@@ -6,7 +6,7 @@ builder.Services.AddSpaStaticFiles(configuration =>
 {
     configuration.RootPath = "ClientApp/dist/revue-rem-frontend/browser";
 });
-var reverseProxySection = builder.Configuration.GetSection("RemFrontendReverseProxy");
+var reverseProxySection = builder.Configuration.GetSection("AceFrontendReverseProxy");
 
 builder.Services.AddReverseProxy().LoadFromConfig(reverseProxySection);
 var app = builder.Build();

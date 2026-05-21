@@ -1,5 +1,5 @@
-<div class="container-xl" [formGroup]="produitForm">
-    <h2>Fiche produit [ {{produit.reference}} ]</h2>
+<div class="container-xl" [formGroup]="equipmentForm">
+    <h2>Fiche produit [ {{equipment?.Reference}} ]</h2>
     <div class="row">
         <div class="col-md-8">
             <div class="row">
@@ -15,8 +15,8 @@
                 <div class="col-md-6">
                     <mat-form-field class="example-full-width" >
                         <mat-label>Libelle</mat-label>
-                        <input matInput type="text" placeholder="" formControlName="libelle">
-                        <mat-error *ngIf="hasError('libelle', 'required')">
+                        <input matInput type="text" placeholder="" formControlName="name">
+                        <mat-error *ngIf="hasError('name', 'required')">
                             Le libelle est obligatoire
                         </mat-error>
                     </mat-form-field>
@@ -47,23 +47,60 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <mat-form-field class="example-full-width" >
-                        <mat-label>Prix</mat-label>
-                        <input matInput type="number" placeholder="" formControlName="prix">
-                        <mat-error *ngIf="hasError('prix', 'required')">
+                        <mat-label>Prix de location (J)</mat-label>
+                        <input matInput type="number" placeholder="" formControlName="dailyPriceHT">
+                        <mat-error *ngIf="hasError('dailyPriceHT', 'required')">
                             Le prix est obligatoire
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-md-6">
-                    <!-- <mat-form-field class="example-full-width" >
-                        <mat-label>Image</mat-label>
-                        <input matInput type="file" placeholder="" accept="image/*" formControlName="image">
-                        <mat-error *ngIf="hasError('image', 'required')">
-                            L'image est obligatoire
+                <div class="col-md-4">
+                    <mat-form-field class="example-full-width" >
+                        <mat-label>Prix d'achat (TTC)</mat-label>
+                        <input matInput type="number" placeholder="" formControlName="purchasePriceTTC">
+                        <mat-error *ngIf="hasError('purchasePriceTTC', 'required')">
+                            Le prix est obligatoire
                         </mat-error>
-                    </mat-form-field> -->
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                    <mat-form-field class="example-full-width" >
+                        <mat-label>Valeur neuf (TTC)</mat-label>
+                        <input matInput type="number" placeholder="" formControlName="newPurchasePriceTTC">
+                        <mat-error *ngIf="hasError('newPurchasePriceTTC', 'required')">
+                            Le prix est obligatoire
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <mat-form-field class="example-full-width" >
+                        <mat-label>Quantité</mat-label>
+                        <input matInput type="number" placeholder="" formControlName="totalStock">
+                        <mat-error *ngIf="hasError('totalStock', 'required')">
+                            La quantité est obligatoire
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                    <mat-form-field class="example-full-width" >
+                        <mat-label>Catégorie</mat-label>
+                        <mat-select formControlName="category" required>
+                            <mat-option value="">-- Sélectionner --</mat-option>
+                            @for (cat of categoryList; track cat) {
+                                <mat-option [value]="cat">{{ cat }}</mat-option>
+                            }
+                        </mat-select>
+                        
+                        @if (hasError('category', 'required')) {
+                            <mat-error>La catégorie est obligatoire</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4">
                     <mat-form-field style="width: 100%;    margin: 15px 0 0 0;">
                         <mat-label>Upload Images</mat-label>
                         <button mat-icon-button matPrefix (click)="f_input.click()">
@@ -81,7 +118,7 @@
         <div class="col-md-4 card border-dark mb-3" style="background-color: white;">
             <div id="carouselExampleDark" class="carousel carousel-dark slide">
                 <div class="carousel-inner" >
-                    <div class="carousel-item" *ngFor="let img of produit.images; let i = index" [ngClass]="{'active': i === 0}">
+                    <div class="carousel-item" *ngFor="let img of equipment?.images; let i = index" [ngClass]="{'active': i === 0}">
                         <div class="image">
                             <img [src]="img" alt="...">
                         </div>
@@ -90,7 +127,7 @@
                 
                 <div class="carousel-indicators">
                     <button 
-                        *ngFor="let img of produit.images; let i = index"
+                        *ngFor="let img of equipment?.images; let i = index"
                         type="button" 
                         data-bs-target="#carouselExampleDark" 
                         [attr.data-bs-slide-to]="i" 
@@ -116,7 +153,7 @@
             class="btn btn-yellow effect btn-xs" 
             style="margin: 15px 12px 0 0;width: 250px;" 
             (click)="submit()"
-            [disabled]="produitForm.invalid">Valider les modifications</button>
+            >Valider les modifications</button>
         <button type="button" 
             class="btn btn-dark effect btn-xs" 
             style="margin: 15px 12px 0 0;width: 250px;"

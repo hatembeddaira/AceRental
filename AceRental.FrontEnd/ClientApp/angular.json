@@ -73,7 +73,10 @@
               "buildTarget": "test:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "allowedHosts": ["acerental-angular"]
+          }
         },
         "test": {
           "builder": "@angular/build:unit-test"

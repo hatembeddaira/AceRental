@@ -8,10 +8,17 @@ import { ProduitService } from '../../../../services/produit.service';
   styleUrl: './produits.component.css',
 })
 export class ProduitsComponent implements OnInit {
-constructor(private produitService: ProduitService){}
+  equipmentService: ProduitService;
+constructor(private _equipmentService: ProduitService){
+  this.equipmentService = _equipmentService;
+}
   ngOnInit(): void {
-    this.produitService.getAll().subscribe(res => {
-        console.log(res);
-      });
+    this.equipmentService.get().subscribe({
+      next: equipments => {
+        // this.dataSource.data = equipments;
+        console.log(equipments);
+      },
+      error: err => console.error(err)
+    });
   }
 }

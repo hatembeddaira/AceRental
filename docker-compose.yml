@@ -24,11 +24,12 @@ services:
     # container_name: acerental-frontend
     image: ${DOCKER_REGISTRY-}acerentalfrontend
     build:
-      context: ../AceRental.FrontEnd
+      context: ./AceRental.FrontEnd
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_URLS=http://+:3000
       - ASPNETCORE_ENVIRONMENT=Development
+      - FrontUrl=http://acerental-angular:4200
     ports:
       - "3000:3000"
     networks:
@@ -37,7 +38,7 @@ services:
     # container_name: acerental-angular
     image: ${DOCKER_REGISTRY-}acerentalangular
     build:
-      context: ../AceRental.FrontEnd
+      context: ./AceRental.FrontEnd
       dockerfile: ClientApp/Dockerfile
     ports:
       - "4200:4200"

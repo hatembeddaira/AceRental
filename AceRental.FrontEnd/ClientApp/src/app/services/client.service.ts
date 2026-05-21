@@ -1,59 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ResolveFn, Router } from '@angular/router';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { ClientDto } from '../interfaces/client-dto';
+import { environment } from '../../environments/environment.development';
 
-const ELEMENT_DATA: ClientDto[] = [
-{
-  id: 1, 
-  raisonSociale: "Ace Sound",
-  nomClient :  "Daira",
-  prenomClient :  "Hatem",
-  email :  "hatem.daira@gmail.com",
-  password:  "12345",
-  civilite:  "H",
-  tel:  undefined,
-  portable:  "0751340180",
-  adresse:  "6 rue max linder",
-  complementAdresse:  undefined,
-  codepostale: 91700,
-  ville: "saint genviève des bois",
-  dateCreation: new Date('10/20/2025')
-  }, 
-  {
-  id: 2, 
-  raisonSociale: "Ace Sound",
-  nomClient :  "Daira",
-  prenomClient :  "Syrine",
-  email :  "Syrine.daira@gmail.com",
-  password:  "12345",
-  civilite:  "F",
-  tel:  undefined,
-  portable:  "0751340180",
-  adresse:  "6 rue max linder",
-  complementAdresse:  undefined,
-  codepostale: 91700,
-  ville:  "saint genviève des bois",
-  dateCreation: new Date('10/20/2025')
-  }, 
-  {
-  id: 3, 
-  raisonSociale: undefined,
-  nomClient :  "Beddaira",
-  prenomClient :  "Tarek",
-  email :  "Tarek.beddaira@gmail.com",
-  password:  "12345",
-  civilite:  "H",
-  tel:  undefined,
-  portable:  "0751340180",
-  adresse:  "6 rue max linder",
-  complementAdresse:  undefined,
-  codepostale: 91700,
-  ville:  "saint genviève des bois",
-  dateCreation: new Date('10/20/2025')
-  }, 
-];
 
 @Injectable({
   providedIn: 'root',
@@ -61,20 +11,28 @@ const ELEMENT_DATA: ClientDto[] = [
 export class ClientService {
 
   private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
+  private readonly apiUrl = environment.aceRentalApiUrl + '/v1/Clients';
 
-  static getAllClients(): ClientDto[]  
-  {
-  return ELEMENT_DATA;
+  get(): Observable<ClientDto[]> {
+    return this.http.get<{ '@odata.context'?: string; value: ClientDto[] }>(this.apiUrl).pipe(
+      map(response => response.value || []),
+      tap(() => null)
+    );
   }
-
-  
-  static getClientById(id : number): ClientDto
-  {
-  const item =  ELEMENT_DATA.find(x => x.id === id) ;
-  if (!item) {
-    throw new Error("Élément non trouvé");
-  }
-  return item;
+  getById(id: string): Observable<ClientDto | null> {
+    
+    return this.http
+      .get<ClientDto | { '@odata.context'?: string; value: ClientDto }>(`${this.apiUrl}(${id})`)
+      .pipe(
+        map(response => {
+          if (!response) {
+            return null;
+          }
+          // if ('value' in response) {
+          //   return response.value || null;
+          // }
+          return response as ClientDto;
+        })
+      );
   }
 }

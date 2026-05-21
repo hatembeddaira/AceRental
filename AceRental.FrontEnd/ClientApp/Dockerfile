@@ -17,4 +17,4 @@ COPY ./ClientApp/. ./
 
 RUN npm install
 
-CMD ["ng", "serve", "--port", "4200", "--host", "0.0.0.0", "--disable-host-check", "--poll", "2000"]
+CMD ["ng", "serve", "--port", "4200", "--host", "0.0.0.0", "--poll", "2000"]

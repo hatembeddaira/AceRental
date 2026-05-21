@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
 import { ProduitService } from '../../../../services/produit.service';
 import { CommonModule } from '@angular/common';
-import { ProduitDto } from '../../../../interfaces/produit-dto';
+import { EquipmentsDto } from '../../../../interfaces/produit-dto';
 import { MatIcon, MatIconModule } from "@angular/material/icon";
+import e from 'express';
+import { EquipmentCategory } from '../../../../Enum/equipment-category';
 
 @Component({
   selector: 'app-fiche-produit.component',
@@ -18,60 +21,91 @@ import { MatIcon, MatIconModule } from "@angular/material/icon";
     MatInputModule,
     MatDatepickerModule,
     MatIconModule,
+    MatSelectModule
   ],
   templateUrl: './fiche-produit.component.html',
   styleUrl: './fiche-produit.component.css',
 })
 export class FicheProduitComponent {
-  CiviliteH:boolean = true;
-  id!: number;
-  produit!: ProduitDto;
-  produitForm!: FormGroup;
+  id!: string;
+  equipment!: EquipmentsDto;
+  equipmentForm!: FormGroup;
+  equipmentService: ProduitService
   fileName?:string;
+  categoryList: string[] = Object.values(EquipmentCategory).filter(v => typeof v === 'string') as string[];
   readonly maxSize = 104857600;
   file_store!: any;
   file_list: Array<string> = [];
-display: FormControl = new FormControl("", Validators.required);
+  display: FormControl = new FormControl("", Validators.required);
   constructor(
-    route: ActivatedRoute, 
+    route: ActivatedRoute,
     private fb: FormBuilder,
-    private produitService: ProduitService
+    private _equipmentService: ProduitService
   ){
-    this.id = Number(route.snapshot.paramMap.get('id'));
+    this.id = route.snapshot.paramMap.get('id')|| '';
+    this.equipmentService = _equipmentService;
+    this.equipmentForm = this.fb.group({
+      reference: [''],
+      name: ['', [Validators.required, Validators.email]],
+      description: ['', Validators.required],
+      presentation: ['', Validators.required],
+      caracteristiques: ['', Validators.required],
+      dailyPriceHT: [0, Validators.required],
+      purchasePriceTTC: [0, Validators.required],
+      newPurchasePriceTTC: [0, Validators.required],
+      totalStock: [0, Validators.required],
+      category: ['', Validators.required],
+      images: [[]]
+    });
   }
   ngOnInit(): void {
-   this.produitService.getById(this.id).subscribe(res => {
-      this.produit = res;
-      this.initForm();
+    if (!this.id) {
+      throw new Error('Identifiant equippement manquant.');
+    }
+    this.equipmentService.getById(this.id).subscribe({
+      next: e => {
+        if (!e) {
+          throw new Error('Equippement introuvable.');
+        }
+
+        this.equipment = e;
+        this.equipment.images = this.equipment.images || [];
+        console.log('Response from API:', this.equipment);
+        this.patchValue(this.equipment);
+      },
+      error: err => console.error(err)
     });
-    
   }
 
-  initForm(): void {
-    this.produitForm = this.fb.group({
-      reference: [this.produit.reference, [Validators.required]],
-      libelle: [this.produit.libelle, Validators.required],
-      description: [this.produit.description],
-      presentation: [this.produit.presentation],
-      caracteristiques: [this.produit.caracteristiques],
-      prix: [this.produit.prix,[Validators.required, Validators.min(1)]],
-      images: [this.produit.images || [], [Validators.required]]
+  patchValue(equipment: EquipmentsDto): void {
+    this.equipmentForm.patchValue({
+      reference: equipment.Reference,
+      name: equipment.Name,
+      description: equipment.Description,
+      presentation: 'test presentation',
+      caracteristiques: 'test caracteristiques',
+      dailyPriceHT: equipment.DailyPriceHT,
+      purchasePriceTTC: equipment.PurchasePriceTTC,
+      newPurchasePriceTTC: equipment.NewPurchasePriceTTC,
+      totalStock: equipment.TotalStock,
+      category: equipment.Category,
+      images: equipment.images || []
     });
   }
-  
+
   submit(): void {
-    if (this.produitForm.valid) {
-      console.log('produitForm.value', this.produitForm.value);
-      this.produitService.insertOrUpdate(this.produitForm.value).subscribe(res => {
+      console.log('equipmentForm.value', this.equipmentForm.value);
+    if (this.equipmentForm.valid) {
+      this.equipmentService.insertOrUpdate(this.equipmentForm.value).subscribe(res => {
         console.log(res.url);
       });
     }
   }
   reset(): void {
-    this.produitForm.reset(this.produit);
+    this.patchValue(this.equipment);
   }
   hasError(controlName: string, error: string): boolean {
-    const control = this.produitForm.get(controlName);
+    const control = this.equipmentForm.get(controlName);
     return !!(
       control &&
       control.hasError(error) &&
@@ -79,8 +113,7 @@ display: FormControl = new FormControl("", Validators.required);
     );
   }
   handleFileInputChange(event : any): void {
-    this.produit.images = [];
-    // this.produitForm.patchValue({images: []});
+    this.equipment.images = [];
     const files = event.target.files as FileList;
     if (!files || files.length === 0) return;
     Array.from(files).forEach(file => {
@@ -89,18 +122,19 @@ display: FormControl = new FormControl("", Validators.required);
           return;
       }
       const reader = new FileReader();
-      reader.readAsDataURL(file);    
+      reader.readAsDataURL(file);
       reader.onload = () => {
         const base64 = reader.result as string;
-        this.produit.images.push(base64);
-        this.produitForm.patchValue({
-          images: [...this.produitForm.value.images, base64]
+        this.equipment.images.push(base64);
+        console.log("this.equipment.images", this.equipment.images);
+        this.equipmentForm.patchValue({
+          images: [...this.equipmentForm.value.images, base64]
         });
-        console.log("this.produitForm.value.images", this.produitForm.value.images);
+        console.log("this.equipmentForm.value.images", this.equipmentForm.value.images);
       };
     });
     let input = event.target as HTMLInputElement;
     input.blur();
   }
- 
+
 }

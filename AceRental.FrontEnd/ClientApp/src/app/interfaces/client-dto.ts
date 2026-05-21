@@ -1,16 +1,17 @@
 export interface ClientDto {
-    id: number;
-    raisonSociale?: string;
-    nomClient : string;
-    prenomClient : string;
-    email : string;
-    password: string;
-    civilite: string;
-    tel?: string;
-    portable?: string;
-    adresse?: string;
-    complementAdresse?: string;
-    codepostale?: number;
-    ville?: string;
-    dateCreation: Date;
+    Id: string;
+    ClientNumber: string;
+    RaisonSociale?: string;
+    LastName : string;
+    FirstName : string;
+    Email : string;
+    Password: string;
+    Civilite: string;
+    TelNumber?: string;
+    PhoneNumber?: string;
+    Address?: string;
+    ComplementAdresse?: string;
+    PostalCode: number;
+    City?: string;
+    CreateAt: Date;
 }

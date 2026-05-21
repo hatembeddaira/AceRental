@@ -1,4 +1,4 @@
-import { ProduitDto } from "./produit-dto";
+import { EquipmentsDto } from "./produit-dto";
 
 export interface ProduitCommandeDto {
     dateDebutReservation: string;
@@ -6,5 +6,5 @@ export interface ProduitCommandeDto {
     adresseLivraison: string;
     quantite : number;
     fraisExpedition: number;
-    produit : ProduitDto
+    produit : EquipmentsDto
 }
