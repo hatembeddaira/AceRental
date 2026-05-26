@@ -38,7 +38,7 @@ constructor(@Inject(PLATFORM_ID) private platformId: Object) {
 
   ngOnInit( ): void {
     
-    console.log('ID du commande =', this.id);
+    console.log('ID du reservation =', this.id);
     this.generateDevis();
   }
 

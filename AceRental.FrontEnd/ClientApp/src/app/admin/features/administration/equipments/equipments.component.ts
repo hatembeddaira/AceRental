@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ProduitService } from '../../../../services/produit.service';
+import { EquipmentService } from '../../../../services/equipment.service';
 
 @Component({
-  selector: 'app-produits',
+  selector: 'app-equipments',
   imports: [],
-  templateUrl: './produits.component.html',
-  styleUrl: './produits.component.css',
+  templateUrl: './equipments.component.html',
+  styleUrl: './equipments.component.css',
 })
-export class ProduitsComponent implements OnInit {
-  equipmentService: ProduitService;
-constructor(private _equipmentService: ProduitService){
+export class EquipmentsComponent implements OnInit {
+  equipmentService: EquipmentService;
+constructor(private _equipmentService: EquipmentService){
   this.equipmentService = _equipmentService;
 }
   ngOnInit(): void {

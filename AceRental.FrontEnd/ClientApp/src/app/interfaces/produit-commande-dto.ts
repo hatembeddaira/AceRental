@@ -1,4 +1,4 @@
-import { EquipmentsDto } from "./produit-dto";
+import { EquipmentsDto } from "./equipment-dto";
 
 export interface ProduitCommandeDto {
     dateDebutReservation: string;

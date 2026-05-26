@@ -6,6 +6,7 @@ namespace AceRental.Application.Invoices.Dtos
 {
     public class InvoiceLinesDto
     {
+        public Guid Id { get; set; }
         public Guid InvoiceId { get; set; }
         public required string Reference { get; set; }
         public required string Name { get; set; }

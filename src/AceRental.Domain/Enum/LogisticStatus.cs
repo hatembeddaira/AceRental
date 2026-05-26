@@ -35,6 +35,6 @@ namespace AceRental.Domain.Enum
         Damaged = 9,
         
         [Description("Terminé")]
-        Finished = 10,
+        Finished = 10
     }
 }

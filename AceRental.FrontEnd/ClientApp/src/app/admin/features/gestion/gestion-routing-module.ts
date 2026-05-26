@@ -1,25 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CommandesComponent } from './commandes/commandes.component';
+import { ReservationsComponent } from './reservations/reservations.component';
 import { DevisViewerComponent } from './devis/devis-viewer/devis-viewer.component';
-import { CommandeDetailsComponent } from './commandes/commandeDetails/commande-details.component';
+import { ReservationComponent } from './reservation/reservation.component';
 import { DevisComponent } from './devis/devis.component';
 
 const routes: Routes = [
   
   {path:'', data: { 
-    breadcrumb: 'Commandes',
+    breadcrumb: 'Reservations',
     breadcrumbParents: [
       { label: 'Acceuil', url: '/' },
       { label: 'Gestion', url: '/gestion' }
-    ]}, component:CommandesComponent}, 
-  {path:'commande/:id', data: { 
-    breadcrumb: 'Commande Détails' , 
+    ]}, component:ReservationsComponent}, 
+  {path:'reservation/:id', data: { 
+    breadcrumb: 'Reservation Détails' , 
     breadcrumbParents: [
       { label: 'Acceuil', url: '/' },
       { label: 'Gestion', url: '/gestion' },
-      { label: 'Commandes ', url: '/admin' },
-    ]}, component:CommandeDetailsComponent},
+      { label: 'Reservations ', url: '/admin' },
+    ]}, component:ReservationComponent},
   {path:'devis', data: { 
     breadcrumb: 'Devis',
     breadcrumbParents: [

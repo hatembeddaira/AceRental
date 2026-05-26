@@ -36,15 +36,15 @@ Content-Type: application/json
   "dailyPriceHT": 400,
   "items": [
     {
-      "equipmentId": "20ff66f9-323a-487b-afcc-ded80b101866",
+      "equipmentId": "a2bd2a43-5cfd-413e-abc0-2c095f6f0c01",
       "quantity": 2   
     },
     {
-      "equipmentId": "0394d635-58d3-4e34-8ff6-4f963ebcbd97",
+      "equipmentId": "e0473938-c756-4b47-bf44-47b0651530c7",
       "quantity": 4      
     },
     {
-      "equipmentId": "9285e5bf-a47c-4c46-aeed-872eb73788c1",
+      "equipmentId": "1624c4f6-0ce5-426a-bebf-2f0145eed6e5",
       "quantity": 1      
     }
   ]
@@ -86,7 +86,7 @@ Content-Type: application/json
 {
   "reference": "SOL",
   "name": "Pack SOL",
-  "description": "Pack de deux enceintes en facade et trois retours",
+  "description": "Pack de deux enceintes en facade et trois retours et une console analogique",
   "dailyPriceHT": 400,
   "items": [
     {
@@ -107,7 +107,7 @@ Content-Type: application/json
 {
   "reference": "RE",
   "name": "Pack RE",
-  "description": "Pack de deux enceintes en facade et deux retours",
+  "description": "Pack de deux enceintes en facade et deux retours et une console analogique",
   "dailyPriceHT": 300,
   "items": [
     {

@@ -1,9 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CommandesComponent } from './features/gestion/commandes/commandes.component';
-import { CommandeDetailsComponent } from './features/gestion/commandes/commandeDetails/commande-details.component';
 import { AdminComponent } from './admin.component';
-import { DevisViewerComponent } from './features/gestion/devis/devis-viewer/devis-viewer.component';
 
 const routes: Routes = [
    {path:'', component: AdminComponent, children:[
@@ -17,19 +14,19 @@ const routes: Routes = [
     ]},
 
   //  {path:'', component: AdminComponent, children:[
-  //     // {path:'', data: { breadcrumb: 'Commandes' }, component:CommandesComponent},
-  //     {path:'commandes', data: { breadcrumb: 'Commandes' }, component:CommandesComponent},
+  //     // {path:'', data: { breadcrumb: 'Reservations' }, component:ReservationsComponent},
+  //     {path:'Reservations', data: { breadcrumb: 'Reservations' }, component:ReservationsComponent},
   //     {path:'devis', data: { breadcrumb: 'Devis' }, component:DevisViewerComponent},
   //     {path:'devis/:id', data: { 
   //       breadcrumb: 'Pack' , 
   //       breadcrumbParents: [
   //         { label: 'Devis', url: '/admin' },
   //       ]}, component:DevisViewerComponent},
-  //     {path:'commande/:id', data: { 
+  //     {path:'Reservation/:id', data: { 
   //       breadcrumb: 'Pack' , 
   //       breadcrumbParents: [
-  //         { label: 'Commandes', url: '/admin' },
-  //       ]}, component:CommandeDetailsComponent},
+  //         { label: 'Reservations', url: '/admin' },
+  //       ]}, component:ReservationComponent},
   //     {path:'administration', loadChildren:()=> import('./features/administration/administration-module').then(m=> m.AdministrationModule)},
       
   //   ]}

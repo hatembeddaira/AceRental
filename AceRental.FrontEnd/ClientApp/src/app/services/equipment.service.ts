@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { EquipmentsDto } from '../interfaces/produit-dto';
 import { environment } from '../../environments/environment.development';
+import { EquipmentsDto } from '../interfaces/equipment-dto';
 
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProduitService {
+export class EquipmentService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.aceRentalApiUrl + '/v1/Equipments';
 
@@ -37,9 +37,9 @@ export class ProduitService {
 
  
 
-  insertOrUpdate(produit : EquipmentsDto)
+  insertOrUpdate(equipment : EquipmentsDto)
   {
-    return this.http.post<{ url: string }>('https://api.monsite.com/api/files/upload', produit);
+    return this.http.post<{ url: string }>('https://api.monsite.com/api/files/upload', equipment);
   }
   
 //   uploadProduitFiles(files: File[]) {

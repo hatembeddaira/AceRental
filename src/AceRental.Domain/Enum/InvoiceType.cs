@@ -4,7 +4,6 @@ namespace AceRental.Domain.Enum
 {
     public enum InvoiceType
     {
-
         [Description("Facture de location standard")]
         RentalInvoice = 0,
 

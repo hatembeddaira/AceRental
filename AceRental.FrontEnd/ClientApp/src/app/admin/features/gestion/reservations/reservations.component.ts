@@ -3,23 +3,33 @@ import {AfterViewInit, Component, ViewChild, inject} from '@angular/core';
 import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { CommandesService } from '../../../../services/commandes.service';
+import { ReservationService } from '../../../../services/reservation.service';
+import { ReservationDetailsDto } from '../../../../interfaces/reservation-details-dto';
 
 @Component({
-  selector: 'app-commandes.component',
+  selector: 'app-reservations.component',
   imports: [MatTableModule, MatSortModule, RouterModule],
-  templateUrl: './commandes.component.html',
-  styleUrl: './commandes.component.css',
+  templateUrl: './reservations.component.html',
+  styleUrl: './reservations.component.css',
 })
-export class CommandesComponent {
+export class ReservationsComponent {
+  reservationService: ReservationService
   private _liveAnnouncer = inject(LiveAnnouncer);
-  displayedColumns: string[] = ['id', 'nomClient', 'prenomClient', 'raisonSociale', 'dateCreation', 'dateDebutReservation', 'dateFinReservation', 'derniereModification', 'prix', 'statut', 'edit'];
-  dataSource = new MatTableDataSource(CommandesService.getAllCommandes());
+  displayedColumns: string[] = ['ReservationNumber', 'FirstName', 'LastName', 'raisonSociale', 'dateCreation', 'StartDate', 'EndDate', 'derniereModification', 'TotalTTC', 'LogisticStatus', 'FinancialStatus', 'edit'];
+  dataSource = new MatTableDataSource<ReservationDetailsDto>([]);
 
-  constructor(){
-
+  constructor(private _reservationService: ReservationService){
+    this.reservationService = _reservationService;
   }
-
+ngOnInit(): void {
+    this.reservationService.get().subscribe({
+      next: obj => {
+        this.dataSource.data = obj;
+        console.log(obj);
+      },
+      error: err => console.error(err)
+    });
+  }
   @ViewChild(MatSort) sort: MatSort | undefined;
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;

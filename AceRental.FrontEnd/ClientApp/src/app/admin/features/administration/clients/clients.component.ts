@@ -3,7 +3,6 @@ import {AfterViewInit, Component, ViewChild, inject} from '@angular/core';
 import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { CommandesService } from '../../../../services/commandes.service';
 import { ClientService } from '../../../../services/client.service';
 import { ClientDto } from '../../../../interfaces/client-dto';
 

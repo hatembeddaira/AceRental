@@ -13,18 +13,18 @@ Content-Type: application/json
   "Equipments":[],
   "packs": [
     {
-      "packId": "923fb8e5-e4f7-498b-836d-d812bc6e0046",
+      "packId": "805119c5-0e83-432d-9d79-baed5f7a6065",
       "quantity": 1   
     }
   ],
   "services": [
     {
-      "serviceId": "842c7647-a46a-4186-b82d-d625943ae05d",
-      "quantity": 1      
+      "serviceId": "ef53ed80-167e-4219-a0b9-f3c40d952be3",
+      "quantity": 1    
     },
     {
-      "serviceId": "c4707e4f-2e69-40b1-bc1b-820bed6a7ea9",
-      "quantity": 1      
+      "serviceId": "c63debcf-5368-4d82-ae58-7fc097ee96b6",
+      "quantity": 1     
     }
   ]
 }

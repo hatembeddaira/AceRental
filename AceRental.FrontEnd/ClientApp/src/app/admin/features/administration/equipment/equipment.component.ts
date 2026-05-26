@@ -5,15 +5,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
-import { ProduitService } from '../../../../services/produit.service';
+import { EquipmentService } from '../../../../services/equipment.service';
 import { CommonModule } from '@angular/common';
-import { EquipmentsDto } from '../../../../interfaces/produit-dto';
+import { EquipmentsDto } from '../../../../interfaces/equipment-dto';
 import { MatIcon, MatIconModule } from "@angular/material/icon";
 import e from 'express';
 import { EquipmentCategory } from '../../../../Enum/equipment-category';
 
 @Component({
-  selector: 'app-fiche-produit.component',
+  selector: 'app-equipment.component',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -23,14 +23,14 @@ import { EquipmentCategory } from '../../../../Enum/equipment-category';
     MatIconModule,
     MatSelectModule
   ],
-  templateUrl: './fiche-produit.component.html',
-  styleUrl: './fiche-produit.component.css',
+  templateUrl: './equipment.component.html',
+  styleUrl: './equipment.component.css',
 })
-export class FicheProduitComponent {
+export class EquipmentComponent {
   id!: string;
   equipment!: EquipmentsDto;
   equipmentForm!: FormGroup;
-  equipmentService: ProduitService
+  equipmentService: EquipmentService
   fileName?:string;
   categoryList: string[] = Object.values(EquipmentCategory).filter(v => typeof v === 'string') as string[];
   readonly maxSize = 104857600;
@@ -40,7 +40,7 @@ export class FicheProduitComponent {
   constructor(
     route: ActivatedRoute,
     private fb: FormBuilder,
-    private _equipmentService: ProduitService
+    private _equipmentService: EquipmentService
   ){
     this.id = route.snapshot.paramMap.get('id')|| '';
     this.equipmentService = _equipmentService;

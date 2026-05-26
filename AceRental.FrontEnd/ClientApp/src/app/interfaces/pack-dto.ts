@@ -1,5 +1,5 @@
 import { OptionComprisesDto } from "./option-comprises-dto";
-import { EquipmentsDto } from "./produit-dto";
+import { EquipmentsDto } from "./equipment-dto";
 
 export interface PackDto {
     id: number;

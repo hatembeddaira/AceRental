@@ -3,12 +3,13 @@ import {AfterViewInit, Component, Inject, PLATFORM_ID, ViewChild, inject} from '
 import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { CommandesService } from '../../../../services/commandes.service';
+import { ReservationService } from '../../../../services/reservation.service';
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { NgxExtendedPdfViewerModule, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 import { isPlatformBrowser } from '@angular/common';
 import {autoTable, RowInput, UserOptions} from "jspdf-autotable";
 import jsPDF from 'jspdf';
+import { ReservationDetailsDto } from '../../../../interfaces/reservation-details-dto';
 
 @Component({
   selector: 'app-devis.component',
@@ -18,17 +19,28 @@ import jsPDF from 'jspdf';
 })
 export class DevisComponent {
   pdfSrc?: string;
+  reservationService: ReservationService
 
   private _liveAnnouncer = inject(LiveAnnouncer);
   displayedColumns: string[] = ['id', 'nomClient', 'prenomClient', 'raisonSociale'];
-  dataSource = new MatTableDataSource(CommandesService.getAllCommandes());
+  dataSource = new MatTableDataSource<ReservationDetailsDto>([]);
   isBrowser = false;
 
-constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+constructor(@Inject(PLATFORM_ID) private platformId: Object,
+private _reservationService: ReservationService) {
     pdfDefaultOptions.assetsFolder = 'assets/ngx-extended-pdf-viewer';
     this.isBrowser = isPlatformBrowser(this.platformId);
+    this.reservationService = _reservationService;
   }
-
+ngOnInit(): void {
+    this.reservationService.get().subscribe({
+      next: obj => {
+        this.dataSource.data = obj;
+        console.log(obj);
+      },
+      error: err => console.error(err)
+    });
+  }
   @ViewChild(MatSort) sort: MatSort | undefined;
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
