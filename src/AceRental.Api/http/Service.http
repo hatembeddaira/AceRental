@@ -5,8 +5,8 @@ POST {{Api_HostAddress}}/Api/v1/Services/
 Content-Type: application/json
 
 {
-  "name": "TECHSON",
-  "reference": "Technicien de son",
+  "reference": "TECHSON",
+  "name": "Technicien de son",
   "type": 0,
   "dailyPriceHT": 100
 }
@@ -17,8 +17,8 @@ POST {{Api_HostAddress}}/Api/v1/Services/
 Content-Type: application/json
 
 {
-  "name": "TECH",
-  "reference": "Technicien",
+  "reference": "TECH",
+  "name": "Technicien",
   "type": 0,
   "dailyPriceHT": 70
 }
@@ -29,8 +29,8 @@ POST {{Api_HostAddress}}/Api/v1/Services/
 Content-Type: application/json
 
 {
-  "name": "TRANSPORT",
-  "reference": "Transport",
+  "reference": "TRANSPORT",
+  "name": "Transport",
   "type": 1,
   "dailyPriceHT": 0
 }

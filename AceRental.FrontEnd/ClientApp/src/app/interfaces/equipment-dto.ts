@@ -1,5 +1,5 @@
 export interface EquipmentsDto {
-    Id: number;
+    Id: string;
     Reference: string;
     Name : string;
     Description? : string;

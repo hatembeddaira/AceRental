@@ -5,6 +5,15 @@ POST {{Api_HostAddress}}/Api/v1/Clients/
 Content-Type: application/json
 
 {
+  "firstName": "Hatem",
+  "lastName": "Daira",
+  "email": "hatembeddaira@gmail.com",
+  "raisonSociale": "ACE SOUND",
+  "phoneNumber": "0751340180",
+  "address": "6 rue max linder",
+  "complementAdresse": "App 131",
+  "city": "saint genviève des bois",
+  "postalCode": "91700"
 }
 
 

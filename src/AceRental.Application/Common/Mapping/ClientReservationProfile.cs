@@ -19,6 +19,7 @@ namespace AceRental.Application.Common.Mapping
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(source => source.LastName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(source => source.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(source => source.PhoneNumber))
+                .ForMember(dest => dest.RaisonSociale, opt => opt.MapFrom(source => source.RaisonSociale))
                 .ForMember(dest => dest.Address , opt => opt.MapFrom(source => source.Address))
                 .ReverseMap();
         }

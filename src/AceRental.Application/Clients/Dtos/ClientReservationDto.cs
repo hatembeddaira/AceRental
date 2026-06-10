@@ -12,6 +12,7 @@ namespace AceRental.Application.Clients.Dtos
         public required string LastName { get; set; }
         public required string Email { get; set; }
         public string? PhoneNumber { get; set; }
+        public string? RaisonSociale { get; set; }
         public string? Address { get; set; }
     }
 }

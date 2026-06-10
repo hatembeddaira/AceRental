@@ -8,6 +8,7 @@ using AceRental.Domain.Enum;
 using AceRental.Application.Exceptions;
 using AceRental.Infrastructure.Persistence.Repositories;
 using FluentValidation.Results;
+using AceRental.Application.Common;
 
 namespace AceRental.Application.Reservations.Command;
 
@@ -36,7 +37,7 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
     public async Task<ReservationDetailsDto> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
     {
         // int totalDays = (request.EndDate - request.StartDate).Days;
-        int totalDays = GetTotalDays(request.StartDate, request.EndDate);
+        int totalDays = DateExtention.GetTotalDays(request.StartDate, request.EndDate);
         if (totalDays <= 0)
             throw new ValidationException(new List<ValidationFailure>
             {
@@ -129,16 +130,6 @@ public class CreateReservationHandler : IRequestHandler<CreateReservationCommand
         _context.Reservations.Add(_mapper.Map<Reservation>(reservation));
         await _context.SaveChangesAsync(cancellationToken);
         return reservation;
-    }
-
-    private int GetTotalDays(DateTime startDate, DateTime endDate)
-    {
-        if (endDate <= startDate)
-        {
-            return 0; // Sécurité si les dates sont inversées ou identiques
-        }
-        TimeSpan difference = endDate - startDate;
-        return (int)Math.Ceiling(difference.TotalDays);
     }
 
     private async Task<bool> CheckAvailabilityItems(Dictionary<Guid, int> lstEquipments, DateTime start, DateTime end, CancellationToken cancellationToken)

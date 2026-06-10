@@ -8,6 +8,6 @@ export interface PackDto {
     description : string;
     prix : number;
     image: string;
-    produits : EquipmentsDto[];
+    equipments : EquipmentsDto[];
     optionComprises : OptionComprisesDto[];
 }

@@ -13,6 +13,13 @@ const routes: Routes = [
       { label: 'Acceuil', url: '/' },
       { label: 'Gestion', url: '/gestion' }
     ]}, component:ReservationsComponent}, 
+  {path:'reservation', data: { 
+    breadcrumb: 'Créer une reservation',
+    breadcrumbParents: [
+      { label: 'Acceuil', url: '/' },
+      { label: 'Gestion', url: '/gestion' },
+      { label: 'Reservations ', url: '/admin' },
+    ]}, component:ReservationComponent},
   {path:'reservation/:id', data: { 
     breadcrumb: 'Reservation Détails' , 
     breadcrumbParents: [

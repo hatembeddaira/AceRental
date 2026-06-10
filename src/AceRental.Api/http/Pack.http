@@ -11,16 +11,16 @@ Content-Type: application/json
   "dailyPriceHT": 300,
   "items": [
     {
-      "equipmentId": "20ff66f9-323a-487b-afcc-ded80b101866",
+      "equipmentId": "fbc5b7ab-f72b-43f3-81a7-0153d78370d3",
       "quantity": 2   
     },
     {
-      "equipmentId": "0394d635-58d3-4e34-8ff6-4f963ebcbd97",
-      "quantity": 2      
+      "equipmentId": "6928fb9c-ac4d-4f77-b867-69641ed131b4",
+      "quantity": 1      
     },
     {
-      "equipmentId": "9285e5bf-a47c-4c46-aeed-872eb73788c1",
-      "quantity": 1      
+      "equipmentId": "aa330552-1777-4750-b479-1f68f671badf",
+      "quantity": 2    
     }
   ]
 }
@@ -36,16 +36,16 @@ Content-Type: application/json
   "dailyPriceHT": 400,
   "items": [
     {
-      "equipmentId": "a2bd2a43-5cfd-413e-abc0-2c095f6f0c01",
+      "equipmentId": "fbc5b7ab-f72b-43f3-81a7-0153d78370d3",
       "quantity": 2   
     },
     {
-      "equipmentId": "e0473938-c756-4b47-bf44-47b0651530c7",
-      "quantity": 4      
+      "equipmentId": "6928fb9c-ac4d-4f77-b867-69641ed131b4",
+      "quantity": 1      
     },
     {
-      "equipmentId": "1624c4f6-0ce5-426a-bebf-2f0145eed6e5",
-      "quantity": 1      
+      "equipmentId": "aa330552-1777-4750-b479-1f68f671badf",
+      "quantity": 4    
     }
   ]
 }
@@ -61,20 +61,20 @@ Content-Type: application/json
   "dailyPriceHT": 550,
   "items": [
     {
-      "equipmentId": "20ff66f9-323a-487b-afcc-ded80b101866",
+      "equipmentId": "fbc5b7ab-f72b-43f3-81a7-0153d78370d3",
       "quantity": 2   
     },
     {
-      "equipmentId": "0394d635-58d3-4e34-8ff6-4f963ebcbd97",
-      "quantity": 4      
-    },
-    {
-      "equipmentId": "9285e5bf-a47c-4c46-aeed-872eb73788c1",
+      "equipmentId": "6928fb9c-ac4d-4f77-b867-69641ed131b4",
       "quantity": 1      
     },
     {
-      "equipmentId": "a224731d-4c50-415c-8ec0-b3d7b689d221",
-      "quantity": 2      
+      "equipmentId": "aa330552-1777-4750-b479-1f68f671badf",
+      "quantity": 2    
+    },
+    {
+      "equipmentId": "d0768802-3d98-4397-8eec-05efc84db74f",
+      "quantity": 2    
     }
   ]
 }

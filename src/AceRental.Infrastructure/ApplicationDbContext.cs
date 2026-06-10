@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using AceRental.Domain.Common;
 using AceRental.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using AceRental.Infrastructure.Configurations;
 
 namespace AceRental.Infrastructure.Persistence;
@@ -56,6 +57,34 @@ public class ApplicationDbContext : DbContext
             modelBuilder.ApplyConfiguration(new QuoteLinesConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
+
+            // La conversion de toutes les propriétés DateTime en UTC est une bonne pratique
+            // pour assurer la cohérence des données, peu importe le fuseau horaire du serveur
+            // ou des clients. Toutes les dates sont stockées en UTC dans la base de données.
+            var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
+                v => v.ToUniversalTime(),
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc));//DateTimeKind.Local
+
+            var nullableDateTimeConverter = new ValueConverter<DateTime?, DateTime?>(
+                v => v.HasValue ? v.Value.ToUniversalTime() : v,
+                v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);//DateTimeKind.Local
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime))
+                    {
+                        property.SetValueConverter(dateTimeConverter);
+                    }
+                    else if (property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(nullableDateTimeConverter);
+                    }
+                }
+            }
+
+            
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
@@ -156,8 +185,21 @@ public class ApplicationDbContext : DbContext
             }
         }
         
+        await InitClientNumbersAsync(cancellationToken);
         await InitInvoiceNumbersAsync(cancellationToken);
         await InitQuoteAsync(cancellationToken);
+    }
+    private async Task InitClientNumbersAsync(CancellationToken cancellationToken)
+    {
+        // On récupère les clients qui vont être insérés
+        var newClients = ChangeTracker.Entries<Client>()
+            .Where(e => e.State == EntityState.Added)
+            .Select(e => e.Entity);
+
+        foreach (var client in newClients)
+        {
+            client.ClientNumber = await GetNextClientNumberAsync(cancellationToken);
+        }
     }
     private async Task InitInvoiceNumbersAsync(CancellationToken cancellationToken)
     {
@@ -199,6 +241,14 @@ public class ApplicationDbContext : DbContext
         }
 
         return yearPrefix + 1;
+    }
+    private async Task<int> GetNextClientNumberAsync(CancellationToken cancellationToken = default)
+    {
+        var lastNumber = await Clients
+            .AsNoTracking()
+            .MaxAsync(c => (int?)c.ClientNumber, cancellationToken)
+            .ConfigureAwait(false) ?? 0;
+        return await GetNextNumberAsync(lastNumber, cancellationToken);
     }
     private async Task<int> GetNextInvoiceNumberAsync(CancellationToken cancellationToken = default)
     {

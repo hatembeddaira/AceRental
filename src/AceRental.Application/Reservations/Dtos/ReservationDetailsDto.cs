@@ -27,5 +27,7 @@ namespace AceRental.Application.Reservations.Dtos
         public ICollection<InvoiceDto> Invoices { get; set; } = [];
         public ICollection<QuoteDto> Quotes { get; set; } = [];
         public ICollection<PaymentDto> Payments { get; set; } = [];
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

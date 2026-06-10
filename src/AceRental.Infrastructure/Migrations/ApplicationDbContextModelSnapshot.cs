@@ -34,9 +34,8 @@ namespace AceRental.Infrastructure.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClientNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ClientNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("ComplementAdresse")
                         .HasColumnType("nvarchar(max)");

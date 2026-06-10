@@ -81,6 +81,16 @@ public class GlobalExceptionHandlerMiddleware
                 )
             ),
 
+            UnavailableQuantityException unavailableQuantity => (
+                StatusCodes.Status409Conflict,
+                CreateProblem(
+                    title: "Quantité indisponible",
+                    detail: unavailableQuantity.Message,
+                    status: StatusCodes.Status409Conflict,
+                    instance: context.Request.Path
+                )
+            ),
+
             UnauthorizedAccessException => (
                 StatusCodes.Status401Unauthorized,
                 CreateProblem(

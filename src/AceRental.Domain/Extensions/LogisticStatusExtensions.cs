@@ -173,6 +173,7 @@ namespace AceRental.Domain.Extensions
         {
             return next switch
             {
+                LogisticStatus.Draft => reservation.FinancialStatus == FinancialStatus.Unpaid,
                 LogisticStatus.Deleted => reservation.FinancialStatus == FinancialStatus.Unpaid,
                 LogisticStatus.Quote => reservation.FinancialStatus == FinancialStatus.Unpaid,
                 _ => false

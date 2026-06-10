@@ -5,7 +5,7 @@ namespace AceRental.Application.Clients.Dtos
     public class ClientDto
     {
         public Guid Id { get; set; }
-        public required string ClientNumber { get; set; }
+        public required int ClientNumber { get; set; }
         public string? RaisonSociale { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }

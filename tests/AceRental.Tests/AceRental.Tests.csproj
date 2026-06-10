@@ -22,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\AceRental.Api\AceRental.Api.csproj" />
+    <ProjectReference Include="..\..\src\AceRental.Application\AceRental.Application.csproj" />
     <ProjectReference Include="..\..\src\AceRental.Domain\AceRental.Domain.csproj" />
     <ProjectReference Include="..\..\src\AceRental.Infrastructure\AceRental.Infrastructure.csproj" />
   </ItemGroup>

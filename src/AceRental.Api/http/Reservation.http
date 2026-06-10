@@ -1,15 +1,46 @@
 @Api_HostAddress = http://localhost:5000
-@ReservationId = 185def6d-8bd0-4677-830a-3d004d21641d
+@ReservationId = 18565498-4450-4dff-bda7-4918674c16f5
 
 ### Create Reservation
 POST {{Api_HostAddress}}/Api/v1/Reservations/
 Content-Type: application/json
 
 {
-  "clientId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "startDate": "2026-03-09T13:46:30.484Z",
-  "endDate": "2026-03-10T13:46:30.484Z",
-  "workflow": 0,
+  "clientId": "60c39f88-d53f-467b-9789-007a1110d7a5",
+  "startDate": "2026-03-09T18:00:00.000Z",
+  "endDate": "2026-03-10T03:00:00.000Z",
+  "workflow": 1,
+  "Equipments":[],
+  "packs": [
+    {
+      "packId": "aaa9776b-5789-41f2-bab7-29566e9a5e50",
+      "quantity": 1   
+    }
+  ],
+  "services": [
+    {
+      "serviceId": "db7d35d8-2536-4743-8b59-c17e3b5a3024",
+      "quantity": 1    
+    },
+    {
+      "serviceId": "3a02a0df-6c7c-4241-bc04-b2292b9fa0db",
+      "quantity": 1     
+    },
+    {
+      "serviceId": "29a180bb-854f-4da5-9929-a31c4c77fa55",
+      "quantity": 1 ,
+      "PriceHT": 50    
+    }
+  ]
+}
+
+
+### Update Reservation Date and qte
+PATCH {{Api_HostAddress}}/Api/v1/Reservations({{ReservationId}})
+Content-Type: application/json
+
+{
+  "workflow": 1,
   "Equipments":[],
   "packs": [
     {
@@ -25,38 +56,11 @@ Content-Type: application/json
     {
       "serviceId": "c63debcf-5368-4d82-ae58-7fc097ee96b6",
       "quantity": 1     
-    }
-  ]
-}
-
-
-### Update Reservation Date and qte
-PATCH {{Api_HostAddress}}/Api/v1/Reservations({{ReservationId}})
-Content-Type: application/json
-
-{
-  "startDate": "2026-03-20T13:46:30.484Z",
-  "endDate": "2026-03-21T13:46:30.484Z",
-  "Equipments":[],
-  "packs": [
-    {
-      "packId": "923fb8e5-e4f7-498b-836d-d812bc6e0046",
-      "quantity": 1   
-    }
-  ],
-  "services": [
-    {
-      "serviceId": "842c7647-a46a-4186-b82d-d625943ae05d",
-      "quantity": 1      
     },
     {
-      "serviceId": "c4707e4f-2e69-40b1-bc1b-820bed6a7ea9",
-      "quantity": 1      
-    },
-    {
-      "serviceId": "d954a355-dd04-42df-9d00-b27c64a8bd43",
-      "quantity": 1,
-      "dailyPriceHT": 50
+      "serviceId": "411d0441-780c-4d43-97e7-ae7eb6bc1125",
+      "quantity": 1 ,
+      "PriceHT": 50    
     }
   ]
 }
@@ -90,6 +94,7 @@ Content-Type: application/json
 ### Cancel Reservation
 PATCH {{Api_HostAddress}}/Api/v1/Reservations({{ReservationId}})/LogisticStatus
 Content-Type: application/json
+
 {
   "status": 4
 }
@@ -104,6 +109,6 @@ Content-Type: application/json
 
 
 ### Get All Reservation for Client
-GET {{Api_HostAddress}}/Api/v1/Reservations?$filter=ClientId eq 3fa85f64-5717-4562-b3fc-2c963f66afa6&$expand=Client,Payments,Quotes($expand=QuoteLines),Invoices,Services,Packs,Equipments
+GET {{Api_HostAddress}}/Api/v1/Reservations?$filter=ClientId eq 60c39f88-d53f-467b-9789-007a1110d7a5&$expand=Client,Payments,Quotes($expand=QuoteLines),Invoices,Services,Packs,Equipments
 Content-Type: application/json
 

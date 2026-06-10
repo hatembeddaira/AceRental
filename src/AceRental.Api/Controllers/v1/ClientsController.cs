@@ -1,5 +1,6 @@
 using AceRental.Application.Clients.Dtos;
 using AceRental.Application.Clients.Queries;
+using AceRental.Application.Equipments.Command;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
@@ -17,6 +18,7 @@ namespace AceRental.Api.Controllers.v1
         {
             _mediator = mediator;
         }
+
         [HttpGet]
         [EnableQuery]
         [ProducesResponseType(typeof(IQueryable<ClientDto>), StatusCodes.Status200OK)]
@@ -24,7 +26,6 @@ namespace AceRental.Api.Controllers.v1
         {
             return Ok(await _mediator.Send(new GetAllClientsQuery()));
         }
-
 
         [HttpGet]
         [EnableQuery]
@@ -40,14 +41,14 @@ namespace AceRental.Api.Controllers.v1
             }
             return Ok(obj);
         }
-        // [HttpPost]
-        // [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]  //  201 Created
-        // [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    //  validation
-        // [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
-        // public async Task<ActionResult<Guid>> Create(CreateClientCommand command)
-        // {
-        //     var id = await Mediator.Send(command);
-        //     return CreatedAtAction(nameof(Get), new { id }, id);
-        // }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(ClientDto), StatusCodes.Status201Created)]  //  201 Created
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    //  validation
+        [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
+        public async Task<IActionResult> Post([FromBody] CreateClientCommand command)
+        {
+            return Created(await _mediator.Send(command));
+        }
     }
 }

@@ -5,8 +5,9 @@ import { ServicesComponent } from './services/services.component';
 import { InstallationComponent } from './instalation/installation.component';
 import { SonorisationComponent } from './location/sonorisation/sonorisation.component';
 import { LumiereComponent } from './location/lumiere/lumiere.component';
-import { ProduitComponent } from './location/produit/produit.component';
 import { PackComponent } from './location/pack/pack.component';
+import { EquipmentComponent } from './location/equipment/equipment.component';
+import { BasketComponent } from './basket/basket.component';
 
 const routes: Routes = [
   {path:'', data: { breadcrumb: 'Acceuil' }, component:AcceuilComponent},
@@ -21,8 +22,13 @@ const routes: Routes = [
     breadcrumbParents: [
       { label: 'Acceuil', url: '/' }
     ]}, component:SonorisationComponent},
+  {path:'panier', data: {
+    breadcrumb: 'Panier', 
+    breadcrumbParents: [
+      { label: 'Acceuil', url: '/' }
+    ]}, component:BasketComponent},
   {path:'lumiere', data: { breadcrumb: 'Lumière' }, component:LumiereComponent},
-  {path:'produit/:id', data: { breadcrumb: 'Produit' }, component:ProduitComponent},
+  {path:'equipment/:id', data: { breadcrumb: 'Équipement' }, component:EquipmentComponent},
   {path:'pack/:id', data: { 
     breadcrumb: 'Pack' , 
     breadcrumbParents: [

@@ -10,6 +10,7 @@ using AceRental.Domain.Extensions;
 using AceRental.Application.Exceptions;
 using FluentValidation.Results;
 using AceRental.Infrastructure.Persistence.Repositories;
+using AceRental.Application.Common;
 
 namespace AceRental.Application.Reservations.Command;
 
@@ -28,10 +29,8 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
 
     public async Task<bool> Handle(UpdateReservationCommand request, CancellationToken cancellationToken)
     {
-
-        if (request.EndDate != null &&
-            request.StartDate != null &&
-            ((DateTime)request.EndDate - (DateTime)request.StartDate).Days <= 0)
+        int totalDays = DateExtention.GetTotalDays(request.StartDate, request.EndDate);
+        if (totalDays <= 0)
             throw new ValidationException(new List<ValidationFailure>
             {
                 new ValidationFailure(nameof(request.EndDate), "La date de fin doit être postérieure à la date de début.")
@@ -90,6 +89,14 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
                 await UpdateReservationEquipmentsAsync(reservation, request.Equipments, cancellationToken);
             }
         }
+        else
+        {
+            var remmoveAll = reservation.Equipments.Where(x => x.ReservationId == request.ReservationId).ToList();
+            foreach (var item in remmoveAll)
+            {
+                _context.ReservationEquipments.Remove(item);
+            }
+        }
         if (request.Packs != null && request.Packs.Any())
         {
             var currentItems = reservation.Packs.Select(i => new ReservationPacksDto
@@ -105,6 +112,15 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
                 await UpdateReservationPacksAsync(reservation, request.Packs, cancellationToken);
             }
         }
+
+        else
+        {
+            var remmoveAll = reservation.Packs.Where(x => x.ReservationId == request.ReservationId).ToList();
+            foreach (var item in remmoveAll)
+            {
+                _context.ReservationPacks.Remove(item);
+            }
+        }
         if (request.Services != null && request.Services.Any())
         {
             var currentItems = reservation.Services.Select(i => new ReservationServicesDto
@@ -118,6 +134,14 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
             if (HaveReservationServicesChanged(currentItems, request.Services))
             {
                 await UpdateReservationServicesAsync(reservation, request.Services, cancellationToken);
+            }
+        }
+        else
+        {
+            var remmoveAll = reservation.Services.Where(x => x.ReservationId == request.ReservationId).ToList();
+            foreach (var item in remmoveAll)
+            {
+                _context.ReservationServices.Remove(item);
             }
         }
 
@@ -241,7 +265,7 @@ public class UpdateReservationHandler : IRequestHandler<UpdateReservationCommand
             {
                 existing.Quantity = item.Quantity;
                 existing.UnitPriceAtTimeOfBooking = item.UnitPriceAtTimeOfBooking == null ? unitPrice : (decimal)item.UnitPriceAtTimeOfBooking;
-            
+
             }
             else
             {
