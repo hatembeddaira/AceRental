@@ -8,6 +8,7 @@ using AceRental.Infrastructure.Services;
 using Asp.Versioning;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi;
@@ -121,6 +122,16 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["IdentityServer:Authority"]; // L'URL de votre instance IdentityServer
+        options.Audience = "acerentalapi"; // L'audience de votre API, définie dans IdentityServer
+        options.RequireHttpsMetadata = false; // À définir à true en production
+    });
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddScoped<IReservationEquipmentsRepository, ReservationEquipmentsRepository>();
 
 
@@ -146,8 +157,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("alloworigins");
 app.UseRouting();
-// app.UseAuthentication();
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
@@ -157,5 +168,3 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
-
-

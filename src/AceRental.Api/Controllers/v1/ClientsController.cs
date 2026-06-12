@@ -1,6 +1,6 @@
 using AceRental.Application.Clients.Dtos;
 using AceRental.Application.Clients.Queries;
-using AceRental.Application.Equipments.Command;
+using AceRental.Application.Clients.Command;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;

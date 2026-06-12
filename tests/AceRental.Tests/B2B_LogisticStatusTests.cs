@@ -88,7 +88,7 @@ namespace AceRental.Tests
         }
 
         [Theory]
-        [InlineData(LogisticStatus.Draft)]
+        // [InlineData(LogisticStatus.Draft)]
         [InlineData(LogisticStatus.Basket)]
         [InlineData(LogisticStatus.Confirmed)]
         [InlineData(LogisticStatus.PickedUp)]

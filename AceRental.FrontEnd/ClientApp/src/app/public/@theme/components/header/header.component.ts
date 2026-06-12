@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AcceuilRoutingModule } from "../../../features/acceuil/acceuil-routing-module";
+import { PublicMenus } from '../../../../Enum/public-menus';
 
 @Component({
   selector: 'app-header',
@@ -9,5 +10,6 @@ import { AcceuilRoutingModule } from "../../../features/acceuil/acceuil-routing-
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
+  public readonly PublicMenus = PublicMenus;
 
 }

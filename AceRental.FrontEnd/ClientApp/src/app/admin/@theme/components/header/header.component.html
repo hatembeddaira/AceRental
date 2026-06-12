@@ -1,6 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"
+      aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <a class="navbar-brand" [routerLink]="['/admin']">ACE SOUND</a>
@@ -10,43 +11,43 @@
           <a class="nav-link active" aria-current="page" [routerLink]="['/admin']">Home</a>
         </li>
         <li class="nav-item dropdown ">
-          <a class="nav-link dropdown-toggle" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Administration
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-            <li><a class="dropdown-item" [routerLink]="'/admin/administration/services'">Services</a></li>
-            <li><a class="dropdown-item" [routerLink]="'/admin/administration/packs'">Packs</a></li>
-            <a class="dropdown-item" [routerLink]="'/admin/administration/equipements'">Equipements</a>
-            <a class="dropdown-item" [routerLink]="'/admin/administration/clients'">Clients</a>
-          </ul>
-        </li>
-        <li class="nav-item dropdown ">
-          <a class="nav-link dropdown-toggle" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
             Gestion
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-            <li><a class="dropdown-item" [routerLink]="'/admin'">Reservations</a></li>
+            <li><a class="dropdown-item" [routerLink]="'/admin/services'">Services</a></li>
+            <li><a class="dropdown-item" [routerLink]="'/admin/packs'">Packs</a></li>
+            <li><a class="dropdown-item" [routerLink]="'/admin/equipments'">Equipements</a></li>
+            <li><a class="dropdown-item" [routerLink]="'/admin/clients'">Clients</a></li>
+            <li><a class="dropdown-item" [routerLink]="'/admin/reservations'">Reservations</a></li>
             <li><a class="dropdown-item" [routerLink]="'/admin/devis'">Devis</a></li>
-            <a class="dropdown-item" [routerLink]="'/admin/calendrier'">Calendrier</a>
+            <li><a class="dropdown-item" [routerLink]="'/admin/calendrier'">Calendrier</a></li>
+            <li><a class="dropdown-item" [routerLink]="'/admin/invoices'">Factures</a></li>
+            <li><a class="dropdown-item" [routerLink]="'/admin/installations'">Installations</a></li>
           </ul>
         </li>
         <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/installation']">Installation</a>
+          <a class="nav-link" [routerLink]="['/installation']">Installation</a>
         </li>
       </ul>
       <div>
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown ">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="bi bi-person-fill"></i> Hatem BEDDAIRA
-                    </a>
-                    <div class="dropdown-menu  dropdown-menu-right dropdown-menu-dark" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item"  [routerLink]="['/profile']">Profile</a>
-                    <a class="dropdown-item"  [routerLink]="['/logout']">Déconnection</a>
-                    </div>
-                </li>              
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item dropdown ">
+            <a class="nav-link dropdown-toggle" id="navbarUser" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="bi bi-person-fill"></i> Hatem BEDDAIRA
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarUser">
+              <li><a class="dropdown-item" [routerLink]="['/profile']">Profile</a></li>
+              <li>
+                <hr>
+              </li>
+              <li><a class="dropdown-item" [routerLink]="'/logout'">Déconnection</a></li>
             </ul>
-        </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </nav>

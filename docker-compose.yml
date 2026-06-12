@@ -9,6 +9,20 @@ services:
       - "1433:1433"
     networks:
       - gatewayAceRental
+  identityserver:
+    # container_name: acerental-identityserver
+    image: ${DOCKER_REGISTRY-}identityserver
+    build:
+      context: ./src
+      dockerfile: AceRental.IdentityServer/Dockerfile
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      # Si IdentityServer a besoin d'une BDD, ajoutez la chaîne de connexion ici
+    ports:
+      - "5001:5001"
+    networks:
+      - gatewayAceRental
   acerental-api:
     # container_name: acerental-api
     image: ${DOCKER_REGISTRY-}acerentalapi

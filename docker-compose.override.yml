@@ -7,6 +7,14 @@ services:
       - "5000:5000"
     volumes:
       - .:/src  # hot reload possible
+  identityserver:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5001
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/src  # hot reload possible
   acerental-frontend:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development

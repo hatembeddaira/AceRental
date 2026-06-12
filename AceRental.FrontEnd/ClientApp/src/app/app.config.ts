@@ -1,5 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, importProvidersFrom, LOCALE_ID  } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideOAuthClient } from 'angular-oauth2-oidc';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
@@ -13,7 +15,16 @@ export const appConfig: ApplicationConfig = {
   providers: [
     importProvidersFrom(NgxExtendedPdfViewerModule),
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes), provideClientHydration(withEventReplay()),
+    provideRouter(routes), 
+    provideHttpClient(),
+    // Configuration du client OAuth
+    provideOAuthClient({
+      resourceServer: {
+        allowedUrls: ['https://localhost:7001/api'], // L'URL de ton backend .NET 10
+        sendAccessToken: true
+      }
+    }),
+    provideClientHydration(withEventReplay()),
     {
       provide : MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue:{appearance : 'outline', subscriptSizing : 'dynamic'}

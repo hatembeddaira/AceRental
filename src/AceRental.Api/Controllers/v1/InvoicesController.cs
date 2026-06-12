@@ -30,8 +30,7 @@ namespace AceRental.Api.Controllers.v1
         [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
         public async Task<IActionResult> PartiallyInvoice([FromBody] GeneratePartiallyInvoiceCommand command)
         {
-            var result = await _mediator.Send(command);
-            return CreatedAtAction(nameof(PartiallyInvoice), new { id = result }, result);
+            return Created(await _mediator.Send(command));
         }
 
         [HttpPost("Rental")]
@@ -40,8 +39,7 @@ namespace AceRental.Api.Controllers.v1
         [ProducesResponseType(StatusCodes.Status409Conflict)]               //  règle métier
         public async Task<IActionResult> RentalInvoice([FromBody] GenerateRentalInvoiceCommand command)
         {
-            var result = await _mediator.Send(command);
-            return CreatedAtAction(nameof(RentalInvoice), new { id = result }, result);
+            return Created(await _mediator.Send(command));
         }
     }
 }

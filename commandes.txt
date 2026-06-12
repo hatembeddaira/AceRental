@@ -10,3 +10,5 @@ dotnet build AceRental.sln
 docker compose up --build
 
 dotnet test tests/AceRental.Tests
+
+ng g c Dashboard

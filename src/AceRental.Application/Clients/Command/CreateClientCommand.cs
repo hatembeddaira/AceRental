@@ -4,7 +4,7 @@ using AceRental.Application.Equipments.Dtos;
 using AceRental.Domain.Enum;
 using MediatR;
 
-namespace AceRental.Application.Equipments.Command;
+namespace AceRental.Application.Clients.Command;
 
 public record CreateClientCommand(
     [Required] string FirstName,

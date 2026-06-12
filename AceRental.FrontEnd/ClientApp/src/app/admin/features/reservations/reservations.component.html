@@ -1,0 +1,82 @@
+<div class="container-xxl">
+    <h2>Liste des reservations</h2>
+    <div class="row" style="padding-bottom: 15px;">
+        <div class="col-md-10">
+            <mat-form-field style="width: 250px;">
+                <input matInput placeholder="Rechercher une reservation" #input>
+            </mat-form-field>
+        </div>
+        <div class="col-md-2">
+            <button type="button" routerLink="/admin/reservation" class="btn btn-dark effect btn-m">Créer</button>
+        </div>
+    </div>
+    <mat-table  [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
+        <ng-container matColumnDef="ReservationNumber">
+            <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by reservation number">
+            N° Reservation
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"><a (click)="onRowClicked(element)">{{element.ReservationNumber}}</a></mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FirstName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by FirstName">
+            Nom Client
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.Client.FirstName}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="LastName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by LastName">
+            Prénom Client
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.Client.LastName}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="RaisonSociale">
+            <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by RaisonSociale">
+            Raison sociale
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.Client.RaisonSociale}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="StartDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Trier par date début reservation">
+            Date début réservation
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.StartDate | date:'yyyy-MM-dd HH:mm'}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="EndDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Trier par date fin reservation">
+            Date fin réservation
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.EndDate | date:'yyyy-MM-dd HH:mm'}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="TotalTTC">
+            <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by TotalTTC">
+            Prix
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.TotalHT * (1 + element.TVA)}}€ </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="LogisticStatus">
+            <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by LogisticStatus">
+            Statut Logistique
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.LogisticStatus}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FinancialStatus">
+            <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by FinancialStatus">
+            Statut Financier
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.FinancialStatus}} </mat-cell>
+        </ng-container>
+        <!-- <ng-container matColumnDef="edit">
+            <mat-header-cell *matHeaderCellDef >Edit</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <a type="button" [routerLink]="['/admin/reservation/', element.Id]" target="_blank" class="btn btn-dark effect btn-xs">Afficher</a>
+            </mat-cell>
+        </ng-container> -->
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" ></mat-row>
+        <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
+    </mat-table>
+    <!-- <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+        <mat-spinner></mat-spinner>
+    </div> -->
+</div>
