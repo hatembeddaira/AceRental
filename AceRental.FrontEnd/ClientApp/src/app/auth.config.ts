@@ -1,4 +1,3 @@
-// src/app/auth.config.ts
 import { AuthConfig } from 'angular-oauth2-oidc';
 
 export const authCodeFlowConfig: AuthConfig = {
@@ -9,7 +8,7 @@ export const authCodeFlowConfig: AuthConfig = {
   redirectUri: window.location.origin + '/index.html',
 
   // L'identifiant de ton application Angular enregistré sur le serveur
-  clientId: 'angular-spa-client',
+  clientId: 'ace-rental-angular',
 
   // Le scope requis (openid et profile sont standards pour l'OIDC)
   // Ajoute 'api' ou d'autres scopes personnalisés si nécessaire

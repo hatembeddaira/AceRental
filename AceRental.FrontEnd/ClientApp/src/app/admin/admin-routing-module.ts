@@ -15,169 +15,131 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 
 const routes: Routes = [
   {
-    path: '', component: AdminComponent, children: [
+    path: '',
+    component: AdminComponent,
+    children: [
       {
-        path: '', data: {
+        path: '',
+        component: DashboardComponent,
+        data: {
           breadcrumbParents: [
             { label: 'Acceuil', url: '/' },
           ]
-        }, component: DashboardComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'reservations', data: {
+        path: 'reservations',
+        component: ReservationsComponent,
+        data: {
           breadcrumb: 'Reservations',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/' },
           ]
-        }, component: ReservationsComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'services', data: {
+        path: 'services',
+        component: ServicesComponent,
+        data: {
           breadcrumb: 'Services',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/admin' }
           ]
-        }, component: ServicesComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'equipments', data: {
+        path: 'equipments',
+        component: EquipmentsComponent,
+        data: {
           breadcrumb: 'Equipments',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/admin' }
           ]
-        }, component: EquipmentsComponent
-      }
-    ]
-  },
-
-
-
-
-
-
-
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'equipment/:id', data: {
+        path: 'equipment/:id',
+        component: EquipmentComponent,
+        data: {
           breadcrumb: 'Equipment',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/admin' },
             { label: 'Equipments', url: '/admin/equipments' }
           ]
-        }, component: EquipmentComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'packs', data: {
+        path: 'packs',
+        component: PacksComponent,
+        data: {
           breadcrumb: 'Packs',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/admin' }
           ]
-        }, component: PacksComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'clients', data: {
+        path: 'clients',
+        component: ClientsComponent,
+        data: {
           breadcrumb: 'Clients',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/admin' }
           ]
-        }, component: ClientsComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'client/:id', data: {
+        path: 'client/:id',
+        component: ClientComponent,
+        data: {
           breadcrumb: 'Fiche Client',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/admin' },
             { label: 'Clients', url: '/admin/clients' }
           ]
-        }, component: ClientComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'reservation', data: {
+        path: 'reservation',
+        component: ReservationComponent,
+        data: {
           breadcrumb: 'Créer une reservation',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/' },
             { label: 'Reservations ', url: '/admin/reservations' },
           ]
-        }, component: ReservationComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'reservation/:id', data: {
+        path: 'reservation/:id',
+        component: ReservationComponent,
+        data: {
           breadcrumb: 'Reservation Détails',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/' },
             { label: 'Reservations ', url: '/admin/reservations' },
           ]
-        }, component: ReservationComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'reservation/:id', data: {
-          breadcrumb: 'Reservation Détails',
-          breadcrumbParents: [
-            { label: 'Acceuil', url: '/' },
-            { label: 'Reservations ', url: '/admin' },
-          ]
-        }, component: ReservationComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
-      {
-        path: 'devis', data: {
+        path: 'devis',
+        component: DevisComponent,
+        data: {
           breadcrumb: 'Devis',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/' },
           ]
-        }, component: DevisComponent
-      }
-    ]
-  },
-  {
-    path: '', component: AdminComponent, children: [
+        }
+      },
       {
-        path: 'devis/:id', data: {
+        path: 'devis/:id',
+        component: DevisViewerComponent,
+        data: {
           breadcrumb: 'Devis Viewer',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/' },
           ]
-        }, component: DevisViewerComponent
+        }
       }
     ]
   }

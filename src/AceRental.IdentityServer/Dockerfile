@@ -12,7 +12,10 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copier les fichiers .csproj et restaurer les dépendances
-# COPY ["src/AceRental.IdentityServer/AceRental.IdentityServer.csproj", "src/AceRental.IdentityServer/"]
+COPY ["AceRental.IdentityServer/AceRental.IdentityServer.csproj", "AceRental.IdentityServer/"]
+# COPY ["AceRental.Domain/AceRental.Domain.csproj", "AceRental.Domain/"]
+# COPY ["AceRental.Infrastructure/AceRental.Infrastructure.csproj", "AceRental.Infrastructure/"]
+# COPY ["AceRental.Application/AceRental.Application.csproj", "AceRental.Application/"]
 RUN dotnet restore "AceRental.IdentityServer/AceRental.IdentityServer.csproj"
 
 # Copier tout le reste et builder

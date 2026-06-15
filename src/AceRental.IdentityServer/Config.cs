@@ -9,6 +9,7 @@ public static class Config
         {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
+            new IdentityResources.Email()
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -16,6 +17,12 @@ public static class Config
         {
             new ApiScope("scope1"),
             new ApiScope("scope2"),
+            new ApiScope("api", "Accès à l'API principale", new[] 
+            { 
+                "role",     // Indispensable pour ton [Authorize(Roles = "Admin")]
+                "name",     // Optionnel : Pour afficher le nom de l'utilisateur
+                "email"     // Optionnel : Pour l'email
+            })
         };
 
     public static IEnumerable<Client> Clients =>
@@ -48,5 +55,22 @@ public static class Config
                 AllowOfflineAccess = true,
                 AllowedScopes = { "openid", "profile", "scope2" }
             },
+            new Client
+            {
+                ClientId = "ace-rental-angular",
+                ClientName = "Mon Application Angular 21",
+                AllowedGrantTypes = GrantTypes.Code, // Requis pour PKCE
+                RequirePkce = true,
+                RequireClientSecret = false, // Une SPA ne peut pas cacher de secret
+
+                RedirectUris = { 
+                    "http://localhost:4200/index.html", 
+                    "https://oauth.pstmn.io/v1/callback" 
+                }, // URL de ton Angular local
+                PostLogoutRedirectUris = { "http://localhost:4200/index.html" },
+                AllowedCorsOrigins = { "http://localhost:4200", "https://oauth.pstmn.io"}, // Éviter les erreurs CORS
+
+                AllowedScopes = { "openid", "profile", "email", "api" }
+            }
         };
 }

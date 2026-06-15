@@ -2,6 +2,7 @@ using System.Globalization;
 using Duende.IdentityServer;
 using AceRental.IdentityServer.Data;
 using AceRental.IdentityServer.Models;
+using AceRental.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -46,16 +47,26 @@ internal static class HostingExtensions
         return builder;
     }
 
-    public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddRazorPages();
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            // En développement, permet au cookie de transiter sur du HTTP simple
+            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
+            
+            // Évite les conflits de partage de cookies sur localhost
+            options.Cookie.Name = "AceRental.Identity.Cookie"; 
+        });
 
         builder.Services
             .AddIdentityServer(options =>
@@ -64,7 +75,12 @@ internal static class HostingExtensions
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-
+                // Indique à IdentityServer le vrai chemin de ta page d'erreur Razor Pages
+                options.UserInteraction.ErrorUrl = "/Error";
+                
+                // Si nécessaire, tu peux aussi lui repréciser les autres pages :
+                options.UserInteraction.LoginUrl = "/Account/Login";
+                options.UserInteraction.LogoutUrl = "/Account/Logout";
                 // Use a large chunk size for diagnostic data in development where it will be redirected to a local file.
                 if (builder.Environment.IsDevelopment())
                 {
@@ -75,6 +91,7 @@ internal static class HostingExtensions
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
             .AddAspNetIdentity<ApplicationUser>()
+            .AddProfileService<CustomProfileService>()
             .AddLicenseSummary();
 
         builder.Services.AddAuthentication()
@@ -96,7 +113,7 @@ internal static class HostingExtensions
                 };
             });
 
-        return builder.Build();
+        return builder;
     }
 
     public static WebApplication ConfigurePipeline(this WebApplication app)
@@ -110,6 +127,7 @@ internal static class HostingExtensions
 
         app.UseStaticFiles();
         app.UseRouting();
+        app.UseCookiePolicy();
         app.UseIdentityServer();
         app.UseAuthorization();
 

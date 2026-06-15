@@ -16,8 +16,6 @@ services:
       context: ./src
       dockerfile: AceRental.IdentityServer/Dockerfile
     restart: unless-stopped
-    environment:
-      - ASPNETCORE_URLS=http://+:8080
       # Si IdentityServer a besoin d'une BDD, ajoutez la chaîne de connexion ici
     ports:
       - "5001:5001"

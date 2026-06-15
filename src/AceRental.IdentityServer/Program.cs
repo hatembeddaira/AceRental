@@ -3,6 +3,7 @@ using System.Text;
 using Duende.IdentityServer.Licensing;
 using AceRental.IdentityServer;
 using Serilog;
+using AceRental.IdentityServer.Data;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
@@ -14,10 +15,24 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    var app = builder
-        .ConfigureLogging()
-        .ConfigureServices()
-        .ConfigurePipeline();
+    builder.ConfigureLogging();
+    builder.ConfigureServices();
+
+    // Configure cookie policies after services (including Identity) are registered, but before the app is built.
+    builder.Services.Configure<CookiePolicyOptions>(options =>
+    {
+        options.MinimumSameSitePolicy = SameSiteMode.Lax;
+        options.Secure = CookieSecurePolicy.SameAsRequest;
+    });
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    });
+
+    var app = builder.Build();
+
+    app.ConfigurePipeline();
 
     // this seeding is only for the template to bootstrap the DB and users.
     // in production you will likely want a different approach.
@@ -38,6 +53,11 @@ try
         });
     }
 
+    // using (var scope = app.Services.CreateScope())
+    // {
+    //     var db = scope.ServiceProvider.GetRequiredService<AceRental.IdentityServer.Data.ApplicationDbContext>();
+    //     db.Database.Migrate(); // Ceci applique les migrations automatiquement au démarrage
+    // }
     app.Run();
 }
 catch (Exception ex) when (ex is not HostAbortedException)

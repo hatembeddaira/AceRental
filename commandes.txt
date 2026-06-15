@@ -12,3 +12,5 @@ docker compose up --build
 dotnet test tests/AceRental.Tests
 
 ng g c Dashboard
+
+dotnet run -- /seed

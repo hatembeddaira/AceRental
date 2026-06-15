@@ -9,7 +9,8 @@ import { ClientDto } from '../../../interfaces/client-dto';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-client.component',
+  selector: 'app-client',
+  standalone: true,
   imports: [MatFormFieldModule, 
     MatDatepickerModule,
     FormsModule, 

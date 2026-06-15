@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { AcceuilRoutingModule } from "../../../features/acceuil/acceuil-routing-module";
+import { RouterLink } from "@angular/router";
 import { PublicMenus } from '../../../../Enum/public-menus';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [AcceuilRoutingModule],
+  imports: [RouterLink],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
