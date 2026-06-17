@@ -26,12 +26,12 @@ namespace AceRental.IdentityServer.Services
             if (user != null)
             {
                 // 2. Récupérer ses rôles depuis ta base de données dédiée
-                var roles = await _userManager.GetRolesAsync(user);
+                // var roles = await _userManager.GetRolesAsync(user);
 
                 // 3. Construire l'objet que tu veux imbriquer
                 var claimsObject = new
                 {
-                    roles = roles,
+                    // roles = roles,
                     email = user.Email,
                     username = user.UserName
                 };

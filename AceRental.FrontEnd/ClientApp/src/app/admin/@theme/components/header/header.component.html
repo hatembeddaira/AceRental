@@ -34,9 +34,9 @@
       <div>
         <ul class="navbar-nav mr-auto">
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" id="navbarUser" role="button" data-bs-toggle="dropdown"
+            <a (click)="onLoginClicked()" class="nav-link dropdown-toggle" id="navbarUser" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
-              <i class="bi bi-person-fill"></i> Hatem BEDDAIRA
+              <i class="bi bi-person-fill"></i> Connecter
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarUser">
               <li><a class="dropdown-item" [routerLink]="['/profile']">Profile</a></li>

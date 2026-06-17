@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     // Configuration du client OAuth
     provideOAuthClient({
       resourceServer: {
-        allowedUrls: ['https://localhost:5000/api'], // L'URL de ton backend .NET 10
+        allowedUrls: ['http://localhost:5000/api'], // L'URL de votre backend .NET
         sendAccessToken: true
       }
     }),

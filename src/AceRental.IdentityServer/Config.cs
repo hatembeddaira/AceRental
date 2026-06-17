@@ -64,11 +64,13 @@ public static class Config
                 RequireClientSecret = false, // Une SPA ne peut pas cacher de secret
 
                 RedirectUris = { 
-                    "http://localhost:4200/index.html", 
+                    "http://localhost:4200", 
+                    "http://localhost:3000",
+                    "http://localhost:3000/silent-refresh.html", 
                     "https://oauth.pstmn.io/v1/callback" 
                 }, // URL de ton Angular local
-                PostLogoutRedirectUris = { "http://localhost:4200/index.html" },
-                AllowedCorsOrigins = { "http://localhost:4200", "https://oauth.pstmn.io"}, // Éviter les erreurs CORS
+                PostLogoutRedirectUris = { "http://localhost:4200", "http://localhost:3000" },
+                AllowedCorsOrigins = { "http://localhost:4200", "http://localhost:3000", "https://oauth.pstmn.io"}, // Éviter les erreurs CORS
 
                 AllowedScopes = { "openid", "profile", "email", "api" }
             }

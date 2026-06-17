@@ -1,15 +1,32 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 
 export const authCodeFlowConfig: AuthConfig = {
-  // URL de ton serveur d'identité (OAuth2/OIDC provider)
-  issuer: 'http://localhost:5001/connect/authorize',
+  // URL de votre serveur d'identité (IdentityServer)
+  issuer: 'http://localhost:5001',
+
   // URL vers laquelle l'utilisateur est redirigé après s'être connecté
-  redirectUri: window.location.origin + '/index.html',
-  // L'identifiant de ton application Angular enregistré sur le serveur
+  redirectUri: 'http://localhost:3000',
+
+  // L'identifiant de votre application Angular, doit correspondre à la configuration du client dans IdentityServer
   clientId: 'ace-rental-angular',
-  // Le scope requis (openid et profile sont standards pour l'OIDC)
+
+  // Les "scopes" (périmètres) demandés.
+  // 'openid', 'profile', 'email' sont standards pour OIDC.
+  // 'api' est le scope pour accéder à votre API.
   scope: 'openid profile email api',
-  responseType: 'code', // Requis pour l'Authorization Code Flow
-  showDebugInformation: true, // À passer à false en production
-  useSilentRefresh: true,// Active le rafraîchissement automatique des jetons en arrière-plan
+
+  // Type de flux d'authentification
+  responseType: 'code',
+
+  // Pour le débogage, à mettre à false en production
+  showDebugInformation: true,
+  useSilentRefresh: true,
+  // Cette page doit exister dans ton dossier 'public' ou 'assets'
+  silentRefreshRedirectUri: 'http://localhost:3000/silent-refresh.html',
+  
+  // Délai avant expiration pour déclencher le refresh (en secondes)
+  silentRefreshTimeout: 20000, 
+  
+  // Optionnel : ne pas rafraîchir si on a déjà un token actif
+  clearHashAfterLogin: true,
 };
