@@ -15,6 +15,21 @@ Content-Type: application/json
   "city": "saint genviève des bois",
   "postalCode": "91700"
 }
+### Create Client
+POST {{Api_HostAddress}}/Api/v1/Clients/
+Content-Type: application/json
+
+{
+  "firstName": "Tarek",
+  "lastName": "Beddaira",
+  "email": "hatembeddaira@gmail.com",
+  "raisonSociale": "ACE SOUND",
+  "phoneNumber": "0751340180",
+  "address": "6 rue max linder",
+  "complementAdresse": "App 131",
+  "city": "saint genviève des bois",
+  "postalCode": "91700"
+}
 
 
 ### Get Client

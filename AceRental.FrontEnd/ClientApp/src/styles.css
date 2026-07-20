@@ -243,3 +243,6 @@ input[type="radio"]:checked:focus {
   /* On ajuste le padding vertical pour que le texte reste bien centré */
   --mat-form-field-container-vertical-padding: 8px;
 }
+.mat-elevation-z8{
+    margin-bottom: 20px !important;
+}

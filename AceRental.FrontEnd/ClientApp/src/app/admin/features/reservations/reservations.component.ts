@@ -15,20 +15,25 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
   selector: 'app-reservations.component',
-  imports: [MatTableModule, MatSortModule, RouterModule, DatePipe, MatProgressSpinnerModule, MatInputModule, MatFormFieldModule],
+  imports: [
+    MatTableModule, 
+    MatSortModule, 
+    RouterModule, 
+    DatePipe, 
+    MatProgressSpinnerModule, 
+    MatInputModule, 
+    MatFormFieldModule],
   templateUrl: './reservations.component.html',
   styleUrl: './reservations.component.css',
 })
 export class ReservationsComponent implements OnInit, AfterViewInit  {
-  reservationService: ReservationService
   private _liveAnnouncer = inject(LiveAnnouncer);
   displayedColumns: string[] = ['ReservationNumber', 'FirstName', 'LastName', 'RaisonSociale', 'StartDate', 'EndDate', 'TotalTTC', 'LogisticStatus', 'FinancialStatus'];
   dataSource = new MatTableDataSource<ReservationDetailsDto>([]);
   @ViewChild('input') input: ElementRef | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
 
-  constructor(private _reservationService: ReservationService, private _router: Router){
-    this.reservationService = _reservationService;
+  constructor(private reservationService: ReservationService, private router: Router){
     this.setupFilterPredicate();
   }
 
@@ -65,7 +70,6 @@ export class ReservationsComponent implements OnInit, AfterViewInit  {
                 distinctUntilChanged(),
                 tap(() => {
                   const filterValue = this.input?.nativeElement.value || '';
-                  console.log('Filter value:', filterValue);
                   this.dataSource.filter = filterValue;
                 })
             )
@@ -80,8 +84,8 @@ export class ReservationsComponent implements OnInit, AfterViewInit  {
     }
   }
   onRowClicked(row : any) {
-    const urlTree = this._router.createUrlTree(['/admin/reservation/', row.Id]);
-    const url = this._router.serializeUrl(urlTree);
+    const urlTree = this.router.createUrlTree(['/admin/reservation/', row.Id]);
+    const url = this.router.serializeUrl(urlTree);
     window.open(window.location.origin + url, '_blank');
   }
 }

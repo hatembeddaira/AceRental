@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-client',
-  standalone: true,
+  // standalone: true,
   imports: [MatFormFieldModule, 
     MatDatepickerModule,
     FormsModule, 
@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
 export class ClientComponent implements OnInit {
   CiviliteH:boolean = true;
   id!: string;
-  client!: ClientDto;
+  client = signal<any>(null);
   clientForm!: FormGroup;
   clientService: ClientService;
   constructor(route: ActivatedRoute, private fb: FormBuilder,private _clientService: ClientService){
@@ -59,8 +59,8 @@ export class ClientComponent implements OnInit {
         }
 
         console.log('Response from API:', client);
-        this.client = client;
-        this.patchValue(this.client);
+        this.client.set(client);
+        this.patchValue(this.client());
       },
       error: err => console.error(err)
     });
@@ -89,7 +89,7 @@ export class ClientComponent implements OnInit {
     }
   }
   reset(): void {
-    this.patchValue(this.client);
+    this.patchValue(this.client());
   }
   hasError(controlName: string, error: string): boolean {
     const control = this.clientForm.get(controlName);

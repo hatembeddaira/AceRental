@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using AceRental.Application.Invoices.Command;
 using AceRental.Application.Invoices.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.Extensions.Logging;
 
 namespace AceRental.Api.Controllers.v1
 {
-    [Route("[controller]")]
+    [Authorize]
     public class InvoicesController : ODataController
     {
         private readonly IMediator _mediator;

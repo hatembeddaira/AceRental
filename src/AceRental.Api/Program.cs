@@ -14,6 +14,9 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,14 +53,38 @@ builder.Services.AddSwaggerGen(options =>
     // c.CustomSchemaIds(type => type.FullName);
     options.OperationFilter<SwaggerDefaultValues>();
 
-    options.AddSecurityDefinition("JWT", new OpenApiSecurityScheme
+    // options.AddSecurityDefinition("JWT", new OpenApiSecurityScheme
+    // {
+    //     Description = "JWT Authorization header using the Bearer scheme.\r\n\r\n " +
+    //         "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+    //     Name = "Authorization",
+    //     In = ParameterLocation.Header,
+    //     Type = SecuritySchemeType.ApiKey,
+    //     Scheme = "Bearer",
+    // });
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme.\r\n\r\n " +
-            "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
         Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme.\r\n\r\n " +
+            "Enter your token in the text input below.\r\n\r\nExample: \"12345abcdef\"",
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
     });
 });
 builder.Services.AddHttpContextAccessor();
@@ -125,9 +152,35 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = builder.Configuration["IdentityServer:Authority"]; // L'URL de votre instance IdentityServer
-        options.Audience = "acerentalapi"; // L'audience de votre API, définie dans IdentityServer
+        // IMPORTANT : Dans un environnement conteneurisé (Docker), l'API (acerental-api) doit appeler
+        // IdentityServer via son nom de service ('identityserver'), et non 'localhost'.
+        options.Authority = "http://identityserver:5001";
+        options.Audience = "api"; // L'audience de votre API, définie dans IdentityServer
         options.RequireHttpsMetadata = false; // À définir à true en production
+
+        // La configuration manuelle du ConfigurationManager est nécessaire pour désactiver HTTPS en développement DANS Docker.
+        options.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+            options.Authority + "/.well-known/openid-configuration",
+            new OpenIdConnectConfigurationRetriever(),
+            new HttpDocumentRetriever { RequireHttps = false });
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            // L'émetteur (issuer) est l'URL publique d'IdentityServer, celle que le client Angular utilise.
+            ValidIssuer = "http://localhost:5001",
+            ValidateAudience = false, // Désactivé pour simplifier le test
+            ValidateLifetime = true
+        };
+        
+        // ASTUCE : Ajoute ces events pour voir L'ERREUR EXACTE dans tes logs Docker
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"Auth failed: {context.Exception.Message}");
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization();

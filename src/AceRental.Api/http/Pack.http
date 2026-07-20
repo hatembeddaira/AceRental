@@ -1,8 +1,10 @@
 @Api_HostAddress = http://localhost:5000
+@token = eyJhbGciOiJSUzI1NiIsImtpZCI6IkJFNjYyMTgyNzkxMzM4NEQyNzlFOUFFNUM0N0FBQkJBIiwidHlwIjoiYXQrand0In0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDEiLCJuYmYiOjE3ODE3OTMzMDMsImlhdCI6MTc4MTc5MzMwMywiZXhwIjoxNzgxNzk2OTAzLCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIiwiZW1haWwiLCJhcGkiXSwiYW1yIjpbInB3ZCJdLCJjbGllbnRfaWQiOiJhY2UtcmVudGFsLWFuZ3VsYXIiLCJzdWIiOiIzMDcwOTlhNi1hNGQxLTRhZmMtOTExMi00NDZiYWE0M2Y3ZTgiLCJhdXRoX3RpbWUiOjE3ODE3ODU1NTksImlkcCI6ImxvY2FsIiwiZW1haWwiOiJoYXRlbWJlZGRhaXJhQGdtYWlsLmNvbSIsIm5hbWUiOiJEYWlyYSBIYXRlbSIsInJvbGUiOiJBZG1pbiIsInNpZCI6IkY5MDVBMThDRTc0NzMwRjgyNDhEN0MxRkU1MEEwQTJBIiwianRpIjoiNTc5RjA3QUY4NDg3RjZCRTg3NzlDNkRFMzQ2QTRCQTkifQ.b23xuojO3zL5HHgI6TEsYINxQMmzOjLVNzTbbirCoca35S98-cbzojLENoYsJyr6LI7H8YuMk4HZMHYpHChiUVMs0sxWVi69wGl_uMo_rne8ohhPl0T3rWKtftmPVe2frOftkGaFxeEhabYC1p0zE1S-RTVujquTFA6eAGqvp8FXYea4aW9a5Vmq4-J5eoqXp3kGws8kCEwZxU37nBoBkegesVPDus_sdjJhAO1qPtBSH3bF5Eka9oj6_2fcSoMZwNvcnhrP7QhQmpHubljxFwU_zTPi0LedqRCE-vxLo5592-C22Dvy10zTrbC4vs4HoC-kqvsT_Hfv1rmLZXgqQw
 
 ### Create Pack
 POST {{Api_HostAddress}}/Api/v1/Packs/
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "reference": "SOL",
@@ -15,7 +17,7 @@ Content-Type: application/json
       "quantity": 2   
     },
     {
-      "equipmentId": "6928fb9c-ac4d-4f77-b867-69641ed131b4",
+      "equipmentId": "585ed7b6-be73-495c-af22-2af4b8ba7043",
       "quantity": 1      
     },
     {
@@ -28,6 +30,7 @@ Content-Type: application/json
 ### Create Pack
 POST {{Api_HostAddress}}/Api/v1/Packs/
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "reference": "RE",
@@ -53,6 +56,7 @@ Content-Type: application/json
 ### Create Pack
 POST {{Api_HostAddress}}/Api/v1/Packs/
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "reference": "DO",
@@ -61,19 +65,19 @@ Content-Type: application/json
   "dailyPriceHT": 550,
   "items": [
     {
-      "equipmentId": "fbc5b7ab-f72b-43f3-81a7-0153d78370d3",
+      "equipmentId": "865f4674-d287-4c5e-83f8-cf2343a77de2",
       "quantity": 2   
     },
     {
-      "equipmentId": "6928fb9c-ac4d-4f77-b867-69641ed131b4",
+      "equipmentId": "585ed7b6-be73-495c-af22-2af4b8ba7043",
       "quantity": 1      
     },
     {
-      "equipmentId": "aa330552-1777-4750-b479-1f68f671badf",
-      "quantity": 2    
+      "equipmentId": "cd08c78c-8d93-4dde-b290-74b4b212c513",
+      "quantity": 4   
     },
     {
-      "equipmentId": "d0768802-3d98-4397-8eec-05efc84db74f",
+      "equipmentId": "5fbcde7b-9f9f-4998-bcd7-f1b056d875f7",
       "quantity": 2    
     }
   ]
@@ -82,6 +86,7 @@ Content-Type: application/json
 ### Create Pack
 POST {{Api_HostAddress}}/Api/v1/Packs/
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "reference": "SOL",
@@ -103,6 +108,7 @@ Content-Type: application/json
 ### Create Pack
 POST {{Api_HostAddress}}/Api/v1/Packs/
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "reference": "RE",
@@ -124,8 +130,11 @@ Content-Type: application/json
 ### Get Pack
 GET {{Api_HostAddress}}/Api/v1/Packs/821423d3-a472-491d-9886-42c20134285a
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### Get All Pack
 GET {{Api_HostAddress}}/Api/v1/Packs?$expand=Items($expand=Equipment)
 Content-Type: application/json
+Authorization: Bearer {{token}}
+
 

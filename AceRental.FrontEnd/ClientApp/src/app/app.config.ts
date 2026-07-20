@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, importProvidersFrom, LOCALE_ID  } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideOAuthClient } from 'angular-oauth2-oidc';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { routes } from './app.routes';
@@ -16,11 +16,11 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(NgxExtendedPdfViewerModule),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes), 
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
     // Configuration du client OAuth
     provideOAuthClient({
       resourceServer: {
-        allowedUrls: ['http://localhost:5000/api'], // L'URL de votre backend .NET
+        allowedUrls: ['http://localhost:5000'], // L'URL de votre backend .NET
         sendAccessToken: true
       }
     }),

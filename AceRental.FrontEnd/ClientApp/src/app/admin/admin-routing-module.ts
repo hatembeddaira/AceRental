@@ -18,24 +18,12 @@ const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
-    canActivate: [authGuard],
+    // canActivate: [authGuard], 
     children: [
       {
         path: '',
         component: DashboardComponent,
-        canActivate: [authGuard],
         data: {
-          breadcrumbParents: [
-            { label: 'Acceuil', url: '/' },
-          ]
-        }
-      },
-      {
-        path: 'reservations',
-        component: ReservationsComponent,
-        canActivate: [authGuard],
-        data: {
-          breadcrumb: 'Reservations',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/' },
           ]
@@ -44,7 +32,6 @@ const routes: Routes = [
       {
         path: 'services',
         component: ServicesComponent,
-        canActivate: [authGuard],
         data: {
           breadcrumb: 'Services',
           breadcrumbParents: [
@@ -55,7 +42,6 @@ const routes: Routes = [
       {
         path: 'equipments',
         component: EquipmentsComponent,
-        canActivate: [authGuard],
         data: {
           breadcrumb: 'Equipments',
           breadcrumbParents: [
@@ -64,11 +50,21 @@ const routes: Routes = [
         }
       },
       {
+        path: 'equipment',
+        component: EquipmentComponent,
+        data: {
+          breadcrumb: 'Créer un équipement',
+          breadcrumbParents: [
+            { label: 'Acceuil', url: '/admin' },
+            { label: 'Equipments', url: '/admin/equipments' }
+          ]
+        }
+      },
+      {
         path: 'equipment/:id',
         component: EquipmentComponent,
-        canActivate: [authGuard],
         data: {
-          breadcrumb: 'Equipment',
+          breadcrumb: 'Equipement détails',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/admin' },
             { label: 'Equipments', url: '/admin/equipments' }
@@ -78,7 +74,6 @@ const routes: Routes = [
       {
         path: 'packs',
         component: PacksComponent,
-        canActivate: [authGuard],
         data: {
           breadcrumb: 'Packs',
           breadcrumbParents: [
@@ -89,7 +84,6 @@ const routes: Routes = [
       {
         path: 'clients',
         component: ClientsComponent,
-        canActivate: [authGuard],
         data: {
           breadcrumb: 'Clients',
           breadcrumbParents: [
@@ -98,11 +92,10 @@ const routes: Routes = [
         }
       },
       {
-        path: 'client/:id',
+        path: 'client',
         component: ClientComponent,
-        canActivate: [authGuard],
         data: {
-          breadcrumb: 'Fiche Client',
+          breadcrumb: 'Créer un client',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/admin' },
             { label: 'Clients', url: '/admin/clients' }
@@ -110,9 +103,29 @@ const routes: Routes = [
         }
       },
       {
+        path: 'client/:id',
+        component: ClientComponent,
+        data: {
+          breadcrumb: 'Fiche client',
+          breadcrumbParents: [
+            { label: 'Acceuil', url: '/admin' },
+            { label: 'Clients', url: '/admin/clients' }
+          ]
+        }
+      },
+      {
+        path: 'reservations',
+        component: ReservationsComponent,
+        data: {
+          breadcrumb: 'Reservations',
+          breadcrumbParents: [
+            { label: 'Acceuil', url: '/' },
+          ]
+        }
+      },
+      {
         path: 'reservation',
         component: ReservationComponent,
-        canActivate: [authGuard],
         data: {
           breadcrumb: 'Créer une reservation',
           breadcrumbParents: [
@@ -124,9 +137,8 @@ const routes: Routes = [
       {
         path: 'reservation/:id',
         component: ReservationComponent,
-        canActivate: [authGuard],
         data: {
-          breadcrumb: 'Reservation Détails',
+          breadcrumb: 'Reservation détails',
           breadcrumbParents: [
             { label: 'Acceuil', url: '/' },
             { label: 'Reservations ', url: '/admin/reservations' },
@@ -136,7 +148,6 @@ const routes: Routes = [
       {
         path: 'devis',
         component: DevisComponent,
-        canActivate: [authGuard],
         data: {
           breadcrumb: 'Devis',
           breadcrumbParents: [
@@ -147,7 +158,6 @@ const routes: Routes = [
       {
         path: 'devis/:id',
         component: DevisViewerComponent,
-        canActivate: [authGuard],
         data: {
           breadcrumb: 'Devis Viewer',
           breadcrumbParents: [

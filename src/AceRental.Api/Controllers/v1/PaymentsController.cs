@@ -2,6 +2,7 @@ using AceRental.Application.Payments.Command;
 using AceRental.Application.Payments.Dtos;
 using AceRental.Application.Payments.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace AceRental.Api.Controllers.v1
 {
+    [Authorize]
     public class PaymentsController : ODataController
     {
         private readonly IMediator _mediator;

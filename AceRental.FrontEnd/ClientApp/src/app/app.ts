@@ -42,14 +42,14 @@ export class App implements OnInit {
       // 1. Vérifie si le token est valide
       if (this.oauthService.hasValidAccessToken()) {
         console.log('Authentification réussie, jeton récupéré.');
-        console.log('Jeton complet :', this.oauthService.getAccessToken());
+        // console.log('Jeton complet :', this.oauthService.getAccessToken());
 
-        // Pour récupérer l'objet complet
-        const claims = this.getClaimsFromAccessToken() as any;
-        console.log('Utilisateur :', claims.name);
-        console.log('Role :', claims.role);
-        console.log('Email :', claims.email);
-        console.log('IdUser :', claims.sub);
+        // // Pour récupérer l'objet complet
+        // const claims = this.getClaimsFromAccessToken() as any;
+        // console.log('Utilisateur :', claims.name);
+        // console.log('Role :', claims.role);
+        // console.log('Email :', claims.email);
+        // console.log('IdUser :', claims.sub);
         // if (claims.role === 'Admin') {
         //   this.router.navigate(['/admin']);
         // }

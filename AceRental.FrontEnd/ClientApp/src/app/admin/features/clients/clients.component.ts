@@ -1,24 +1,34 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {AfterViewInit, Component, ViewChild, inject} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, inject} from '@angular/core';
 import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ClientService } from '../../../services/client.service';
 import { ClientDto } from '../../../interfaces/client-dto';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { debounceTime, distinctUntilChanged, fromEvent, tap } from 'rxjs';
 
 @Component({
   selector: 'app-clients.component',
-  imports: [MatTableModule, MatSortModule, RouterModule],
+  imports: [
+    MatTableModule, 
+    MatSortModule, 
+    RouterModule, 
+    MatProgressSpinnerModule, 
+    MatInputModule, 
+    MatFormFieldModule],
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.css',
 })
-export class ClientsComponent {
+export class ClientsComponent implements OnInit, AfterViewInit {
   private _liveAnnouncer = inject(LiveAnnouncer);
-  displayedColumns: string[] = ['Id', 'ClientNumber', 'RaisonSociale', 'LastName', 'FirstName', 'Email', 'edit'];
+  displayedColumns: string[] = ['ClientNumber', 'RaisonSociale', 'LastName', 'FirstName', 'Email'];
   dataSource = new MatTableDataSource<ClientDto>([]);
-  clientService: ClientService;
-  constructor(private _clientService: ClientService) {
-    this.clientService = _clientService;
+  @ViewChild('input') input: ElementRef | undefined;
+  @ViewChild(MatSort) sort: MatSort | undefined;
+  constructor(private clientService: ClientService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -30,13 +40,20 @@ export class ClientsComponent {
       error: err => console.error(err)
     });
   }
-  @ViewChild(MatSort) sort: MatSort | undefined;
+  
   ngAfterViewInit() {
-    if (this.sort) {
       this.dataSource.sort = this.sort;
+      fromEvent(this.input?.nativeElement,'keyup')
+              .pipe(
+                  debounceTime(150),
+                  distinctUntilChanged(),
+                  tap(() => {
+                    const filterValue = this.input?.nativeElement.value || '';
+                    this.dataSource.filter = filterValue;
+                  })
+              )
+              .subscribe();
     }
-  }
-
    /** Announce the change in sort state for assistive technology. */
   announceSortChange(sortState: Sort) {
     // This example uses English messages. If your application supports
@@ -48,5 +65,10 @@ export class ClientsComponent {
     } else {
       this._liveAnnouncer.announce('Sorting cleared');
     }
+  }
+  onRowClicked(row : any) {
+    const urlTree = this.router.createUrlTree(['/admin/client/', row.Id]);
+    const url = this.router.serializeUrl(urlTree);
+    window.open(window.location.origin + url, '_blank');
   }
 }

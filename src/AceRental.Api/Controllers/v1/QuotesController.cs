@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 using AceRental.Application.Quotes.Command;
 using AceRental.Application.Quotes.Dtos;
 using AceRental.Application.Quotes.Queries;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AceRental.Api.Controllers.v1
 {
+    [Authorize]
     public class QuotesController : ODataController
     {
         private readonly IMediator _mediator;

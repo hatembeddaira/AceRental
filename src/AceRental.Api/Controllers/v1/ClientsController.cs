@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AceRental.Api.Controllers.v1
 {
-    // [ODataAttributeRouting]
+    [Authorize]
     public class ClientsController  : ODataController
     {
         private readonly IMediator _mediator;

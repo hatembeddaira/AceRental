@@ -2,6 +2,7 @@
 using AceRental.Application.Packs.Dtos;
 using AceRental.Application.Packs.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace AceRental.Api.Controllers.v1
 {
+    [Authorize]
     public class PacksController : ODataController
     {
         private readonly IMediator _mediator;

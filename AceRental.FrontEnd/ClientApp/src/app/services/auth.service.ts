@@ -24,4 +24,12 @@ export class AuthService {
   get accessToken() {
     return this.oauthService.getAccessToken(); // Contient le nom, rôles, email, etc.
   }
+  public getClaimsFromAccessToken() {
+    const token = this.oauthService.getAccessToken();
+    if (!token) return null;
+
+    // Décodage manuel de la partie payload du JWT
+    const payload = token.split('.')[1];
+    return JSON.parse(window.atob(payload));
+  }
 }

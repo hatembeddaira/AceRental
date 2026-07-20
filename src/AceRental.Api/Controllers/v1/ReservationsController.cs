@@ -4,6 +4,7 @@ using AceRental.Application.Reservations.Dtos;
 using AceRental.Application.Reservations.Queries;
 using AceRental.Domain.Enum;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.AspNetCore.OData.Formatter;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 using System;
 namespace AceRental.Api.Controllers.v1
 {
+    [Authorize]
     public class ReservationsController : ODataController
     {
         private readonly IMediator _mediator;

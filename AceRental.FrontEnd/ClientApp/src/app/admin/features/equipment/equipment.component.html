@@ -1,5 +1,5 @@
 <div class="container-xl" [formGroup]="equipmentForm">
-    <h2>Fiche equipements [ {{equipment!.Reference}} ]</h2>
+    <h2>Equipement détails [ {{equipment().Reference}} ]</h2>
     <div class="row">
         <div class="col-md-8">
             <div class="row">
@@ -118,7 +118,7 @@
         <div class="col-md-4 card border-dark mb-3" style="background-color: white;">
             <div id="carouselExampleDark" class="carousel carousel-dark slide">
                 <div class="carousel-inner" >
-                    <div class="carousel-item" *ngFor="let img of equipment!.images; let i = index" [ngClass]="{'active': i === 0}">
+                    <div class="carousel-item" *ngFor="let img of equipment().images; let i = index" [ngClass]="{'active': i === 0}">
                         <div class="image">
                             <img [src]="img" alt="...">
                         </div>
@@ -127,7 +127,7 @@
                 
                 <div class="carousel-indicators">
                     <button 
-                        *ngFor="let img of equipment!.images; let i = index"
+                        *ngFor="let img of equipment().images; let i = index"
                         type="button" 
                         data-bs-target="#carouselExampleDark" 
                         [attr.data-bs-slide-to]="i" 

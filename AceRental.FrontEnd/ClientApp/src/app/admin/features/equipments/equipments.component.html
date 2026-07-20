@@ -1,1 +1,47 @@
-<p>equipment.component works!</p>
+<div class="container-xxl">
+    <h2>Liste des équipements </h2>
+    <div class="row" style="padding-bottom: 15px;">
+        <div class="col-md-10">
+            <mat-form-field style="width: 250px;">
+                <input matInput placeholder="Rechercher un équipement" #input>
+            </mat-form-field>
+        </div>
+        <div class="col-md-2">
+            <button type="button" routerLink="/admin/equipment" class="btn btn-dark effect btn-m">Créer</button>
+        </div>
+    </div>
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
+        <ng-container matColumnDef="Reference">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Reference">
+            Référence
+            </th>
+            <td mat-cell *matCellDef="let element"><a (click)="onRowClicked(element)">{{element.Reference}}</a></td>
+        </ng-container>
+                <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Name">
+            Nom
+            </th>
+            <td mat-cell *matCellDef="let element">{{element.Name}}</td>
+        </ng-container>        
+        <ng-container matColumnDef="DailyPriceHT">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DailyPriceHT">
+            DailyPriceHT
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.DailyPriceHT}} </td>
+        </ng-container>
+        <ng-container matColumnDef="TotalStock">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by TotalStock">
+            Stock total
+            </th>
+            <td mat-cell *matCellDef="let element">{{element.TotalStock}}</td>
+        </ng-container>
+        <ng-container matColumnDef="Category">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Category">
+            Catégorie
+            </th>
+            <td mat-cell *matCellDef="let element"> {{element.Category}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using AceRental.Application.Services.Command;
 using AceRental.Application.Services.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AceRental.Api.Controllers.v1
 {
+    [Authorize]
     public class ServicesController : ODataController
     {
         private readonly IMediator _mediator;
