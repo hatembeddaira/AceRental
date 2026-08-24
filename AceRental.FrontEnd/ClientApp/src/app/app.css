@@ -1,8 +1,0 @@
-.custom-outline .mat-form-field-outline-start,
-.custom-outline .mat-form-field-outline-end {
-  border-color: #ff9800 !important; /* orange */
-}
-.custom-outline.mat-focused .mat-form-field-outline-thick {
-  border-color: #ff5722 !important; /* orange foncé */
-}
-
